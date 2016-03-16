@@ -4,11 +4,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -36,6 +38,7 @@ import android.widget.TextView;
 public class BottomBar extends FrameLayout implements View.OnClickListener {
     private static final long ANIMATION_DURATION = 150;
 
+    private static final String STATE_CURRENT_SELECTED_TAB = "com.roughike.bottombar.STATE_CURRENT_SELECTED_TAB";
     private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
     private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
 
@@ -131,7 +134,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
             title.setText(bottomBarTab.getTitle(mContext));
             MiscUtils.setTextAppearance(title, R.style.BB_BottomBarItem_Fixed_Title);
 
-            if (index == 0) {
+            if (index == mCurrentTabPosition) {
                 selectTab(bottomBarView, false);
             } else {
                 unselectTab(bottomBarView, false);
@@ -260,56 +263,23 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
         }
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.selectedTabPosition = mCurrentTabPosition;
-        return ss;
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
     }
 
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss);
-        mCurrentTabPosition = ss.selectedTabPosition;
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mCurrentTabPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB);
+        }
     }
 
-    public static BottomBar bind(Activity activity, @LayoutRes int layoutRes) {
+    public static BottomBar bind(Activity activity, @LayoutRes int layoutRes, Bundle savedInstanceState) {
         BottomBar bottomBar = new BottomBar(activity);
+        bottomBar.onRestoreInstanceState(savedInstanceState);
+
         View.inflate(activity, layoutRes, bottomBar.getUserContainer());
         activity.setContentView(bottomBar);
 
         return bottomBar;
-    }
-
-    static class SavedState extends BaseSavedState {
-        int selectedTabPosition;
-
-        protected SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            selectedTabPosition = in.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(selectedTabPosition);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

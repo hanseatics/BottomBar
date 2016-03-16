@@ -11,13 +11,15 @@ import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabSelectedListener;
 
 public class MainActivity extends AppCompatActivity {
+    private BottomBar mBottomBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBottomBar = BottomBar.bind(this, R.layout.activity_main,
+                savedInstanceState);
 
-        BottomBar bottomBar = BottomBar.bind(this, R.layout.activity_main);
-        bottomBar.setItems(
+        mBottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_recents, "Recents"),
                 new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
                 new BottomBarTab(R.drawable.ic_nearby, "Nearby")
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView sampleText = (TextView) findViewById(R.id.sampleText);
 
-        bottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+        mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onItemSelected(final int position) {
                 sampleText.animate()
@@ -44,5 +46,11 @@ public class MainActivity extends AppCompatActivity {
                         }).start();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mBottomBar.onSaveInstanceState(outState);
     }
 }
