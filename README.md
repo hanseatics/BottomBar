@@ -1,20 +1,73 @@
-## DO NOT USE IN PRODUCTION JUST YET! 
-**This is by no means ready, and won't be for at least a week.**
+# BottomBar
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
-The code is messy and **features and usage will change.**
+## What?
 
-BottomBar mimicks the new [Material Design Bottom navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html). 
+A custom view component that mimicks the [Material Design "Bottom navigation" pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
 
-**Currently working:**
-* The fixed, three item bottom navigation bar in mobile devices
-* Animations when the items change
+**(currently under development, expect to see changes during this week)**
 
-**Currently not working:**
-* Everything else.
+## minSDK version
 
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/bottom_bar_screenshot.png" width="278" height="492" />
+The current minSDK version is API level 14.
+
+## Gimme that Gradle sweetness, pls?
+
+It's pending. I'll update right away when it's available.
+
+## How?
+
+The usage is really simple.
+
+**Here's a quick snippet to get started:**
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private BottomBar mBottomBar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        // Notice how you don't use the setContentView method here! Just
+        // pass your layout to bottom bar, it will be taken care of.
+        // Everything will be just like you're used to.
+        mBottomBar = BottomBar.bind(this, R.layout.activity_main,
+                savedInstanceState);
+
+        mBottomBar.setItems(
+                new BottomBarTab(R.drawable.ic_recents, "Recents"),
+                new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+                new BottomBarTab(R.drawable.ic_nearby, "Nearby"),
+                new BottomBarTab(R.drawable.ic_friends, "Friends")
+        );
+
+        mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+            @Override
+            public void onItemSelected(final int position) {
+                // the user selected a new tab
+            }
+        });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mBottomBar.onSaveInstanceState(outState);
+    }
+}
+```
+
+## Apps using BottomBar
+
+Send me a pull request with modified README.md or contact me at iiro.krankka@gmail.com to get a shoutout!
+
+## Contributions
+
+Feel free to create issues / pull requests.
 
 ## License
+
 ```
 BottomBar library for Android
 Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
