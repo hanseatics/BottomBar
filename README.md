@@ -3,7 +3,7 @@
 
 The code is messy and **features and usage will change.**
 
-BottomBar mimicks the new [Material Design Bottom navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html). It is currently in active development, and by no means ready just yet.
+BottomBar mimicks the new [Material Design Bottom navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html). 
 
 **Currently working:**
 * The fixed, three item bottom navigation bar in mobile devices
