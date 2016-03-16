@@ -17,9 +17,9 @@ It's pending. I'll update right away when it's available.
 
 ## How?
 
-The usage is really simple.
+BottomBar likes Fragments very much, but you can also handle your tab changes by yourself.
 
-**Here's a quick snippet to get started:**
+**Handling tab changes yourself:**
 
 ```java
 public class MainActivity extends AppCompatActivity {
@@ -55,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.onSaveInstanceState(outState);
     }
 }
+```
+
+**Working with Fragments**
+
+Just call ```setFragmentItems()``` instead of ```setItems()```:
+
+```java
+mBottomBar.setFragmentItems(
+    getSupportFragmentManager(),
+    R.id.fragmentContainer,
+    new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
+);
 ```
 
 ## Apps using BottomBar
