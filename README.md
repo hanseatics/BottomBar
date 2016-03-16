@@ -3,7 +3,7 @@
 
 ## What?
 
-A custom view component that mimicks the [Material Design "Bottom navigation" pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
+A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
 
 **(currently under development, expect to see changes during this week)**
 
@@ -17,30 +17,26 @@ It's pending. I'll update right away when it's available.
 
 ## How?
 
-The usage is really simple.
+BottomBar likes Fragments very much, but you can also handle your tab changes by yourself.
 
-**Here's a quick snippet to get started:**
+**Handling tab changes yourself:**
 
 ```java
 public class MainActivity extends AppCompatActivity {
     private BottomBar mBottomBar;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Notice how you don't use the setContentView method here! Just
-        // pass your layout to bottom bar, it will be taken care of.
-        // Everything will be just like you're used to.
-        mBottomBar = BottomBar.bind(this, R.layout.activity_main,
-                savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        mBottomBar = BottomBar.attach(this, savedInstanceState);
         mBottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_recents, "Recents"),
                 new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
                 new BottomBarTab(R.drawable.ic_nearby, "Nearby")
         );
-
+    
         mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onItemSelected(final int position) {
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -56,6 +52,26 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
+
+**Working with Fragments**
+
+Just call ```setFragmentItems()``` instead of ```setItems()```:
+
+```java
+mBottomBar.setFragmentItems(
+    getSupportFragmentManager(),
+    R.id.fragmentContainer,
+    new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
+);
+```
+
+For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
+
+## What about the (insert thing that looks different than the specs here)?
+
+I'll implement the Material Design spec as well as I can, including all the animations. Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
