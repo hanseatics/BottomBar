@@ -142,7 +142,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
      * Set tabs and fragments for this BottomBar. When setting more than 3 items,
      * only the icons will show by default, but the selected item
      * will have the text visible.
-     *
      * @param fragmentManager   a FragmentManager for managing the Fragments.
      * @param containerResource id for the layout to inflate Fragments to.
      * @param fragmentItems     an array of {@link BottomBarFragment} objects.
@@ -150,7 +149,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
     public void setFragmentItems(FragmentManager fragmentManager, @IdRes int containerResource,
                                  BottomBarFragment... fragmentItems) {
         clearItems();
-
         mFragmentManager = fragmentManager;
         mFragmentContainer = containerResource;
         mFragments = fragmentItems;
