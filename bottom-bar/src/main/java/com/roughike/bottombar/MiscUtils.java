@@ -1,9 +1,14 @@
 package com.roughike.bottombar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.MenuRes;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.PopupMenu;
 
 /*
  * BottomBar library for Android
@@ -49,5 +54,32 @@ class MiscUtils {
     protected static int getScreenWidth(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return (int) (displayMetrics.widthPixels / displayMetrics.density);
+    }
+
+    /**
+     * A hacky method for inflating menus from xml resources to an array
+     * of BottomBarTabs.
+     * @param activity the activity context for retrieving the MenuInflater.
+     * @param menuRes the xml menu resource to inflate
+     * @return an Array of BottomBarTabs.
+     */
+    protected static BottomBarTab[] inflateMenuFromResource(Activity activity, @MenuRes int menuRes) {
+        // A bit hacky, but hey hey what can I do
+        PopupMenu popupMenu = new PopupMenu(activity, null);
+        Menu menu = popupMenu.getMenu();
+        activity.getMenuInflater().inflate(menuRes, menu);
+
+        int menuSize = menu.size();
+        BottomBarTab[] tabs = new BottomBarTab[menuSize];
+
+        for (int i = 0; i < menuSize; i++) {
+            MenuItem item = menu.getItem(i);
+            BottomBarTab tab = new BottomBarTab(item.getIcon(),
+                    String.valueOf(item.getTitle()));
+            tab.id = item.getItemId();
+            tabs[i] = tab;
+        }
+
+        return tabs;
     }
 }

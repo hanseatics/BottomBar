@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.MenuRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -57,6 +58,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mMaxFixedItemWidth;
 
     private OnTabSelectedListener mListener;
+    private OnMenuTabSelectedListener mMenuListener;
+
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
 
@@ -159,7 +162,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mFragmentManager = fragmentManager;
         mFragmentContainer = containerResource;
         mItems = fragmentItems;
-        updateItems(fragmentItems);
+        updateItems(mItems);
     }
 
     /**
@@ -172,7 +175,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     public void setItems(BottomBarTab... bottomBarTabs) {
         clearItems();
         mItems = bottomBarTabs;
-        updateItems(bottomBarTabs);
+        updateItems(mItems);
+    }
+
+    public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
+        clearItems();
+        mItems = MiscUtils.inflateMenuFromResource((Activity) mContext, menuRes);
+        mMenuListener = listener;
+        updateItems(mItems);
     }
 
     /**
@@ -223,6 +233,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     mListener.onItemSelected(mCurrentTabPosition);
                 }
 
+                if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
+                    mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+                }
+
                 updateCurrentFragment();
             }
         }
@@ -248,18 +262,22 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         View[] viewsToAdd = new View[bottomBarItems.length];
 
-        for (BottomBarItemBase bottomBarTab : bottomBarItems) {
+        for (BottomBarItemBase bottomBarItemBase : bottomBarItems) {
             ViewGroup bottomBarView = (ViewGroup) View.inflate(mContext, mIsShiftingMode ?
                     R.layout.bb_bottom_bar_item_shifting : R.layout.bb_bottom_bar_item_fixed, null);
 
             ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
             TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
 
-            icon.setImageDrawable(bottomBarTab.getIcon(mContext));
-            title.setText(bottomBarTab.getTitle(mContext));
+            icon.setImageDrawable(bottomBarItemBase.getIcon(mContext));
+            title.setText(bottomBarItemBase.getTitle(mContext));
 
             if (mIsShiftingMode) {
                 icon.setColorFilter(mWhiteColor);
+            }
+
+            if (bottomBarItemBase instanceof BottomBarTab) {
+                bottomBarView.setId(((BottomBarTab) bottomBarItemBase).id);
             }
 
             if (index == mCurrentTabPosition) {
