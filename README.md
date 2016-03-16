@@ -3,7 +3,7 @@
 
 ## What?
 
-A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
+A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
 
 **(currently under development, expect to see changes during this week)**
 
@@ -13,7 +13,24 @@ The current minSDK version is API level 14.
 
 ## Gimme that Gradle sweetness, pls?
 
-It's pending. I'll update right away when it's available.
+It's waiting approval on jCenter. I'll update right away when it's available.
+
+Meanwhile you can get up and running by using Jitpack. **Remember to check here in a day to use the jCenter dependency.**
+
+**Project-level build.gradle:**
+```groovy
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+**App-level (in the app module) build.gralde:**
+```groovy
+compile 'com.github.roughike:BottomBar:-SNAPSHOT'
+```
 
 ## How?
 
@@ -76,7 +93,7 @@ I'll implement the Material Design spec as well as I can, including all the anim
 
 ## Apps using BottomBar
 
-Send me a pull request with modified README.md or contact me at iiro.krankka@gmail.com to get a shoutout!
+Send me a pull request with modified README.md to get a shoutout!
 
 ## Contributions
 
