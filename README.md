@@ -93,7 +93,7 @@ I'll implement the Material Design spec as well as I can, including all the anim
 
 ## Apps using BottomBar
 
-Send me a pull request with modified README.md or contact me at iiro.krankka@gmail.com to get a shoutout!
+Send me a pull request with modified README.md to get a shoutout!
 
 ## Contributions
 
