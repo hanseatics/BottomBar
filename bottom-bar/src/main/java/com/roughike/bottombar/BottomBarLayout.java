@@ -3,6 +3,8 @@ package com.roughike.bottombar;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -19,6 +21,8 @@ import android.widget.TextView;
 public class BottomBarLayout extends RelativeLayout implements View.OnClickListener {
     private static final long ANIMATION_DURATION = 150;
 
+    private static final String STATE_CURRENT_TAB = "STATE_CURRENT_TAB";
+
     private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
     private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
 
@@ -33,6 +37,7 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     private int mMaxItemWidth;
 
     private OnTabSelectedListener mListener;
+    private int mCurrentTabPosition;
 
     public BottomBarLayout(Context context) {
         super(context);
@@ -113,9 +118,9 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
             MiscUtils.setTextAppearance(title, R.style.BB_BottomBarItem_Fixed_Title);
 
             if (index == 0) {
-                activateView(bottomBarView, false);
+                selectTab(bottomBarView, false);
             } else {
-                inActivateView(bottomBarView, false);
+                unselectTab(bottomBarView, false);
             }
 
             if (bottomBarView.getWidth() > biggestWidth) {
@@ -150,7 +155,7 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         mListener = listener;
     }
 
-    private void activateView(ViewGroup bottomBarView, boolean animate) {
+    private void selectTab(ViewGroup bottomBarView, boolean animate) {
         bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
 
         ((ImageView) bottomBarView.findViewById(R.id.bottom_bar_icon)).setColorFilter(mPrimaryColor);
@@ -174,7 +179,7 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         }
     }
 
-    private void inActivateView(ViewGroup bottomBarView, boolean animate) {
+    private void unselectTab(ViewGroup bottomBarView, boolean animate) {
         bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
 
         ((ImageView) bottomBarView.findViewById(R.id.bottom_bar_icon)).setColorFilter(mInActiveColor);
@@ -211,8 +216,8 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            inActivateView((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
-            activateView((ViewGroup) v, true);
+            unselectTab((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
+            selectTab((ViewGroup) v, true);
 
             if (mListener != null) {
                 int position = 0;
@@ -227,7 +232,63 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
                 }
 
                 mListener.onItemSelected(position);
+                mCurrentTabPosition = position;
             }
         }
+    }
+
+    private void selectTabAtPosition(int position) {
+        unselectTab((ViewGroup) mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), false);
+        selectTab((ViewGroup) mItemContainer.getChildAt(position), false);
+
+        if (mListener != null) {
+            mListener.onItemSelected(position);
+        }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.selectedTabPosition = mCurrentTabPosition;
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss);
+        mCurrentTabPosition = ss.selectedTabPosition;
+        selectTabAtPosition(mCurrentTabPosition);
+    }
+
+    static class SavedState extends BaseSavedState {
+        int selectedTabPosition;
+
+        protected SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            selectedTabPosition = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(selectedTabPosition);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }
