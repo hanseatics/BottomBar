@@ -61,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
 Just call ```setFragmentItems()``` instead of ```setItems()```:
 
 ```java
-mBottomBar.setFragmentItems(
-    getSupportFragmentManager(),
-    R.id.fragmentContainer,
+mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
