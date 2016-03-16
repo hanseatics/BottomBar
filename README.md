@@ -91,9 +91,9 @@ All you need to do is instead of attaching the BottomBar to your Activity, attac
 mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
 ```
 
-#### Fragments as items
+#### Can it handle my Fragments and replace them automagically when a different tab is selected?
 
-Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
+Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
 
 ```java
 mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
