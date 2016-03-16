@@ -5,9 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -19,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * BottomBar library for Android
@@ -36,7 +35,7 @@ import android.widget.TextView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBar extends FrameLayout implements View.OnClickListener {
+public class BottomBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final long ANIMATION_DURATION = 150;
     private static final int MAX_FIXED_TAB_COUNT = 3;
 
@@ -63,7 +62,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     private FragmentManager mFragmentManager;
     private int mFragmentContainer;
-    private BottomBarFragment[] mFragments;
+    private BottomBarItemBase[] mItems;
 
     public BottomBar(Context context) {
         super(context);
@@ -159,7 +158,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
         clearItems();
         mFragmentManager = fragmentManager;
         mFragmentContainer = containerResource;
-        mFragments = fragmentItems;
+        mItems = fragmentItems;
         updateItems(fragmentItems);
     }
 
@@ -172,6 +171,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
      */
     public void setItems(BottomBarTab... bottomBarTabs) {
         clearItems();
+        mItems = bottomBarTabs;
         updateItems(bottomBarTabs);
     }
 
@@ -214,25 +214,27 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
             unselectTab((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
             selectTab((ViewGroup) v, true);
 
-            int position = 0;
+            int newPosition = findItemPosition(v);
 
-            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
-                View candidate = mItemContainer.getChildAt(i);
+            if (newPosition != mCurrentTabPosition) {
+                mCurrentTabPosition = newPosition;
 
-                if (candidate.getTag().equals(TAG_BOTTOM_BAR_VIEW_ACTIVE)) {
-                    position = i;
-                    break;
+                if (mListener != null) {
+                    mListener.onItemSelected(mCurrentTabPosition);
                 }
+
+                updateCurrentFragment();
             }
-
-            mCurrentTabPosition = position;
-
-            if (mListener != null) {
-                mListener.onItemSelected(position);
-            }
-
-            updateCurrentFragment();
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mIsShiftingMode && v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
+            Toast.makeText(mContext, mItems[findItemPosition(v)].getTitle(mContext), Toast.LENGTH_SHORT).show();
+        }
+
+        return true;
     }
 
     private void updateItems(BottomBarItemBase[] bottomBarItems) {
@@ -271,6 +273,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
             }
 
             bottomBarView.setOnClickListener(this);
+            bottomBarView.setOnLongClickListener(this);
             viewsToAdd[index] = bottomBarView;
             index++;
         }
@@ -385,12 +388,29 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
         }
     }
 
+    private int findItemPosition(View viewToFind) {
+        int position = 0;
+
+        for (int i = 0; i < mItemContainer.getChildCount(); i++) {
+            View candidate = mItemContainer.getChildAt(i);
+
+            if (candidate.equals(viewToFind)) {
+                position = i;
+                break;
+            }
+        }
+
+        return position;
+    }
+
     private void updateCurrentFragment() {
-        if (mFragmentManager != null && mFragmentContainer != 0
-                && mFragments != null) {
+        if (mFragmentManager != null
+                && mFragmentContainer != 0
+                && mItems != null
+                && mItems instanceof BottomBarFragment[]) {
             mFragmentManager.beginTransaction()
-                    .replace(mFragmentContainer, mFragments[mCurrentTabPosition].getFragment())
-                    .commit();
+                    .replace(mFragmentContainer, ((BottomBarFragment) mItems[mCurrentTabPosition]).getFragment())
+                            .commit();
         }
     }
 
@@ -411,8 +431,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
             mFragmentContainer = 0;
         }
 
-        if (mFragments != null) {
-            mFragments = null;
+        if (mItems != null) {
+            mItems = null;
         }
     }
 }
