@@ -105,7 +105,7 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
 
 #### Separate BottomBars for individual Fragments
 
-Override your ```onCreateView()``` like this:
+Override your Fragment's ```onCreateView()``` like this:
 
 ```java
 @Override
