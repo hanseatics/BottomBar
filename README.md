@@ -13,23 +13,18 @@ The current minSDK version is API level 14.
 
 ## Gimme that Gradle sweetness, pls?
 
-It's waiting approval on jCenter. I'll update right away when it's available.
-
-Meanwhile you can get up and running by using Jitpack. **Remember to check here in a day to use the jCenter dependency.**
-
-**Project-level build.gradle:**
 ```groovy
-allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-}
+compile 'com.roughike:bottom-bar:1.0.0'
 ```
 
-**App-level (in the app module) build.gralde:**
-```groovy
-compile 'com.github.roughike:BottomBar:-SNAPSHOT'
+**Maven, just in case:**
+```xml
+<dependency>
+  <groupId>com.roughike</groupId>
+  <artifactId>bottom-bar</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
 ```
 
 ## How?
