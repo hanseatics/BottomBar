@@ -11,6 +11,10 @@ A custom view component that mimicks the [Material Design "Bottom navigation" pa
 
 The current minSDK version is API level 14.
 
+## Gimme that Gradle sweetness, pls?
+
+It's pending. I'll update right away when it's available.
+
 ## How?
 
 The usage is really simple.
