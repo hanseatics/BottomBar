@@ -1,15 +1,9 @@
 package com.roughike.bottombar;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.widget.TextView;
-
-import com.roughike.bottombar.R;
 
 /*
  * BottomBar library for Android
