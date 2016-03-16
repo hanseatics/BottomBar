@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-**Working with Fragments**
+**Working with Fragments:**
 
 Just call ```setFragmentItems()``` instead of ```setItems()```:
 
