@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.roughike.bottombar.BottomBarLayout;
+import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabSelectedListener;
 
@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomBarLayout bottomBarLayout = (BottomBarLayout) findViewById(R.id.bottomBar);
-        bottomBarLayout.setItems(
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_recents, "Recents"),
                 new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
                 new BottomBarTab(R.drawable.ic_nearby, "Nearby")
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView sampleText = (TextView) findViewById(R.id.sampleText);
 
-        bottomBarLayout.setOnItemSelectedListener(new OnTabSelectedListener() {
+        bottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onItemSelected(final int position) {
                 sampleText.animate()

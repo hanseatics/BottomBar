@@ -3,12 +3,12 @@
     style="@style/BB_BottomBarItem_Fixed">
 
     <ImageView
-        android:id="@+id/bottom_bar_icon"
+        android:id="@+id/bb_bottom_bar_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/bottom_bar_title"
+        android:id="@+id/bb_bottom_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
