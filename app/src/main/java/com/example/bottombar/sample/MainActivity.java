@@ -15,9 +15,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        BottomBar bottomBar = BottomBar.bind(this, R.layout.activity_main);
         bottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_recents, "Recents"),
                 new BottomBarTab(R.drawable.ic_favorites, "Favorites"),

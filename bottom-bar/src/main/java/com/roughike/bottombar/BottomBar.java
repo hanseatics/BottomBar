@@ -1,10 +1,12 @@
 package com.roughike.bottombar;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /*
@@ -38,6 +41,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     private Context mContext;
 
+    private FrameLayout mUserContentContainer;
     private LinearLayout mItemContainer;
 
     private int mPrimaryColor;
@@ -88,10 +92,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
-        FrameLayout itemContainerRoot = (FrameLayout) View.inflate(mContext,
+        RelativeLayout itemContainerRoot = (RelativeLayout) View.inflate(mContext,
                 R.layout.bb_bottom_bar_item_container, null);
+
+        mUserContentContainer = (FrameLayout) itemContainerRoot.findViewById(R.id.bb_user_content_container);
         mItemContainer = (LinearLayout) itemContainerRoot.findViewById(R.id.bb_bottom_bar_item_container);
+
         addView(itemContainerRoot, params);
+    }
+
+    protected FrameLayout getUserContainer() {
+        return mUserContentContainer;
     }
 
     /**
@@ -262,7 +273,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss);
         mCurrentTabPosition = ss.selectedTabPosition;
-        selectTabAtPosition(mCurrentTabPosition);
+    }
+
+    public static BottomBar bind(Activity activity, @LayoutRes int layoutRes) {
+        BottomBar bottomBar = new BottomBar(activity);
+        View.inflate(activity, layoutRes, bottomBar.getUserContainer());
+        activity.setContentView(bottomBar);
+
+        return bottomBar;
     }
 
     static class SavedState extends BaseSavedState {
