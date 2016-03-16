@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_recents, "Recents"),
                 new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-                new BottomBarTab(R.drawable.ic_nearby, "Nearby"),
-                new BottomBarTab(R.drawable.ic_friends, "Friends")
+                new BottomBarTab(R.drawable.ic_nearby, "Nearby")
         );
 
         mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
