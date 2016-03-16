@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 #### Working with Fragments
 
-Just call ```setFragmentItems()``` instead of ```setItems()```:
+Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
 
 ```java
 mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
@@ -97,7 +97,7 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
 
 #### I hate Fragments and wanna do everything by myself!
 
-That's alright, you can also handle items by yourself:
+That's alright, you can also handle items by yourself. 
 
 ```java
 mBottomBar.setItems(
