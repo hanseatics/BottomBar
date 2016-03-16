@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -122,8 +124,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
      * BottomBar will set your contentView for you, so you don't have
      * to set it for yourself.
      *
+     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
+     *
      * @param activity           an Activity to attach to.
-     * @param savedInstanceState a Bundle to restore data from.
+     * @param savedInstanceState a Bundle for restoring the state on configuration change.
      * @return a BottomBar at the bottom of the screen.
      */
     public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
@@ -140,7 +145,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
         return bottomBar;
     }
-
 
     /**
      * Set tabs and fragments for this BottomBar. When setting more than 3 items,
@@ -290,7 +294,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            mCurrentTabPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB);
+            mCurrentTabPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, -1);
+
+            if (mCurrentTabPosition == -1) {
+                throw new RuntimeException("You must also override the Activity's onSave" +
+                        "InstanceState(Bundle outState) and call BottomBar.onSaveInstanc" +
+                        "eState(outState) there to restore the state properly.");
+            }
         }
     }
 
