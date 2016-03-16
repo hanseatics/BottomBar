@@ -1,13 +1,10 @@
 package com.roughike.bottombar;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -36,7 +33,7 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     private int mMinItemWidth;
     private int mMaxItemWidth;
 
-    private OnBarItemSelectedListener mListener;
+    private OnTabSelectedListener mListener;
 
     public BottomBarLayout(Context context) {
         super(context);
@@ -91,22 +88,30 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         childParams.addRule(ABOVE, R.id.bb_bottom_bar_item_container);
     }
 
-    public void setItems(BottomBarItem... bottomBarItems) {
+    /**
+     * Set tabs for this BottomBar.
+     *
+     * Doesn't currently support more than 3 items per the Material Design
+     * specs.
+     *
+     * @param bottomBarTabs an array of {@link BottomBarTab} objects.
+     */
+    public void setItems(BottomBarTab... bottomBarTabs) {
         clearItems();
 
         int index = 0;
         int biggestWidth = 0;
 
-        View[] viewsToAdd = new View[bottomBarItems.length];
+        View[] viewsToAdd = new View[bottomBarTabs.length];
 
-        for (BottomBarItem bottomBarItem : bottomBarItems) {
+        for (BottomBarTab bottomBarTab : bottomBarTabs) {
             ViewGroup bottomBarView = (ViewGroup) View.inflate(mContext, R.layout.bb_bottom_bar_item, null);
 
             ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bottom_bar_icon);
             TextView title = (TextView) bottomBarView.findViewById(R.id.bottom_bar_title);
 
-            icon.setImageDrawable(bottomBarItem.getIcon(mContext));
-            title.setText(bottomBarItem.getTitle(mContext));
+            icon.setImageDrawable(bottomBarTab.getIcon(mContext));
+            title.setText(bottomBarTab.getTitle(mContext));
             MiscUtils.setTextAppearance(title, R.style.BB_BottomBarItem_Fixed_Title);
 
             if (index == 0) {
@@ -126,7 +131,7 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
 
         int screenWidth = MiscUtils.getScreenWidth(mContext);
         int proposedItemWidth = Math.min(
-                MiscUtils.dpToPixel(mContext, screenWidth / bottomBarItems.length),
+                MiscUtils.dpToPixel(mContext, screenWidth / bottomBarTabs.length),
                 mMaxItemWidth
         );
 
@@ -139,7 +144,11 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         }
     }
 
-    public void setOnItemSelectedListener(OnBarItemSelectedListener listener) {
+    /**
+     * Set a listener that gets fired when the selected item changes.
+     * @param listener a listener for monitoring changes in tab selection.
+     */
+    public void setOnItemSelectedListener(OnTabSelectedListener listener) {
         mListener = listener;
     }
 
@@ -192,11 +201,12 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     }
 
     private void clearItems() {
-        View bottomBarView = findViewWithTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
+        int childCount = mItemContainer.getChildCount();
 
-        while (bottomBarView != null) {
-            removeView(bottomBarView);
-            bottomBarView = findViewWithTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
+        if (childCount > 0) {
+            for (int i = 0; i < childCount; i++) {
+                mItemContainer.removeView(mItemContainer.getChildAt(i));
+            }
         }
     }
 

@@ -10,28 +10,28 @@ import android.support.v4.content.ContextCompat;
 /**
  * Created by Iiro Krankka (http://github.com/roughike)
  */
-public class BottomBarItem {
+public class BottomBarTab {
     private int iconResource;
     private Drawable icon;
     private int titleResource;
     private String title;
 
-    public BottomBarItem(@DrawableRes int iconResource, @NonNull String title) {
+    public BottomBarTab(@DrawableRes int iconResource, @NonNull String title) {
         this.iconResource = iconResource;
         this.title = title;
     }
 
-    public BottomBarItem(Drawable icon, @NonNull String title) {
+    public BottomBarTab(Drawable icon, @NonNull String title) {
         this.icon = icon;
         this.title = title;
     }
 
-    public BottomBarItem(Drawable icon, @StringRes int titleResource) {
+    public BottomBarTab(Drawable icon, @StringRes int titleResource) {
         this.icon = icon;
         this.titleResource = titleResource;
     }
 
-    public BottomBarItem(@DrawableRes int iconResource, @StringRes int titleResource) {
+    public BottomBarTab(@DrawableRes int iconResource, @StringRes int titleResource) {
         this.iconResource = iconResource;
         this.titleResource = titleResource;
     }
