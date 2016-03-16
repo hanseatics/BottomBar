@@ -11,24 +11,6 @@ A custom view component that mimicks the [Material Design "Bottom navigation" pa
 
 The current minSDK version is API level 14.
 
-## Installation
-
-**Gradle:**
-
-```groovy
-compile 'com.roughike:bottom-bar:0.0.1'
-```
-
-**Maven:**
-```xml
-<dependency>
-  <groupId>com.roughike</groupId>
-  <artifactId>bottom-bar</artifactId>
-  <version>0.0.1</version>
-  <type>pom</type>
-</dependency>
-```
-
 ## How?
 
 The usage is really simple.
