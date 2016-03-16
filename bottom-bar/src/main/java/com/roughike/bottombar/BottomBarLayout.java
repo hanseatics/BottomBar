@@ -30,7 +30,6 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     private int mInActiveColor;
 
     private int mTwoDp;
-    private int mMinItemWidth;
     private int mMaxItemWidth;
 
     private OnTabSelectedListener mListener;
@@ -64,7 +63,6 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         mInActiveColor = ContextCompat.getColor(mContext, R.color.bb_inActiveBottomBarItemColor);
 
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
-        mMinItemWidth = MiscUtils.dpToPixel(mContext, 104);
         mMaxItemWidth = MiscUtils.dpToPixel(mContext, 168);
 
         initializeViews();
