@@ -3,7 +3,7 @@
 
 ## What?
 
-A custom view component that mimicks the [Material Design "Bottom navigation" pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
+A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
 
 **(currently under development, expect to see changes during this week)**
 
