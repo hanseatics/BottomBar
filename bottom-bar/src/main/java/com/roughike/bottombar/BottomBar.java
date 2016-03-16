@@ -298,7 +298,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
             if (mCurrentTabPosition == -1) {
                 mCurrentTabPosition = 0;
-                Log.e("BottomBar", "You must also override the Activity's onSave" +
+                Log.e("BottomBar", "You must override the Activity's onSave" +
                         "InstanceState(Bundle outState) and call BottomBar.onSaveInstanc" +
                         "eState(outState) there to restore the state properly.");
             }
