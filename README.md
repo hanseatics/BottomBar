@@ -7,6 +7,10 @@
 
 A custom view component that mimicks the [Material Design "Bottom navigation" pattern](https://www.google.com/design/spec/components/bottom-navigation.html#bottom-navigation-specs).
 
+## minSDK version
+
+The current minSDK version is API level 14.
+
 ## Installation
 
 **Gradle:**
