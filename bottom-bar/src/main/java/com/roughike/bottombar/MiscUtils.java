@@ -52,7 +52,7 @@ class MiscUtils {
      * @param context Context to get resources and device specific display metrics
      * @return screen width
      */
-    public static int getScreenWidth(Context context) {
+    protected static int getScreenWidth(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return (int) (displayMetrics.widthPixels / displayMetrics.density);
     }
