@@ -5,12 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -37,6 +34,7 @@ import android.widget.TextView;
  */
 public class BottomBar extends FrameLayout implements View.OnClickListener {
     private static final long ANIMATION_DURATION = 150;
+    private static final int MAX_FIXED_TAB_COUNT = 3;
 
     private static final String STATE_CURRENT_SELECTED_TAB = "com.roughike.bottombar.STATE_CURRENT_SELECTED_TAB";
     private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
@@ -49,12 +47,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     private int mPrimaryColor;
     private int mInActiveColor;
+    private int mWhiteColor;
 
     private int mTwoDp;
-    private int mMaxItemWidth;
+    private int mTenDp;
+    private int mMaxFixedItemWidth;
 
     private OnTabSelectedListener mListener;
     private int mCurrentTabPosition;
+    private boolean mIsShiftingMode;
 
     public BottomBar(Context context) {
         super(context);
@@ -83,9 +84,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
         mPrimaryColor = MiscUtils.getColor(mContext, R.attr.colorPrimary);
         mInActiveColor = ContextCompat.getColor(mContext, R.color.bb_inActiveBottomBarItemColor);
+        mWhiteColor = ContextCompat.getColor(mContext, R.color.white);
 
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
-        mMaxItemWidth = MiscUtils.dpToPixel(mContext, 168);
+        mTenDp = MiscUtils.dpToPixel(mContext, 10);
+        mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
 
         initializeViews();
     }
@@ -110,7 +113,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     /**
      * Set tabs for this BottomBar.
-     *
+     * <p/>
      * Doesn't currently support more than 3 items per the Material Design
      * specs.
      *
@@ -121,18 +124,27 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
         int index = 0;
         int biggestWidth = 0;
+        mIsShiftingMode = MAX_FIXED_TAB_COUNT < bottomBarTabs.length;
+
+        if (mIsShiftingMode) {
+            mItemContainer.setBackgroundColor(mPrimaryColor);
+        }
 
         View[] viewsToAdd = new View[bottomBarTabs.length];
 
         for (BottomBarTab bottomBarTab : bottomBarTabs) {
-            ViewGroup bottomBarView = (ViewGroup) View.inflate(mContext, R.layout.bb_bottom_bar_item, null);
+            ViewGroup bottomBarView = (ViewGroup) View.inflate(mContext, mIsShiftingMode ?
+                    R.layout.bb_bottom_bar_item_shifting : R.layout.bb_bottom_bar_item_fixed, null);
 
             ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
             TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
 
             icon.setImageDrawable(bottomBarTab.getIcon(mContext));
             title.setText(bottomBarTab.getTitle(mContext));
-            MiscUtils.setTextAppearance(title, R.style.BB_BottomBarItem_Fixed_Title);
+
+            if (mIsShiftingMode) {
+                icon.setColorFilter(mWhiteColor);
+            }
 
             if (index == mCurrentTabPosition) {
                 selectTab(bottomBarView, false);
@@ -152,7 +164,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
         int screenWidth = MiscUtils.getScreenWidth(mContext);
         int proposedItemWidth = Math.min(
                 MiscUtils.dpToPixel(mContext, screenWidth / bottomBarTabs.length),
-                mMaxItemWidth
+                mMaxFixedItemWidth
         );
 
         LinearLayout.LayoutParams params = new LinearLayout
@@ -166,6 +178,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     /**
      * Set a listener that gets fired when the selected item changes.
+     *
      * @param listener a listener for monitoring changes in tab selection.
      */
     public void setOnItemSelectedListener(OnTabSelectedListener listener) {
@@ -174,10 +187,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
 
     private void selectTab(ViewGroup bottomBarView, boolean animate) {
         bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-
-        ((ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon)).setColorFilter(mPrimaryColor);
+        ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
-        title.setTextColor(mPrimaryColor);
+
+        if (!mIsShiftingMode) {
+            icon.setColorFilter(mPrimaryColor);
+            title.setTextColor(mPrimaryColor);
+        }
+
+        int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
 
         if (animate) {
             title.animate()
@@ -187,36 +205,63 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
                     .start();
             bottomBarView.animate()
                     .setDuration(ANIMATION_DURATION)
-                    .translationY(-mTwoDp)
+                    .translationY(-translationY)
                     .start();
+
+            if (mIsShiftingMode) {
+                icon.animate()
+                        .setDuration(ANIMATION_DURATION)
+                        .alpha(1.0f)
+                        .start();
+            }
         } else {
             title.setScaleX(1);
             title.setScaleY(1);
-            bottomBarView.setTranslationY(-mTwoDp);
+            bottomBarView.setTranslationY(-translationY);
+
+            if (mIsShiftingMode) {
+                icon.setAlpha(1.0f);
+            }
         }
     }
 
     private void unselectTab(ViewGroup bottomBarView, boolean animate) {
         bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
-
-        ((ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon)).setColorFilter(mInActiveColor);
+        ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
-        title.setTextColor(mInActiveColor);
+
+        if (!mIsShiftingMode) {
+            icon.setColorFilter(mInActiveColor);
+            title.setTextColor(mInActiveColor);
+        }
+
+        float scale = mIsShiftingMode ? 0 : 0.86f;
 
         if (animate) {
             title.animate()
                     .setDuration(ANIMATION_DURATION)
-                    .scaleX(0.86f)
-                    .scaleY(0.86f)
+                    .scaleX(scale)
+                    .scaleY(scale)
                     .start();
             bottomBarView.animate()
                     .setDuration(ANIMATION_DURATION)
                     .translationY(0)
                     .start();
+
+            if (mIsShiftingMode) {
+                icon.animate()
+                        .setDuration(ANIMATION_DURATION)
+                        .alpha(0.6f)
+                        .start();
+            }
         } else {
-            title.setScaleX(0.86f);
-            title.setScaleY(0.86f);
+            title.setScaleX(scale);
+            title.setScaleY(scale);
             bottomBarView.setTranslationY(0);
+
+            if (mIsShiftingMode) {
+                icon.setAlpha(0.6f);
+            }
         }
     }
 

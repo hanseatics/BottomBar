@@ -34,16 +34,6 @@ class MiscUtils {
         return tv.data;
     }
 
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.M)
-    protected static void setTextAppearance(TextView textView, int textAppearance) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(textAppearance);
-        } else {
-            textView.setTextAppearance(textView.getContext(), textAppearance);
-        }
-    }
-
     /**
      * Converts dps to pixels nicely.
      * @param context the Context for getting the resources
