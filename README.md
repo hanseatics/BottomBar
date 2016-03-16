@@ -34,9 +34,23 @@ compile 'com.github.roughike:BottomBar:-SNAPSHOT'
 
 ## How?
 
-BottomBar likes Fragments very much, but you can also handle your tab changes by yourself.
+BottomBar likes Fragments very much, but you can also handle your tab changes by yourself. You can add items by specifying an array of items or **by xml menu resources**.
 
-**Handling tab changes yourself:**
+#### Adding items from menu resource
+
+**res/menu/bottombar_menu.xml:**
+
+```xml
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomBarItemOne"
+        android:icon="@drawable/ic_recents"
+        android:title="Recents" />
+        ...
+</menu>
+```
+
+**MainActivity.java**
 
 ```java
 public class MainActivity extends AppCompatActivity {
@@ -48,16 +62,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);
-        mBottomBar.setItems(
-                new BottomBarTab(R.drawable.ic_recents, "Recents"),
-                new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-                new BottomBarTab(R.drawable.ic_nearby, "Nearby")
-        );
-    
-        mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+        mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabSelectedListener() {
             @Override
-            public void onItemSelected(final int position) {
-                // the user selected a new tab
+            public void onMenuItemSelected(int resId) {
+                if (resId == R.id.bottomBarItemOne) {
+                    // the user selected item number one
+                }
             }
         });
     }
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-**Working with Fragments:**
+#### Working with Fragments
 
 Just call ```setFragmentItems()``` instead of ```setItems()```:
 
@@ -83,6 +93,26 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
 );
+```
+
+#### I hate Fragments and wanna do everything by myself!
+
+That's alright, you can also handle items by yourself:
+
+```java
+mBottomBar.setItems(
+        new BottomBarTab(R.drawable.ic_recents, "Recents"),
+        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+);
+
+// Listen for tab changes
+mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+    @Override
+    public void onItemSelected(int position) {
+        // user selected a different tab
+    }
+});
 ```
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
