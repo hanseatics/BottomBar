@@ -123,9 +123,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
-     * BottomBar will set your contentView for you, so you don't have
-     * to set it for yourself.
-     *
+     * <p/>
      * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
@@ -149,9 +147,37 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Bind the BottomBar to the specified View's parent, and inflate
+     * your layout there. Useful when the BottomBar overlaps some content
+     * that shouldn't be overlapped.
+     * <p/>
+     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
+     *
+     * @param view               a View, which parent we're going to attach to.
+     * @param savedInstanceState a Bundle for restoring the state on configuration change.
+     * @return a BottomBar at the bottom of the screen.
+     */
+    public static BottomBar attach(View view, Bundle savedInstanceState) {
+        BottomBar bottomBar = new BottomBar(view.getContext());
+        bottomBar.onRestoreInstanceState(savedInstanceState);
+
+        ViewGroup contentView = (ViewGroup) view.getParent();
+        View oldLayout = contentView.getChildAt(0);
+        contentView.removeView(oldLayout);
+
+        bottomBar.getUserContainer()
+                .addView(oldLayout, oldLayout.getLayoutParams());
+        contentView.addView(bottomBar, 0);
+
+        return bottomBar;
+    }
+
+    /**
      * Set tabs and fragments for this BottomBar. When setting more than 3 items,
      * only the icons will show by default, but the selected item
      * will have the text visible.
+     *
      * @param fragmentManager   a FragmentManager for managing the Fragments.
      * @param containerResource id for the layout to inflate Fragments to.
      * @param fragmentItems     an array of {@link BottomBarFragment} objects.
@@ -180,7 +206,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     /**
      * Set items from an XML menu resource file.
-     * @param menuRes the menu resource to inflate items from.
+     *
+     * @param menuRes  the menu resource to inflate items from.
      * @param listener listener for tab change events.
      */
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
@@ -433,7 +460,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 && mItems instanceof BottomBarFragment[]) {
             mFragmentManager.beginTransaction()
                     .replace(mFragmentContainer, ((BottomBarFragment) mItems[mCurrentTabPosition]).getFragment())
-                            .commit();
+                    .commit();
         }
     }
 
