@@ -83,7 +83,15 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### Working with Fragments
+#### Why is it overlapping my Navigation Drawer?
+
+All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
+
+```java
+mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
+```
+
+#### Fragments as items
 
 Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
 
@@ -93,6 +101,28 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
 );
+```
+
+#### Separate BottomBars for individual Fragments
+
+Override your ```onCreateView()``` like this:
+
+```java
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.my_fragment_layout, container, false);
+    // initialize your views here
+
+    BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
+    bottomBar.setItems(
+        new BottomBarTab(R.drawable.ic_recents, "Recents"),
+        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+    );
+
+    // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
+    return bottomBar;
+}
 ```
 
 #### I hate Fragments and wanna do everything by myself!
