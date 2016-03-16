@@ -48,19 +48,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
         mBottomBar.onSaveInstanceState(outState);
     }
 }
 ```
 
-**Working with Fragments**
+**Working with Fragments:**
 
 Just call ```setFragmentItems()``` instead of ```setItems()```:
 
 ```java
-mBottomBar.setFragmentItems(
-    getSupportFragmentManager(),
-    R.id.fragmentContainer,
+mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
