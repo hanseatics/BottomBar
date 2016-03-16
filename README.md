@@ -73,6 +73,10 @@ mBottomBar.setFragmentItems(
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
 
+## What about the (insert thing that looks different than the specs here)?
+
+I'll implement the Material Design spec as well as I can, including all the animations. Just give me some time and **all your dreams will come true**.
+
 ## Apps using BottomBar
 
 Send me a pull request with modified README.md or contact me at iiro.krankka@gmail.com to get a shoutout!
