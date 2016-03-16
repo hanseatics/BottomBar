@@ -36,6 +36,8 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
     private int mMinItemWidth;
     private int mMaxItemWidth;
 
+    private OnBarItemSelectedListener mListener;
+
     public BottomBarLayout(Context context) {
         super(context);
         init(context, null, 0, 0);
@@ -137,6 +139,10 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         }
     }
 
+    public void setOnItemSelectedListener(OnBarItemSelectedListener listener) {
+        mListener = listener;
+    }
+
     private void activateView(ViewGroup bottomBarView, boolean animate) {
         bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
 
@@ -199,6 +205,21 @@ public class BottomBarLayout extends RelativeLayout implements View.OnClickListe
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             inActivateView((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
             activateView((ViewGroup) v, true);
+
+            if (mListener != null) {
+                int position = 0;
+
+                for (int i = 0; i < mItemContainer.getChildCount(); i++) {
+                    View candidate = mItemContainer.getChildAt(i);
+
+                    if (candidate.getTag().equals(TAG_BOTTOM_BAR_VIEW_ACTIVE)) {
+                        position = i;
+                        break;
+                    }
+                }
+
+                mListener.onItemSelected(position);
+            }
         }
     }
 }
