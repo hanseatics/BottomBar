@@ -163,12 +163,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         bottomBar.onRestoreInstanceState(savedInstanceState);
 
         ViewGroup contentView = (ViewGroup) view.getParent();
-        View oldLayout = contentView.getChildAt(0);
-        contentView.removeView(oldLayout);
 
-        bottomBar.getUserContainer()
-                .addView(oldLayout, oldLayout.getLayoutParams());
-        contentView.addView(bottomBar, 0);
+        if (contentView != null) {
+            View oldLayout = contentView.getChildAt(0);
+            contentView.removeView(oldLayout);
+
+            bottomBar.getUserContainer()
+                    .addView(oldLayout, oldLayout.getLayoutParams());
+            contentView.addView(bottomBar, 0);
+        } else {
+            bottomBar.getUserContainer()
+                    .addView(view, view.getLayoutParams());
+        }
 
         return bottomBar;
     }
