@@ -122,17 +122,21 @@ public class BottomBar extends FrameLayout implements View.OnClickListener {
      * BottomBar will set your contentView for you, so you don't have
      * to set it for yourself.
      *
-     * @param activity           an Activity to bind to.
-     * @param layoutRes          a layout resource to inflate.
+     * @param activity           an Activity to attach to.
      * @param savedInstanceState a Bundle to restore data from.
      * @return a BottomBar at the bottom of the screen.
      */
-    public static BottomBar bind(Activity activity, @LayoutRes int layoutRes, Bundle savedInstanceState) {
+    public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
         BottomBar bottomBar = new BottomBar(activity);
         bottomBar.onRestoreInstanceState(savedInstanceState);
 
-        View.inflate(activity, layoutRes, bottomBar.getUserContainer());
-        activity.setContentView(bottomBar);
+        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
+        View oldLayout = contentView.getChildAt(0);
+        contentView.removeView(oldLayout);
+
+        bottomBar.getUserContainer()
+                .addView(oldLayout, oldLayout.getLayoutParams());
+        contentView.addView(bottomBar, 0);
 
         return bottomBar;
     }

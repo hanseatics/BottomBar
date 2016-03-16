@@ -12,13 +12,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        // Notice how you don't use the setContentView method here! Just
-        // pass your layout to bottom bar, it will be taken care of.
-        // Everything will be just like you're used to.
-        mBottomBar = BottomBar.bind(this, R.layout.activity_main,
-                savedInstanceState);
-
+        mBottomBar = BottomBar.attach(this, savedInstanceState);
         mBottomBar.setFragmentItems(
                 getSupportFragmentManager(),
                 R.id.fragmentContainer,
