@@ -1,5 +1,5 @@
 # BottomBar
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_two.png" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_one.png" width="278" height="492" />
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
 ## What?
 
