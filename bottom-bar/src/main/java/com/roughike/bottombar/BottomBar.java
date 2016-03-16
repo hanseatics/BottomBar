@@ -178,6 +178,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         updateItems(mItems);
     }
 
+    /**
+     * Set items from an XML menu resource file.
+     * @param menuRes the menu resource to inflate items from.
+     * @param listener listener for tab change events.
+     */
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
         clearItems();
         mItems = MiscUtils.inflateMenuFromResource((Activity) mContext, menuRes);
