@@ -14,6 +14,8 @@
 
     <style name="BB_BottomBarItem_Fixed.Title" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_horizontal</item>
     </style>
 
     <style name="BB_BottomBarItem_Shifting">
