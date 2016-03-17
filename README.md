@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### How do I use it for Tablet?
+#### What about Tablets?
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
