@@ -13,23 +13,18 @@ The current minSDK version is API level 14.
 
 ## Gimme that Gradle sweetness, pls?
 
-It's waiting approval on jCenter. I'll update right away when it's available.
-
-Meanwhile you can get up and running by using Jitpack. **Remember to check here in a day to use the jCenter dependency.**
-
-**Project-level build.gradle:**
 ```groovy
-allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-}
+compile 'com.roughike:bottom-bar:1.0.0'
 ```
 
-**App-level (in the app module) build.gralde:**
-```groovy
-compile 'com.github.roughike:BottomBar:-SNAPSHOT'
+**Maven, just in case:**
+```xml
+<dependency>
+  <groupId>com.roughike</groupId>
+  <artifactId>bottom-bar</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
 ```
 
 ## How?
@@ -83,9 +78,17 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### Working with Fragments
+#### Why is it overlapping my Navigation Drawer?
 
-Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
+All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
+
+```java
+mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
+```
+
+#### Can it handle my Fragments and replace them automagically when a different tab is selected?
+
+Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
 
 ```java
 mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
@@ -93,6 +96,28 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
 );
+```
+
+#### Separate BottomBars for individual Fragments
+
+Override your Fragment's ```onCreateView()``` like this:
+
+```java
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.my_fragment_layout, container, false);
+    // initialize your views here
+
+    BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
+    bottomBar.setItems(
+        new BottomBarTab(R.drawable.ic_recents, "Recents"),
+        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+    );
+
+    // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
+    return bottomBar;
+}
 ```
 
 #### I hate Fragments and wanna do everything by myself!
