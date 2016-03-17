@@ -78,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+#### I wanna control what views get inside of it!
+
+No problem. Just attach it to a View instead of Activity:
+
+```java
+mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
+```
+
 #### What about Tablets?
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
