@@ -148,7 +148,7 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 ## What about the (insert thing that looks different than the specs here)?
 
-I'll implement the Material Design spec as well as I can, including all the animations. Just give me some time and **all your dreams will come true**.
+I'll implement the Material Design spec as well as I can. Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
