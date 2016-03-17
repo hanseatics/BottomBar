@@ -4,19 +4,18 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,13 +39,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private static final long ANIMATION_DURATION = 150;
     private static final int MAX_FIXED_TAB_COUNT = 3;
 
-    private static final String STATE_CURRENT_SELECTED_TAB = "com.roughike.bottombar.STATE_CURRENT_SELECTED_TAB";
     private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
     private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
 
-    private Context mContext;
-
-    private FrameLayout mUserContentContainer;
     private LinearLayout mItemContainer;
 
     private int mPrimaryColor;
@@ -68,115 +63,38 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private BottomBarItemBase[] mItems;
 
     public BottomBar(Context context) {
-        super(context);
-        init(context, null, 0, 0);
+        this(context, null, 0, 0);
     }
 
     public BottomBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
+        this(context, attrs, 0, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
-    }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mContext = context;
+        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
+        mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
 
-        mPrimaryColor = MiscUtils.getColor(mContext, R.attr.colorPrimary);
-        mInActiveColor = ContextCompat.getColor(mContext, R.color.bb_inActiveBottomBarItemColor);
-        mWhiteColor = ContextCompat.getColor(mContext, R.color.white);
-
-        mTwoDp = MiscUtils.dpToPixel(mContext, 2);
-        mTenDp = MiscUtils.dpToPixel(mContext, 10);
-        mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
+        mTwoDp = MiscUtils.dpToPixel(getContext(), 2);
+        mTenDp = MiscUtils.dpToPixel(getContext(), 10);
+        mMaxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
 
         initializeViews();
     }
 
     private void initializeViews() {
-        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
-
-        RelativeLayout itemContainerRoot = (RelativeLayout) View.inflate(mContext,
-                R.layout.bb_bottom_bar_item_container, null);
-
-        mUserContentContainer = (FrameLayout) itemContainerRoot.findViewById(R.id.bb_user_content_container);
-        mItemContainer = (LinearLayout) itemContainerRoot.findViewById(R.id.bb_bottom_bar_item_container);
-
-        addView(itemContainerRoot, params);
-    }
-
-    protected FrameLayout getUserContainer() {
-        return mUserContentContainer;
-    }
-
-    /**
-     * Bind the BottomBar to your Activity, and inflate your layout here.
-     * <p/>
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
-     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
-     *
-     * @param activity           an Activity to attach to.
-     * @param savedInstanceState a Bundle for restoring the state on configuration change.
-     * @return a BottomBar at the bottom of the screen.
-     */
-    public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
-        BottomBar bottomBar = new BottomBar(activity);
-        bottomBar.onRestoreInstanceState(savedInstanceState);
-
-        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
-        View oldLayout = contentView.getChildAt(0);
-        contentView.removeView(oldLayout);
-
-        bottomBar.getUserContainer()
-                .addView(oldLayout, oldLayout.getLayoutParams());
-        contentView.addView(bottomBar, 0);
-
-        return bottomBar;
-    }
-
-    /**
-     * Bind the BottomBar to the specified View's parent, and inflate
-     * your layout there. Useful when the BottomBar overlaps some content
-     * that shouldn't be overlapped.
-     * <p/>
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
-     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
-     *
-     * @param view               a View, which parent we're going to attach to.
-     * @param savedInstanceState a Bundle for restoring the state on configuration change.
-     * @return a BottomBar at the bottom of the screen.
-     */
-    public static BottomBar attach(View view, Bundle savedInstanceState) {
-        BottomBar bottomBar = new BottomBar(view.getContext());
-        bottomBar.onRestoreInstanceState(savedInstanceState);
-
-        ViewGroup contentView = (ViewGroup) view.getParent();
-
-        if (contentView != null) {
-            View oldLayout = contentView.getChildAt(0);
-            contentView.removeView(oldLayout);
-
-            bottomBar.getUserContainer()
-                    .addView(oldLayout, oldLayout.getLayoutParams());
-            contentView.addView(bottomBar, 0);
-        } else {
-            bottomBar.getUserContainer()
-                    .addView(view, view.getLayoutParams());
-        }
-
-        return bottomBar;
+        mItemContainer = (LinearLayout) View.inflate(getContext(), R.layout.bb_bottom_bar_item_container, null);
+        addView(mItemContainer, params);
     }
 
     /**
@@ -218,7 +136,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
         clearItems();
-        mItems = MiscUtils.inflateMenuFromResource((Activity) mContext, menuRes);
+        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
         mMenuListener = listener;
         updateItems(mItems);
     }
@@ -246,44 +164,59 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    /**
-     * Call this method in your Activity's onSaveInstanceState
-     * to keep the BottomBar's state on configuration change.
-     *
-     * @param outState the Bundle to save data to.
-     */
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.selectedTab = mCurrentTabPosition;
+        return ss;
+
     }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        selectTabAtPosition(ss.selectedTab, false);
+        updateSelectedTab(ss.selectedTab);
+    }
+
 
     @Override
     public void onClick(View v) {
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             unselectTab((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
             selectTab((ViewGroup) v, true);
+            updateSelectedTab(findItemPosition(v));
+        }
+    }
 
-            int newPosition = findItemPosition(v);
+    private void updateSelectedTab(int newPosition) {
+        if (newPosition != mCurrentTabPosition) {
+            mCurrentTabPosition = newPosition;
 
-            if (newPosition != mCurrentTabPosition) {
-                mCurrentTabPosition = newPosition;
-
-                if (mListener != null) {
-                    mListener.onItemSelected(mCurrentTabPosition);
-                }
-
-                if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
-                    mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
-                }
-
-                updateCurrentFragment();
+            if (mListener != null) {
+                mListener.onItemSelected(mCurrentTabPosition);
             }
+
+            if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
+                mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            }
+
+            updateCurrentFragment();
         }
     }
 
     @Override
     public boolean onLongClick(View v) {
         if (mIsShiftingMode && v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            Toast.makeText(mContext, mItems[findItemPosition(v)].getTitle(mContext), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), mItems[findItemPosition(v)].getTitle(getContext()), Toast.LENGTH_SHORT).show();
         }
 
         return true;
@@ -301,14 +234,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         View[] viewsToAdd = new View[bottomBarItems.length];
 
         for (BottomBarItemBase bottomBarItemBase : bottomBarItems) {
-            ViewGroup bottomBarView = (ViewGroup) View.inflate(mContext, mIsShiftingMode ?
+            ViewGroup bottomBarView = (ViewGroup) View.inflate(getContext(), mIsShiftingMode ?
                     R.layout.bb_bottom_bar_item_shifting : R.layout.bb_bottom_bar_item_fixed, null);
 
             ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
             TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
 
-            icon.setImageDrawable(bottomBarItemBase.getIcon(mContext));
-            title.setText(bottomBarItemBase.getTitle(mContext));
+            icon.setImageDrawable(bottomBarItemBase.getIcon(getContext()));
+            title.setText(bottomBarItemBase.getTitle(getContext()));
 
             if (mIsShiftingMode) {
                 icon.setColorFilter(mWhiteColor);
@@ -334,9 +267,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             index++;
         }
 
-        int screenWidth = MiscUtils.getScreenWidth(mContext);
+        int screenWidth = MiscUtils.getScreenWidth(getContext());
         int proposedItemWidth = Math.min(
-                MiscUtils.dpToPixel(mContext, screenWidth / bottomBarItems.length),
+                MiscUtils.dpToPixel(getContext(), screenWidth / bottomBarItems.length),
                 mMaxFixedItemWidth
         );
 
@@ -349,19 +282,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         updateCurrentFragment();
-    }
-
-    private void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mCurrentTabPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, -1);
-
-            if (mCurrentTabPosition == -1) {
-                mCurrentTabPosition = 0;
-                Log.e("BottomBar", "You must override the Activity's onSave" +
-                        "InstanceState(Bundle outState) and call BottomBar.onSaveInstanc" +
-                        "eState(outState) there to restore the state properly.");
-            }
-        }
     }
 
     private void selectTab(ViewGroup bottomBarView, boolean animate) {
@@ -489,6 +409,44 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mItems != null) {
             mItems = null;
+        }
+    }
+
+
+    public static class SavedState extends BaseSavedState {
+
+        int selectedTab;
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel source) {
+            super(source);
+            selectedTab = source.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(selectedTab);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+
+        @Override
+        public String toString() {
+            return "BottomBar.SavedState{"
+                    + Integer.toHexString(System.identityHashCode(this))
+                    + " selectedTab=" + selectedTab + "}";
         }
     }
 }
