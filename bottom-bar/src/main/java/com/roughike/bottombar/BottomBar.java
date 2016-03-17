@@ -309,7 +309,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         for (BottomBarItemBase bottomBarItemBase : bottomBarItems) {
             int layoutResource;
 
-            if (mIsShiftingMode) {
+            if (mIsShiftingMode && !mIsTabletMode) {
                 layoutResource = R.layout.bb_bottom_bar_item_shifting;
             } else {
                 layoutResource = R.layout.bb_bottom_bar_item_fixed;
