@@ -14,15 +14,15 @@ The current minSDK version is API level 14.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.0'
+compile 'com.roughike:bottom-bar:1.0.1'
 ```
 
-**Maven, just in case:**
+**Maven:**
 ```xml
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
+
+#### What about Tablets?
+
+It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
 #### Why is it overlapping my Navigation Drawer?
 
@@ -144,7 +148,7 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 ## What about the (insert thing that looks different than the specs here)?
 
-I'll implement the Material Design spec as well as I can, including all the animations. Just give me some time and **all your dreams will come true**.
+I'll implement the Material Design spec as well as I can. Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
