@@ -224,7 +224,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set a listener that gets fired when the selected item changes.
+     * Set a listener that gets fired when the selected tab changes.
      *
      * @param listener a listener for monitoring changes in tab selection.
      */
