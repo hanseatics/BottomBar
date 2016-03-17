@@ -3,9 +3,10 @@ package com.roughike.bottombar;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
 import android.support.v4.app.FragmentManager;
@@ -41,7 +42,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private static final long ANIMATION_DURATION = 150;
     private static final int MAX_FIXED_TAB_COUNT = 3;
 
-    private static final String STATE_CURRENT_SELECTED_TAB = "com.roughike.bottombar.STATE_CURRENT_SELECTED_TAB";
+    private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
     private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
     private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
 
@@ -72,33 +73,25 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private BottomBarItemBase[] mItems;
 
     public BottomBar(Context context) {
-        super(context);
-        init(context, null, 0, 0);
+        this(context, null, 0, 0);
     }
 
     public BottomBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
+        this(context, attrs, 0, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
-    }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mContext = context;
-
-        mPrimaryColor = MiscUtils.getColor(mContext, R.attr.colorPrimary);
-        mInActiveColor = ContextCompat.getColor(mContext, R.color.bb_inActiveBottomBarItemColor);
-        mWhiteColor = ContextCompat.getColor(mContext, R.color.white);
+        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
+        mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
@@ -109,8 +102,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private void initializeViews() {
-        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
         mRootView = (RelativeLayout) View.inflate(mContext,
@@ -224,7 +216,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
         clearItems();
-        mItems = MiscUtils.inflateMenuFromResource((Activity) mContext, menuRes);
+        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
         mMenuListener = listener;
         updateItems(mItems);
     }
@@ -252,37 +244,52 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    /**
-     * Call this method in your Activity's onSaveInstanceState
-     * to keep the BottomBar's state on configuration change.
-     *
-     * @param outState the Bundle to save data to.
-     */
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.selectedTab = mCurrentTabPosition;
+        return ss;
+
     }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        selectTabAtPosition(ss.selectedTab, false);
+        updateSelectedTab(ss.selectedTab);
+    }
+
 
     @Override
     public void onClick(View v) {
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            unselectTab((ViewGroup) findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
-            selectTab((ViewGroup) v, true);
+            unselectTab(findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
+            selectTab(v, true);
+            updateSelectedTab(findItemPosition(v));
+        }
+    }
 
-            int newPosition = findItemPosition(v);
+    private void updateSelectedTab(int newPosition) {
+        if (newPosition != mCurrentTabPosition) {
+            mCurrentTabPosition = newPosition;
 
-            if (newPosition != mCurrentTabPosition) {
-                mCurrentTabPosition = newPosition;
-
-                if (mListener != null) {
-                    mListener.onItemSelected(mCurrentTabPosition);
-                }
-
-                if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
-                    mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
-                }
-
-                updateCurrentFragment();
+            if (mListener != null) {
+                mListener.onItemSelected(mCurrentTabPosition);
             }
+
+            if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
+                mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            }
+
+            updateCurrentFragment();
         }
     }
 
@@ -525,6 +532,44 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mItems != null) {
             mItems = null;
+        }
+    }
+
+
+    public static class SavedState extends BaseSavedState {
+
+        int selectedTab;
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel source) {
+            super(source);
+            selectedTab = source.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(selectedTab);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+
+        @Override
+        public String toString() {
+            return "BottomBar.SavedState{"
+                    + Integer.toHexString(System.identityHashCode(this))
+                    + " selectedTab=" + selectedTab + "}";
         }
     }
 }
