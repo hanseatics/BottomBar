@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
 import android.support.v4.app.FragmentManager;
@@ -18,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +46,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private Context mContext;
     private boolean mIsTabletMode;
 
-    private RelativeLayout mRootView;
     private FrameLayout mUserContentContainer;
     private LinearLayout mItemContainer;
 
@@ -89,6 +85,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
+        mContext = context;
+
         mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
         mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
         mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
@@ -105,14 +103,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
-        mRootView = (RelativeLayout) View.inflate(mContext,
+        View rootView = View.inflate(mContext,
                 R.layout.bb_bottom_bar_item_container, null);
 
-        mIsTabletMode = mRootView.findViewById(R.id.bb_tablet_right_border) != null;
-        mUserContentContainer = (FrameLayout) mRootView.findViewById(R.id.bb_user_content_container);
-        mItemContainer = (LinearLayout) mRootView.findViewById(R.id.bb_bottom_bar_item_container);
+        mIsTabletMode = rootView.findViewById(R.id.bb_tablet_right_border) != null;
+        mUserContentContainer = (FrameLayout) rootView.findViewById(R.id.bb_user_content_container);
+        mItemContainer = (LinearLayout) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
-        addView(mRootView, params);
+        addView(rootView, params);
     }
 
     protected FrameLayout getUserContainer() {
@@ -244,29 +242,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState ss = new SavedState(superState);
-        ss.selectedTab = mCurrentTabPosition;
-        return ss;
-
+    /**
+     * Call this method in your Activity's onSaveInstanceState
+     * to keep the BottomBar's state on configuration change.
+     *
+     * @param outState the Bundle to save data to.
+     */
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
     }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof SavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        selectTabAtPosition(ss.selectedTab, false);
-        updateSelectedTab(ss.selectedTab);
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -532,44 +516,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mItems != null) {
             mItems = null;
-        }
-    }
-
-
-    public static class SavedState extends BaseSavedState {
-
-        int selectedTab;
-
-        public SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        private SavedState(Parcel source) {
-            super(source);
-            selectedTab = source.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(selectedTab);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
-
-        @Override
-        public String toString() {
-            return "BottomBar.SavedState{"
-                    + Integer.toHexString(System.identityHashCode(this))
-                    + " selectedTab=" + selectedTab + "}";
         }
     }
 }
