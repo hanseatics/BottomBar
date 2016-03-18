@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +15,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -84,6 +88,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private int mCurrentBackgroundColor;
     private int mDefaultBackgroundColor;
+    private boolean mDrawBehindNavBar = true;
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
@@ -223,8 +228,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Map a background color for a Tab, that changes the whole BottomBar
      * background color when the Tab is selected.
+     *
      * @param tabPosition zero-based index for the tab.
-     * @param color a hex color for the tab, such as 0xFF00FF00.
+     * @param color       a hex color for the tab, such as 0xFF00FF00.
      */
     public void mapColorForTab(int tabPosition, int color) {
         if (mItems == null || mItems.length == 0) {
@@ -253,8 +259,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Map a background color for a Tab, that changes the whole BottomBar
      * background color when the Tab is selected.
+     *
      * @param tabPosition zero-based index for the tab.
-     * @param color a hex color for the tab, such as "#00FF000".
+     * @param color       a hex color for the tab, such as "#00FF000".
      */
     public void mapColorForTab(int tabPosition, String color) {
         mapColorForTab(tabPosition, Color.parseColor(color));
@@ -267,6 +274,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (mShadowView != null) {
             mShadowView.setVisibility(GONE);
         }
+    }
+
+    /**
+     * Prevent the BottomBar drawing behind the Navigation Bar and making
+     * it transparent. Must be called before setting items.
+     */
+    public void noNavBarGoodness() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call noNavBarGoodness() before setting the items, preferably " +
+                    "right after attaching it to your layout.");
+        }
+
+        mDrawBehindNavBar = false;
     }
 
     /**
@@ -332,6 +353,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     protected View getOuterContainer() {
         return mOuterContainer;
+    }
+
+    protected boolean drawBehindNavBar() {
+        return mDrawBehindNavBar;
     }
 
     @Override
@@ -630,26 +655,39 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private static void navBarMagic(Activity activity, BottomBar bottomBar) {
+        Resources res = activity.getResources();
+        int softMenuIdentifier = res
+                .getIdentifier("config_showNavigationBar", "bool", "android");
+
+        if (!bottomBar.drawBehindNavBar()
+                || !(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier))) {
+            return;
+        }
+
+        if (ViewConfiguration.get(activity).hasPermanentMenuKey() && KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK)) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                && res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             activity.getWindow().getAttributes().flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
 
-            int navBarIdentifier = activity.getResources().getIdentifier("navigation_bar_height",
+            int navBarIdentifier = res.getIdentifier("navigation_bar_height",
                     "dimen", "android");
             final int navBarHeight;
 
             if (navBarIdentifier > 0) {
-                navBarHeight = activity.getResources().getDimensionPixelSize(navBarIdentifier);
+                navBarHeight = res.getDimensionPixelSize(navBarIdentifier);
             } else {
                 navBarHeight = MiscUtils.dpToPixel(activity, 48);
             }
 
-            int statusBarResource = activity.getResources()
+            int statusBarResource = res
                     .getIdentifier("status_bar_height", "dimen", "android");
             int statusBarHeight;
 
             if (statusBarResource > 0) {
-                statusBarHeight = activity.getResources()
+                statusBarHeight = res
                         .getDimensionPixelSize(statusBarResource);
             } else {
                 statusBarHeight = MiscUtils.dpToPixel(activity, 25);
@@ -660,7 +698,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
                 actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,
-                        activity.getResources().getDisplayMetrics());
+                        res.getDisplayMetrics());
             } else {
                 actionBarHeight = MiscUtils.dpToPixel(activity, 56);
             }
