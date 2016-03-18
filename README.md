@@ -86,6 +86,43 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+#### Can it handle my Fragments and replace them automagically when a different tab is selected?
+
+Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
+
+```java
+mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
+    new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
+    new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
+);
+```
+
+#### I hate Fragments and wanna do everything by myself!
+
+That's alright, you can also handle items by yourself. 
+
+```java
+mBottomBar.setItems(
+        new BottomBarTab(R.drawable.ic_recents, "Recents"),
+        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+);
+
+// Listen for tab changes
+mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+    @Override
+    public void onItemSelected(int position) {
+        // user selected a different tab
+    }
+});
+```
+
+For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
+
+## Common problems and answers
+
+
 #### Why does the top of my content have sooooo much empty space?!
 
 Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
@@ -114,17 +151,6 @@ mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
-#### Can it handle my Fragments and replace them automagically when a different tab is selected?
-
-Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
-
-```java
-mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
-    new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
-    new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
-    new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
-);
-```
 
 #### Separate BottomBars for individual Fragments
 
@@ -147,28 +173,6 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle sa
     return bottomBar;
 }
 ```
-
-#### I hate Fragments and wanna do everything by myself!
-
-That's alright, you can also handle items by yourself. 
-
-```java
-mBottomBar.setItems(
-        new BottomBarTab(R.drawable.ic_recents, "Recents"),
-        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
-);
-
-// Listen for tab changes
-mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
-    @Override
-    public void onItemSelected(int position) {
-        // user selected a different tab
-    }
-});
-```
-
-For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
 
 ## What about the (insert thing that looks different than the specs here)?
 
