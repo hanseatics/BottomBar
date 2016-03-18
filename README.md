@@ -7,6 +7,8 @@ A custom view component that mimicks the new [Material Design Bottom Navigation 
 
 **(currently under active development, expect to see new releases almost daily)**
 
+[Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
+
 ## minSDK version
 
 The current minSDK version is API level 14.
