@@ -4,17 +4,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -57,9 +53,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private Context mContext;
     private boolean mIsTabletMode;
 
-    private FrameLayout mUserContentContainer;
+    private ViewGroup mUserContentContainer;
     private View mOuterContainer;
-    private LinearLayout mItemContainer;
+    private ViewGroup mItemContainer;
 
     private View mBackgroundView;
     private View mBackgroundOverlay;
@@ -268,29 +264,36 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Hid the shadow that's normally above the BottomBar.
      */
     public void hideShadow() {
-        mShadowView.setVisibility(GONE);
+        if (mShadowView != null) {
+            mShadowView.setVisibility(GONE);
+        }
     }
 
     /**
      * ------------------------------------------- //
      */
     public BottomBar(Context context) {
-        this(context, null, 0, 0);
+        super(context);
+        init(context, null, 0, 0);
     }
 
     public BottomBar(Context context, AttributeSet attrs) {
-        this(context, attrs, 0, 0);
+        super(context, attrs);
+        init(context, attrs, 0, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr, defStyleRes);
+    }
 
+    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mContext = context;
 
         mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
@@ -305,27 +308,25 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         initializeViews();
     }
 
-    private void initializeViews() {
-        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        setLayoutParams(params);
 
+    private void initializeViews() {
         View rootView = View.inflate(mContext,
                 R.layout.bb_bottom_bar_item_container, null);
 
         mIsTabletMode = rootView.findViewById(R.id.bb_tablet_right_border) != null;
-        mUserContentContainer = (FrameLayout) rootView.findViewById(R.id.bb_user_content_container);
+        mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
         mOuterContainer = rootView.findViewById(R.id.bb_bottom_bar_outer_container);
-        mItemContainer = (LinearLayout) rootView.findViewById(R.id.bb_bottom_bar_item_container);
+        mItemContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
 
         mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
 
-        addView(rootView, params);
+        addView(rootView);
     }
 
-    protected FrameLayout getUserContainer() {
+    protected ViewGroup getUserContainer() {
         return mUserContentContainer;
     }
 
