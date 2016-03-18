@@ -63,6 +63,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private View mBackgroundView;
     private View mBackgroundOverlay;
+    private View mShadowView;
 
     private int mPrimaryColor;
     private int mInActiveColor;
@@ -264,6 +265,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Hid the shadow that's normally above the BottomBar.
+     */
+    public void hideShadow() {
+        mShadowView.setVisibility(GONE);
+    }
+
+    /**
      * ------------------------------------------- //
      */
     public BottomBar(Context context) {
@@ -311,6 +319,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
+
+        mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
 
         addView(rootView, params);
     }
