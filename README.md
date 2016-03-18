@@ -120,8 +120,7 @@ mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
 
-## Common problems and answers
-
+## Common problems and solutions
 
 #### Why does the top of my content have sooooo much empty space?!
 
