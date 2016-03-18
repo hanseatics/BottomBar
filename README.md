@@ -126,6 +126,14 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 ## Common problems and solutions
 
+#### Can I use it by XML?
+
+No, but you can put it anywhere you want. Inflating by XML will break support for tablets, but you can just attach it to any View you want:
+
+```java
+mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
+```
+
 #### Why does the top of my content have sooooo much empty space?!
 
 Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout and ```fitsSystemWindows="true"```) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
@@ -140,14 +148,6 @@ All you need to do is instead of attaching the BottomBar to your Activity, attac
 
 ```java
 mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
-```
-
-#### Can I add it anywhere in the View hierarchy, just like using XML?
-
-You can't use it by XML as of yet, but you can put it anywhere you want. Just attach it to a View instead of Activity:
-
-```java
-mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 ```
 
 #### What about Tablets?
