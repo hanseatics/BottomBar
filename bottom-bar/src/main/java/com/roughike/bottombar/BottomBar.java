@@ -136,8 +136,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     .addView(oldLayout, oldLayout.getLayoutParams());
             contentView.addView(bottomBar, 0);
         } else {
-            bottomBar.getUserContainer()
-                    .addView(view, view.getLayoutParams());
+            if (view.getLayoutParams() == null) {
+                bottomBar.getUserContainer()
+                        .addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            } else {
+                bottomBar.getUserContainer()
+                        .addView(view, view.getLayoutParams());
+            }
         }
 
         return bottomBar;
@@ -224,7 +229,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Map a background color for a Tab, that changes the whole BottomBar
      * background color when the Tab is selected.
      * @param tabPosition zero-based index for the tab.
-     * @param color a hex color for the tab, such as 0xFF00FF00.
+     * @param color       a hex color for the tab, such as 0xFF00FF00.
      */
     public void mapColorForTab(int tabPosition, int color) {
         if (mItems == null || mItems.length == 0) {
@@ -254,7 +259,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Map a background color for a Tab, that changes the whole BottomBar
      * background color when the Tab is selected.
      * @param tabPosition zero-based index for the tab.
-     * @param color a hex color for the tab, such as "#00FF000".
+     * @param color       a hex color for the tab, such as "#00FF000".
      */
     public void mapColorForTab(int tabPosition, String color) {
         mapColorForTab(tabPosition, Color.parseColor(color));
@@ -517,7 +522,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void handleBackgroundColorChange(int tabPosition, View tab) {
         if (!mIsShiftingMode || mIsTabletMode) return;
 
-        if (mColorMap.containsKey(tabPosition)) {
+        if (mColorMap != null && mColorMap.containsKey(tabPosition)) {
             handleBackgroundColorChange(
                     tab, mColorMap.get(tabPosition));
         } else {
