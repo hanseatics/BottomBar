@@ -142,6 +142,14 @@ Probably because you're doing some next-level advanced Android stuff (such as us
 mBottomBar.noTopOffset();
 ```
 
+#### I don't like the awesome transparent Navigation Bar / it behaves poorly / breaks my layout!
+
+You can disable it. I'm squashing bugs as fast as I can, but they are hard to find.
+
+```java
+mBottomBar.noNavBarGoodness();
+```
+
 #### Why is it overlapping my Navigation Drawer?
 
 All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
