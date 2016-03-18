@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarFragment;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
     private BottomBar mBottomBar;
 
     @Override
@@ -24,12 +24,6 @@ public class MainActivity extends BaseActivity {
                 new BottomBarFragment(SampleFragment.newInstance("Content for food."), R.drawable.ic_restaurants, "Food")
         );
 
-        // You can set colors for tabs in three different ways as shown below.
-        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
-        mBottomBar.mapColorForTab(1, 0xFF5D4037);
-        mBottomBar.mapColorForTab(2, "#7B1FA2");
-        mBottomBar.mapColorForTab(3, "#FF5252");
-        mBottomBar.mapColorForTab(4, "#FF9800");
     }
 
     @Override
