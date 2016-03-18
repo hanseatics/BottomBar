@@ -5,7 +5,7 @@
 
 A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
 
-**(currently under development, expect to see changes during this week)**
+**(currently under active development, expect to see new releases almost daily)**
 
 ## minSDK version
 
@@ -14,7 +14,7 @@ The current minSDK version is API level 14.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.4'
+compile 'com.roughike:bottom-bar:1.0.5'
 ```
 
 **Maven:**
@@ -22,7 +22,7 @@ compile 'com.roughike:bottom-bar:1.0.4'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
-        // Setting colors for different tabs when there's more than three of them
+        // Setting colors for different tabs when there's more than three of them.
         // You can set colors for tabs in three different ways as shown below.
         mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
         mBottomBar.mapColorForTab(1, 0xFF5D4037);
