@@ -230,6 +230,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param color a hex color for the tab, such as 0xFF00FF00.
      */
     public void mapColorForTab(int tabPosition, int color) {
+        if (mItems == null || mItems.length == 0) {
+            throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
+                    "Please set them first before calling the mapColorForTab method.");
+        } else if (tabPosition > mItems.length || tabPosition < 0) {
+            throw new IndexOutOfBoundsException("Cant map color for Tab " +
+                    "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
+        }
+
         if (!mIsShiftingMode || mIsTabletMode) return;
 
         if (mColorMap == null) {
