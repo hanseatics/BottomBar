@@ -128,10 +128,10 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 #### Can I use it by XML?
 
-No, but you can put it anywhere you want. Inflating by XML will break support for tablets, but you can just attach it to any View you want:
+No, but you can still put it anywhere in the View hierarchy. Just attach it to any View you want like this:
 
 ```java
-mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
+mBottomBar.attach(findViewById(R.id.myContent), savedInstanceState);
 ```
 
 #### Why does the top of my content have sooooo much empty space?!
