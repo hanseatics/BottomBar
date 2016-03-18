@@ -1,5 +1,5 @@
 # BottomBar
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/color_demo.gif" width="278" height="492" />
 
 ## What?
 
@@ -14,7 +14,7 @@ The current minSDK version is API level 14.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.1'
+compile 'com.roughike:bottom-bar:1.0.4'
 ```
 
 **Maven:**
@@ -22,7 +22,7 @@ compile 'com.roughike:bottom-bar:1.0.1'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -65,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        
+        // Setting colors for different tabs when there's more than three of them
+        // You can set colors for tabs in three different ways as shown below.
+        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+        mBottomBar.mapColorForTab(1, 0xFF5D4037);
+        mBottomBar.mapColorForTab(2, "#7B1FA2");
+        mBottomBar.mapColorForTab(3, "#FF5252");
+        mBottomBar.mapColorForTab(4, "#FF9800");
     }
     
     @Override
@@ -76,6 +84,14 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.onSaveInstanceState(outState);
     }
 }
+```
+
+#### I wanna control what views get inside of it!
+
+No problem. Just attach it to a View instead of Activity:
+
+```java
+mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 ```
 
 #### What about Tablets?
