@@ -3,21 +3,32 @@ package com.roughike.bottombar;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
 
 /*
  * BottomBar library for Android
@@ -47,7 +58,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private boolean mIsTabletMode;
 
     private FrameLayout mUserContentContainer;
+    private View mOuterContainer;
     private LinearLayout mItemContainer;
+
+    private View mBackgroundView;
+    private View mBackgroundOverlay;
 
     private int mPrimaryColor;
     private int mInActiveColor;
@@ -66,56 +81,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private FragmentManager mFragmentManager;
     private int mFragmentContainer;
+
     private BottomBarItemBase[] mItems;
+    private HashMap<Integer, Integer> mColorMap;
 
-    public BottomBar(Context context) {
-        this(context, null, 0, 0);
-    }
-
-    public BottomBar(Context context, AttributeSet attrs) {
-        this(context, attrs, 0, 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-
-        mContext = context;
-
-        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-        mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
-        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
-
-        mScreenWidth = MiscUtils.getScreenWidth(mContext);
-        mTwoDp = MiscUtils.dpToPixel(mContext, 2);
-        mTenDp = MiscUtils.dpToPixel(mContext, 10);
-        mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
-
-        initializeViews();
-    }
-
-    private void initializeViews() {
-        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        setLayoutParams(params);
-
-        View rootView = View.inflate(mContext,
-                R.layout.bb_bottom_bar_item_container, null);
-
-        mIsTabletMode = rootView.findViewById(R.id.bb_tablet_right_border) != null;
-        mUserContentContainer = (FrameLayout) rootView.findViewById(R.id.bb_user_content_container);
-        mItemContainer = (LinearLayout) rootView.findViewById(R.id.bb_bottom_bar_item_container);
-
-        addView(rootView, params);
-    }
-
-    protected FrameLayout getUserContainer() {
-        return mUserContentContainer;
-    }
+    private int mCurrentBackgroundColor;
+    private int mDefaultBackgroundColor;
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
@@ -136,7 +107,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         contentView.removeView(oldLayout);
 
         bottomBar.getUserContainer()
-                .addView(oldLayout, oldLayout.getLayoutParams());
+                .addView(oldLayout, 0, oldLayout.getLayoutParams());
         contentView.addView(bottomBar, 0);
 
         return bottomBar;
@@ -234,8 +205,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param position the position to select.
      */
     public void selectTabAtPosition(int position, boolean animate) {
-        unselectTab((ViewGroup) mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), animate);
-        selectTab((ViewGroup) mItemContainer.getChildAt(position), animate);
+        unselectTab(mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), animate);
+        selectTab(mItemContainer.getChildAt(position), animate);
 
         if (mListener != null) {
             mListener.onItemSelected(position);
@@ -250,6 +221,98 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+    }
+
+    /**
+     * Map a background color for a Tab, that changes the whole BottomBar
+     * background color when the Tab is selected.
+     * @param tabPosition zero-based index for the tab.
+     * @param color a hex color for the tab, such as 0xFF00FF00.
+     */
+    public void mapColorForTab(int tabPosition, int color) {
+        if (!mIsShiftingMode || mIsTabletMode) return;
+
+        if (mColorMap == null) {
+            mColorMap = new HashMap<>();
+        }
+
+        if (tabPosition == mCurrentTabPosition
+                && mCurrentBackgroundColor != color) {
+            mCurrentBackgroundColor = color;
+            mBackgroundView.setBackgroundColor(color);
+        }
+
+        mColorMap.put(tabPosition, color);
+    }
+
+    /**
+     * Map a background color for a Tab, that changes the whole BottomBar
+     * background color when the Tab is selected.
+     * @param tabPosition zero-based index for the tab.
+     * @param color a hex color for the tab, such as "#00FF000".
+     */
+    public void mapColorForTab(int tabPosition, String color) {
+        mapColorForTab(tabPosition, Color.parseColor(color));
+    }
+
+    /**
+     * ------------------------------------------- //
+     */
+    public BottomBar(Context context) {
+        this(context, null, 0, 0);
+    }
+
+    public BottomBar(Context context, AttributeSet attrs) {
+        this(context, attrs, 0, 0);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+
+        mContext = context;
+
+        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
+        mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
+
+        mScreenWidth = MiscUtils.getScreenWidth(mContext);
+        mTwoDp = MiscUtils.dpToPixel(mContext, 2);
+        mTenDp = MiscUtils.dpToPixel(mContext, 10);
+        mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
+
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
+
+        View rootView = View.inflate(mContext,
+                R.layout.bb_bottom_bar_item_container, null);
+
+        mIsTabletMode = rootView.findViewById(R.id.bb_tablet_right_border) != null;
+        mUserContentContainer = (FrameLayout) rootView.findViewById(R.id.bb_user_content_container);
+        mOuterContainer = rootView.findViewById(R.id.bb_bottom_bar_outer_container);
+        mItemContainer = (LinearLayout) rootView.findViewById(R.id.bb_bottom_bar_item_container);
+
+        mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
+        mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
+
+        addView(rootView, params);
+    }
+
+    protected FrameLayout getUserContainer() {
+        return mUserContentContainer;
+    }
+
+    protected View getOuterContainer() {
+        return mOuterContainer;
     }
 
     @Override
@@ -292,7 +355,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mIsShiftingMode = MAX_FIXED_TAB_COUNT < bottomBarItems.length;
 
         if (!mIsTabletMode && mIsShiftingMode) {
-            mItemContainer.setBackgroundColor(mPrimaryColor);
+            mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
+            mBackgroundView.setBackgroundColor(mDefaultBackgroundColor);
+
+            if (mContext instanceof Activity) {
+                navBarMagic((Activity) mContext, this);
+            }
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
@@ -376,10 +444,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    private void selectTab(View bottomBarView, boolean animate) {
-        bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
-        TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
+    private void selectTab(View tab, boolean animate) {
+        tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+
+        int tabPosition = findItemPosition(tab);
 
         if (!mIsShiftingMode || mIsTabletMode) {
             icon.setColorFilter(mPrimaryColor);
@@ -401,7 +471,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     .scaleX(1)
                     .scaleY(1)
                     .start();
-            bottomBarView.animate()
+            tab.animate()
                     .setDuration(ANIMATION_DURATION)
                     .translationY(-translationY)
                     .start();
@@ -412,10 +482,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                         .alpha(1.0f)
                         .start();
             }
+
+            handleBackgroundColorChange(tabPosition, tab);
         } else {
             title.setScaleX(1);
             title.setScaleY(1);
-            bottomBarView.setTranslationY(-translationY);
+            tab.setTranslationY(-translationY);
 
             if (mIsShiftingMode) {
                 icon.setAlpha(1.0f);
@@ -423,11 +495,30 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    private void unselectTab(View bottomBarView, boolean animate) {
-        bottomBarView.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
+    private void handleBackgroundColorChange(int tabPosition, View tab) {
+        if (!mIsShiftingMode || mIsTabletMode) return;
 
-        ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
-        TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
+        if (mColorMap.containsKey(tabPosition)) {
+            handleBackgroundColorChange(
+                    tab, mColorMap.get(tabPosition));
+        } else {
+            handleBackgroundColorChange(tab, mDefaultBackgroundColor);
+        }
+    }
+
+    private void handleBackgroundColorChange(View tab, int color) {
+        MiscUtils.animateBGColorChange(tab,
+                mBackgroundView,
+                mBackgroundOverlay,
+                color);
+        mCurrentBackgroundColor = color;
+    }
+
+    private void unselectTab(View tab, boolean animate) {
+        tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
+
+        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         if (!mIsShiftingMode || mIsTabletMode) {
             icon.setColorFilter(mInActiveColor);
@@ -449,7 +540,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     .scaleX(scale)
                     .scaleY(scale)
                     .start();
-            bottomBarView.animate()
+            tab.animate()
                     .setDuration(ANIMATION_DURATION)
                     .translationY(0)
                     .start();
@@ -463,7 +554,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             title.setScaleX(scale);
             title.setScaleY(scale);
-            bottomBarView.setTranslationY(0);
+            tab.setTranslationY(0);
 
             if (mIsShiftingMode && !mIsTabletMode) {
                 icon.setAlpha(0.6f);
@@ -516,6 +607,64 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mItems != null) {
             mItems = null;
+        }
+    }
+
+    private static void navBarMagic(Activity activity, BottomBar bottomBar) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            activity.getWindow().getAttributes().flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+
+            int navBarIdentifier = activity.getResources().getIdentifier("navigation_bar_height",
+                    "dimen", "android");
+            final int navBarHeight;
+
+            if (navBarIdentifier > 0) {
+                navBarHeight = activity.getResources().getDimensionPixelSize(navBarIdentifier);
+            } else {
+                navBarHeight = MiscUtils.dpToPixel(activity, 48);
+            }
+
+            int statusBarResource = activity.getResources()
+                    .getIdentifier("status_bar_height", "dimen", "android");
+            int statusBarHeight;
+
+            if (statusBarResource > 0) {
+                statusBarHeight = activity.getResources()
+                        .getDimensionPixelSize(statusBarResource);
+            } else {
+                statusBarHeight = MiscUtils.dpToPixel(activity, 25);
+            }
+
+            TypedValue tv = new TypedValue();
+            int actionBarHeight;
+
+            if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,
+                        activity.getResources().getDisplayMetrics());
+            } else {
+                actionBarHeight = MiscUtils.dpToPixel(activity, 56);
+            }
+
+            bottomBar.getUserContainer().setPadding(0,
+                    (statusBarHeight + actionBarHeight), 0, 0);
+
+            final View outerContainer = bottomBar.getOuterContainer();
+            bottomBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressWarnings("deprecation")
+                @Override
+                public void onGlobalLayout() {
+                    outerContainer.getLayoutParams().height =
+                            outerContainer.getHeight() + navBarHeight;
+                    ViewTreeObserver obs = outerContainer.getViewTreeObserver();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        obs.removeOnGlobalLayoutListener(this);
+                    } else {
+                        obs.removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
         }
     }
 }
