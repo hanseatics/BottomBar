@@ -153,7 +153,7 @@ mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
 
-## What about the (insert thing that looks different than the specs here)?
+#### What about the (insert thing that looks different than the specs here)?
 
 I'll implement the Material Design spec as well as I can. Just give me some time and **all your dreams will come true**.
 
