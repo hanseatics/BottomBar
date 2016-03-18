@@ -16,7 +16,7 @@ The current minSDK version is API level 14.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.7'
+compile 'com.roughike:bottom-bar:1.0.8'
 ```
 
 **Maven:**
@@ -24,7 +24,7 @@ compile 'com.roughike:bottom-bar:1.0.7'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
   <type>pom</type>
 </dependency>
 ```
