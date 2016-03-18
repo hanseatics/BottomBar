@@ -94,6 +94,14 @@ Probably because you're doing some next-level advanced Android stuff (such as us
 mBottomBar.noTopOffset();
 ```
 
+#### Why is it overlapping my Navigation Drawer?
+
+All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
+
+```java
+mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
+```
+
 #### I wanna control what views get inside of it!
 
 No problem. Just attach it to a View instead of Activity:
@@ -105,14 +113,6 @@ mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 #### What about Tablets?
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
-
-#### Why is it overlapping my Navigation Drawer?
-
-All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
-
-```java
-mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
-```
 
 #### Can it handle my Fragments and replace them automagically when a different tab is selected?
 
