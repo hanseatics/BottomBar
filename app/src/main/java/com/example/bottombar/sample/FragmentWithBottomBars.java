@@ -34,6 +34,8 @@ import com.roughike.bottombar.BottomBarTab;
  */
 public class FragmentWithBottomBars extends Fragment {
 
+    BottomBar mBottomBar;
+
 
     public FragmentWithBottomBars() {
         // Required empty public constructor
@@ -46,8 +48,8 @@ public class FragmentWithBottomBars extends Fragment {
         View view = inflater.inflate(R.layout.fragment_with_bottom_bars, container, false);
         // initialize your views here
 
-        BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
-        bottomBar.setFragmentItems(getChildFragmentManager(), R.id.container,
+        mBottomBar = BottomBar.attach(view, savedInstanceState);
+        mBottomBar.setFragmentItems(getChildFragmentManager(), R.id.container,
                 new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
                 new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
                 new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby"),
@@ -55,7 +57,7 @@ public class FragmentWithBottomBars extends Fragment {
                 new BottomBarFragment(SampleFragment.newInstance("Content for food."), R.drawable.ic_restaurants, "Food"));
 
         // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
-        return bottomBar;
+        return mBottomBar;
 
 //        bottomBar.setItems(
 //                new BottomBarTab(R.drawable.ic_recents, "Recents"),
@@ -67,4 +69,12 @@ public class FragmentWithBottomBars extends Fragment {
 //        return bottomBar;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
+    }
 }

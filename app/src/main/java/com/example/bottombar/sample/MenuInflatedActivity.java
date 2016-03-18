@@ -25,12 +25,14 @@ import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 public class MenuInflatedActivity extends BaseActivity {
 
+    private BottomBar mBottomBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomBar mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar = BottomBar.attach(this, savedInstanceState);
         mBottomBar.setItemsFromMenu(R.menu.bottom_bar_menu, new OnMenuTabSelectedListener() {
             @Override
             public void onMenuItemSelected(int resId) {
@@ -52,5 +54,14 @@ public class MenuInflatedActivity extends BaseActivity {
                 Toast.makeText(MenuInflatedActivity.this, display, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
     }
 }
