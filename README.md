@@ -86,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+#### Why does the top of my content have sooooo much empty space?!
+
+Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
+
+```java
+mBottomBar.noTopOffset();
+```
+
 #### I wanna control what views get inside of it!
 
 No problem. Just attach it to a View instead of Activity:
