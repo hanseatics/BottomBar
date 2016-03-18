@@ -5,7 +5,7 @@
 
 A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
 
-**(currently under development, expect to see changes during this week)**
+**(currently under active development, expect to see new features almost daily)**
 
 ## minSDK version
 
