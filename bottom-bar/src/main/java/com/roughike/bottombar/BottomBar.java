@@ -141,8 +141,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     .addView(oldLayout, oldLayout.getLayoutParams());
             contentView.addView(bottomBar, 0);
         } else {
-            bottomBar.getUserContainer()
-                    .addView(view, view.getLayoutParams());
+            if (view.getLayoutParams() == null) {
+                bottomBar.getUserContainer()
+                        .addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            } else {
+                bottomBar.getUserContainer()
+                        .addView(view, view.getLayoutParams());
+            }
         }
 
         return bottomBar;
@@ -542,7 +547,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void handleBackgroundColorChange(int tabPosition, View tab) {
         if (!mIsShiftingMode || mIsTabletMode) return;
 
-        if (mColorMap.containsKey(tabPosition)) {
+        if (mColorMap != null && mColorMap.containsKey(tabPosition)) {
             handleBackgroundColorChange(
                     tab, mColorMap.get(tabPosition));
         } else {
