@@ -7,6 +7,8 @@ A custom view component that mimicks the new [Material Design Bottom Navigation 
 
 **(currently under active development, expect to see new releases almost daily)**
 
+[Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
+
 ## minSDK version
 
 The current minSDK version is API level 14.
@@ -86,26 +88,6 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### I wanna control what views get inside of it!
-
-No problem. Just attach it to a View instead of Activity:
-
-```java
-mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
-```
-
-#### What about Tablets?
-
-It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
-
-#### Why is it overlapping my Navigation Drawer?
-
-All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
-
-```java
-mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
-```
-
 #### Can it handle my Fragments and replace them automagically when a different tab is selected?
 
 Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
@@ -116,28 +98,6 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
     new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
 );
-```
-
-#### Separate BottomBars for individual Fragments
-
-Override your Fragment's ```onCreateView()``` like this:
-
-```java
-@Override
-public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.my_fragment_layout, container, false);
-    // initialize your views here
-
-    BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
-    bottomBar.setItems(
-        new BottomBarTab(R.drawable.ic_recents, "Recents"),
-        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
-    );
-
-    // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
-    return bottomBar;
-}
 ```
 
 #### I hate Fragments and wanna do everything by myself!
@@ -161,6 +121,59 @@ mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
 ```
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
+
+## Common problems and solutions
+
+#### Why does the top of my content have sooooo much empty space?!
+
+Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
+
+```java
+mBottomBar.noTopOffset();
+```
+
+#### Why is it overlapping my Navigation Drawer?
+
+All you need to do is instead of attaching the BottomBar to your Activity, attach it to the view that has your content. For example, if your fragments are in a ViewGroup that has the id ```fragmentContainer```, you would do something like this:
+
+```java
+mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
+```
+
+#### I wanna control what views get inside of it!
+
+No problem. Just attach it to a View instead of Activity:
+
+```java
+mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
+```
+
+#### What about Tablets?
+
+It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
+
+
+#### Separate BottomBars for individual Fragments
+
+Override your Fragment's ```onCreateView()``` like this:
+
+```java
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.my_fragment_layout, container, false);
+    // initialize your views here
+
+    BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
+    bottomBar.setItems(
+        new BottomBarTab(R.drawable.ic_recents, "Recents"),
+        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+    );
+
+    // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
+    return bottomBar;
+}
+```
 
 ## What about the (insert thing that looks different than the specs here)?
 
