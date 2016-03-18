@@ -9,9 +9,11 @@ A custom view component that mimicks the new [Material Design Bottom Navigation 
 
 [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
 
-## minSDK version
+## Does it work on my Grandpa's HTC Dream?
 
-The current minSDK version is API level 14.
+Nope. The current minSDK version is API level 14.
+
+Your uncle's Galaxy S Mini will probably be supported in the future though. 
 
 ## Gimme that Gradle sweetness, pls?
 
@@ -102,7 +104,7 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
 
 #### I hate Fragments and wanna do everything by myself!
 
-That's alright, you can also handle items by yourself. 
+That's alright, you can also do it the hard way if you're living on the edge.
 
 ```java
 mBottomBar.setItems(
@@ -126,7 +128,7 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 #### Why does the top of my content have sooooo much empty space?!
 
-Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
+Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout and ```fitsSystemWindows="true"```) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
 
 ```java
 mBottomBar.noTopOffset();
@@ -155,7 +157,7 @@ It works nicely with tablets straight out of the box. When the library detects t
 
 #### What about the (insert thing that looks different than the specs here)?
 
-I'll implement the Material Design spec as well as I can. Just give me some time and **all your dreams will come true**.
+Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
