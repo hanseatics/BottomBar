@@ -140,9 +140,9 @@ All you need to do is instead of attaching the BottomBar to your Activity, attac
 mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
 ```
 
-#### I wanna control what views get inside of it!
+#### Can I add it anywhere in the View hierarchy, just like using XML?
 
-No problem. Just attach it to a View instead of Activity:
+You can't use it by XML as of yet, but you can put it anywhere you want. Just attach it to a View instead of Activity:
 
 ```java
 mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
@@ -152,28 +152,6 @@ mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
-
-#### Separate BottomBars for individual Fragments
-
-Override your Fragment's ```onCreateView()``` like this:
-
-```java
-@Override
-public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.my_fragment_layout, container, false);
-    // initialize your views here
-
-    BottomBar bottomBar = BottomBar.attach(view, savedInstanceState);
-    bottomBar.setItems(
-        new BottomBarTab(R.drawable.ic_recents, "Recents"),
-        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
-    );
-
-    // Important! Don't return the view here. Instead, return the bottomBar, as it already contains your view.
-    return bottomBar;
-}
-```
 
 ## What about the (insert thing that looks different than the specs here)?
 
