@@ -295,7 +295,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Set a custom color for an active tab when there's three
      * or less items.
      * <p/>
-     * NOTE: This value is ignored if you have more than three items.
+     * NOTE: This value is ignored on mobile devices if you have more than
+     * three items.
      *
      * @param activeTabColor a hex color used for active tabs, such as "#00FF000".
      */
