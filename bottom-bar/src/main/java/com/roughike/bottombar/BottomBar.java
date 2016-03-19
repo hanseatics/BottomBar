@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -80,7 +79,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
 
-    private FragmentManager mFragmentManager;
+    private Object mFragmentManager;
     private int mFragmentContainer;
 
     private BottomBarItemBase[] mItems;
@@ -168,8 +167,57 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param containerResource id for the layout to inflate Fragments to.
      * @param fragmentItems     an array of {@link BottomBarFragment} objects.
      */
-    public void setFragmentItems(FragmentManager fragmentManager, @IdRes int containerResource,
+    public void setFragmentItems(android.app.FragmentManager fragmentManager, @IdRes int containerResource,
                                  BottomBarFragment... fragmentItems) {
+        if (fragmentItems.length > 0) {
+            int index = 0;
+
+            for (BottomBarFragment fragmentItem : fragmentItems) {
+                if (fragmentItem.getFragment() == null
+                        && fragmentItem.getSupportFragment() != null) {
+                    throw new IllegalArgumentException("Conflict: cannot use android.app.FragmentManager " +
+                            "to handle a android.support.v4.app.Fragment object at position " + index +
+                            ". If you want BottomBar to handle support Fragments, use getSupportFragment" +
+                            "Manager() instead of getFragmentManager().");
+                }
+
+                index++;
+            }
+        }
+
+        clearItems();
+        mFragmentManager = fragmentManager;
+        mFragmentContainer = containerResource;
+        mItems = fragmentItems;
+        updateItems(mItems);
+    }
+
+    /**
+     * Set tabs and fragments for this BottomBar. When setting more than 3 items,
+     * only the icons will show by default, but the selected item
+     * will have the text visible.
+     *
+     * @param fragmentManager   a FragmentManager for managing the Fragments.
+     * @param containerResource id for the layout to inflate Fragments to.
+     * @param fragmentItems     an array of {@link BottomBarFragment} objects.
+     */
+    public void setFragmentItems(android.support.v4.app.FragmentManager fragmentManager, @IdRes int containerResource,
+                                 BottomBarFragment... fragmentItems) {
+        if (fragmentItems.length > 0) {
+            int index = 0;
+
+            for (BottomBarFragment fragmentItem : fragmentItems) {
+                if (fragmentItem.getSupportFragment() == null
+                        && fragmentItem.getFragment() != null) {
+                    throw new IllegalArgumentException("Conflict: cannot use android.support.v4.app.FragmentManager " +
+                            "to handle a android.app.Fragment object at position " + index +
+                            ". If you want BottomBar to handle normal Fragments, use getFragment" +
+                            "Manager() instead of getSupportFragmentManager().");
+                }
+
+                index++;
+            }
+        }
         clearItems();
         mFragmentManager = fragmentManager;
         mFragmentContainer = containerResource;
@@ -732,9 +780,19 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 && mFragmentContainer != 0
                 && mItems != null
                 && mItems instanceof BottomBarFragment[]) {
-            mFragmentManager.beginTransaction()
-                    .replace(mFragmentContainer, ((BottomBarFragment) mItems[mCurrentTabPosition]).getFragment())
-                    .commit();
+            BottomBarFragment newFragment = ((BottomBarFragment) mItems[mCurrentTabPosition]);
+
+            if (mFragmentManager instanceof android.app.FragmentManager
+                    && newFragment.getFragment() != null) {
+                ((android.app.FragmentManager) mFragmentManager).beginTransaction()
+                        .replace(mFragmentContainer, newFragment.getFragment())
+                        .commit();
+            } else if (mFragmentManager instanceof android.support.v4.app.FragmentManager
+                    && newFragment.getSupportFragment() != null) {
+                ((android.support.v4.app.FragmentManager) mFragmentManager).beginTransaction()
+                        .replace(mFragmentContainer, newFragment.getSupportFragment())
+                        .commit();
+            }
         }
     }
 
