@@ -266,6 +266,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param position the position to select.
      */
     public void selectTabAtPosition(int position, boolean animate) {
+        if (mItems == null || mItems.length == 0) {
+            throw new UnsupportedOperationException("Can't select tab at " +
+                    "position " + position + ". This BottomBar has no items set yet.");
+        } else if (position > mItems.length - 1 || position < 0) {
+            throw new IndexOutOfBoundsException("Can't select tab at position " +
+                    position + ". This BottomBar has no items at that position.");
+        }
+
         unselectTab(mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), animate);
         selectTab(mItemContainer.getChildAt(position), animate);
 
