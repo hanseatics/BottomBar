@@ -1,7 +1,9 @@
 # BottomBar
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
-## Have issues? [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
+Before sending your pull requests: [How to contribute](https://github.com/roughike/BottomBar/edit/master/README.md#contributions)
+
+[Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
 
 ## What?
 
@@ -184,7 +186,15 @@ Send me a pull request with modified README.md to get a shoutout!
 
 ## Contributions
 
-Feel free to create issues / pull requests.
+#### Issues
+
+Feel free to create issues. 
+
+#### Pull requests
+
+**Don't send me pull requests just yet, not until the dust settles.**
+
+I'm fixing issues and busting a nut to make this library better, _several hours_ every day. Your hard work could be for nothing, as I'm probably fixing / implementing the same problems that you are.
 
 ## License
 
