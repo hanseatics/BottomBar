@@ -152,9 +152,9 @@ Probably because you're doing some next-level advanced Android stuff (such as us
 mBottomBar.noTopOffset();
 ```
 
-#### I don't like the awesome transparent Navigation Bar / it behaves poorly / breaks my layout!
+#### I don't like the awesome transparent Navigation Bar!
 
-You can disable it. I'm squashing bugs as fast as I can, but they are hard to find.
+You can disable it.
 
 ```java
 mBottomBar.noNavBarGoodness();
