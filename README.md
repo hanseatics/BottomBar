@@ -186,15 +186,11 @@ Send me a pull request with modified README.md to get a shoutout!
 
 ## Contributions
 
-#### Issues
-
 Feel free to create issues. 
-
-#### Pull requests
 
 **Don't send me pull requests just yet, not until the dust settles.**
 
-I'm fixing issues and busting a nut to make this library better, _several hours_ every day. Your hard work could be for nothing, as I'm probably fixing / implementing the same problems that you are.
+I'm fixing issues and busting my ass to make this library better, _several hours_ every day. Your hard work could be for nothing, as I'm probably fixing / implementing the same problems that you are.
 
 ## License
 
