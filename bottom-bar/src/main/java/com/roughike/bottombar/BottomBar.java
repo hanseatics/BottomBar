@@ -15,8 +15,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -64,9 +62,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private View mBackgroundView;
     private View mBackgroundOverlay;
     private View mShadowView;
+    private View mTabletRightBorder;
 
     private int mPrimaryColor;
     private int mInActiveColor;
+    private int mDarkBackgroundColor;
     private int mWhiteColor;
 
     private int mScreenWidth;
@@ -89,9 +89,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mCurrentBackgroundColor;
     private int mDefaultBackgroundColor;
 
+    private boolean mIsDarkTheme;
+    private int mCustomActiveTabColor = -1;
+
     private boolean mDrawBehindNavBar = true;
     private boolean mUseTopOffset = true;
-
     private boolean mUseOnlyStatusBarOffset;
 
     /**
@@ -277,7 +279,44 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Hid the shadow that's normally above the BottomBar.
+     * Use dark theme instead of the light one.
+     * <p/>
+     * NOTE: You might want to change your active tab color to something else
+     * using {@link #setActiveTabColor(int)}, as the default primary color might
+     * not have enough contrast for the dark background.
+     *
+     * @param darkThemeEnabled whether the dark the should be enabled or not.
+     */
+    public void useDarkTheme(boolean darkThemeEnabled) {
+        mIsDarkTheme = darkThemeEnabled;
+    }
+
+    /**
+     * Set a custom color for an active tab when there's three
+     * or less items.
+     * <p/>
+     * NOTE: This value is ignored if you have more than three items.
+     *
+     * @param activeTabColor a hex color used for active tabs, such as "#00FF000".
+     */
+    public void setActiveTabColor(String activeTabColor) {
+        setActiveTabColor(Color.parseColor(activeTabColor));
+    }
+
+    /**
+     * Set a custom color for an active tab when there's three
+     * or less items.
+     * <p/>
+     * NOTE: This value is ignored if you have more than three items.
+     *
+     * @param activeTabColor a hex color used for active tabs, such as 0xFF00FF00.
+     */
+    public void setActiveTabColor(int activeTabColor) {
+        mCustomActiveTabColor = activeTabColor;
+    }
+
+    /**
+     * Hide the shadow that's normally above the BottomBar.
      */
     public void hideShadow() {
         if (mShadowView != null) {
@@ -347,9 +386,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mContext = context;
 
+        mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
+        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
         mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
         mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
-        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
@@ -364,7 +404,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         View rootView = View.inflate(mContext,
                 R.layout.bb_bottom_bar_item_container, null);
 
-        mIsTabletMode = rootView.findViewById(R.id.bb_tablet_right_border) != null;
+        mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
+        mIsTabletMode = mTabletRightBorder != null;
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
         mOuterContainer = rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         mItemContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
@@ -443,6 +484,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             if (mContext instanceof Activity) {
                 navBarMagic((Activity) mContext, this);
             }
+        } else if (mIsDarkTheme) {
+            if (!mIsTabletMode) {
+                mBackgroundView.setBackgroundColor(mDarkBackgroundColor);
+            } else {
+                mItemContainer.setBackgroundColor(mDarkBackgroundColor);
+                mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
+            }
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
@@ -466,7 +514,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 title.setText(bottomBarItemBase.getTitle(mContext));
             }
 
-            if (!mIsTabletMode && mIsShiftingMode) {
+            if (mIsDarkTheme || (!mIsTabletMode && mIsShiftingMode)) {
                 icon.setColorFilter(mWhiteColor);
             }
 
@@ -534,11 +582,21 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int tabPosition = findItemPosition(tab);
 
         if (!mIsShiftingMode || mIsTabletMode) {
-            icon.setColorFilter(mPrimaryColor);
+            int activeColor = mCustomActiveTabColor != -1 ?
+                    mCustomActiveTabColor : mPrimaryColor;
+            icon.setColorFilter(activeColor);
 
             if (title != null) {
-                title.setTextColor(mPrimaryColor);
+                title.setTextColor(activeColor);
             }
+        }
+
+        if (mIsDarkTheme) {
+            if (title != null) {
+                title.setAlpha(1.0f);
+            }
+
+            icon.setAlpha(1.0f);
         }
 
         if (title == null) {
@@ -577,25 +635,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    private void handleBackgroundColorChange(int tabPosition, View tab) {
-        if (!mIsShiftingMode || mIsTabletMode) return;
-
-        if (mColorMap != null && mColorMap.containsKey(tabPosition)) {
-            handleBackgroundColorChange(
-                    tab, mColorMap.get(tabPosition));
-        } else {
-            handleBackgroundColorChange(tab, mDefaultBackgroundColor);
-        }
-    }
-
-    private void handleBackgroundColorChange(View tab, int color) {
-        MiscUtils.animateBGColorChange(tab,
-                mBackgroundView,
-                mBackgroundOverlay,
-                color);
-        mCurrentBackgroundColor = color;
-    }
-
     private void unselectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
 
@@ -603,11 +642,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         if (!mIsShiftingMode || mIsTabletMode) {
-            icon.setColorFilter(mInActiveColor);
+            int inActiveColor = mIsDarkTheme ? mWhiteColor : mInActiveColor;
+            icon.setColorFilter(inActiveColor);
 
             if (title != null) {
-                title.setTextColor(mInActiveColor);
+                title.setTextColor(inActiveColor);
             }
+        }
+
+        if (mIsDarkTheme) {
+            if (title != null) {
+                title.setAlpha(0.6f);
+            }
+
+            icon.setAlpha(0.6f);
         }
 
         if (title == null) {
@@ -627,7 +675,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     .translationY(0)
                     .start();
 
-            if (mIsShiftingMode && !mIsTabletMode) {
+            if (mIsShiftingMode) {
                 icon.animate()
                         .setDuration(ANIMATION_DURATION)
                         .alpha(0.6f)
@@ -638,10 +686,29 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             title.setScaleY(scale);
             tab.setTranslationY(0);
 
-            if (mIsShiftingMode && !mIsTabletMode) {
+            if (mIsShiftingMode) {
                 icon.setAlpha(0.6f);
             }
         }
+    }
+
+    private void handleBackgroundColorChange(int tabPosition, View tab) {
+        if (!mIsShiftingMode || mIsTabletMode) return;
+
+        if (mColorMap != null && mColorMap.containsKey(tabPosition)) {
+            handleBackgroundColorChange(
+                    tab, mColorMap.get(tabPosition));
+        } else {
+            handleBackgroundColorChange(tab, mDefaultBackgroundColor);
+        }
+    }
+
+    private void handleBackgroundColorChange(View tab, int color) {
+        MiscUtils.animateBGColorChange(tab,
+                mBackgroundView,
+                mBackgroundOverlay,
+                color);
+        mCurrentBackgroundColor = color;
     }
 
     private int findItemPosition(View viewToFind) {
