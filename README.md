@@ -1,22 +1,24 @@
 # BottomBar
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
+## Have issues? [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
+
 ## What?
 
-A custom view component that mimicks the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
+A custom view component that mimics the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
 
 **(currently under active development, expect to see new releases almost daily)**
 
-[Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
+## Does it work on my Grandpa's HTC Dream?
 
-## minSDK version
+Nope. The current minSDK version is API level 14.
 
-The current minSDK version is API level 14.
+Your uncle's Galaxy S Mini will probably be supported in the future though. 
 
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.8'
+compile 'com.roughike:bottom-bar:1.0.9'
 ```
 
 **Maven:**
@@ -24,7 +26,7 @@ compile 'com.roughike:bottom-bar:1.0.8'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <type>pom</type>
 </dependency>
 ```
@@ -102,7 +104,7 @@ mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
 
 #### I hate Fragments and wanna do everything by myself!
 
-That's alright, you can also handle items by yourself. 
+That's alright, you can also do it the hard way if you're living on the edge.
 
 ```java
 mBottomBar.setItems(
@@ -124,12 +126,28 @@ For a working example, refer to [the sample app](https://github.com/roughike/Bot
 
 ## Common problems and solutions
 
+#### Can I use it by XML?
+
+No, but you can still put it anywhere in the View hierarchy. Just attach it to any View you want like this:
+
+```java
+mBottomBar.attach(findViewById(R.id.myContent), savedInstanceState);
+```
+
 #### Why does the top of my content have sooooo much empty space?!
 
-Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
+Probably because you're doing some next-level advanced Android stuff (such as using CoordinatorLayout and ```fitsSystemWindows="true"```) and the normal paddings for the content are too much. Add this right after calling ```attach()```:
 
 ```java
 mBottomBar.noTopOffset();
+```
+
+#### I don't like the awesome transparent Navigation Bar / it behaves poorly / breaks my layout!
+
+You can disable it. I'm squashing bugs as fast as I can, but they are hard to find.
+
+```java
+mBottomBar.noNavBarGoodness();
 ```
 
 #### Why is it overlapping my Navigation Drawer?
@@ -140,22 +158,14 @@ All you need to do is instead of attaching the BottomBar to your Activity, attac
 mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
 ```
 
-#### Can I add it anywhere in the View hierarchy, just like using XML?
-
-You can't use it by XML as of yet, but you can put it anywhere you want. Just attach it to a View instead of Activity:
-
-```java
-mBottomBar.attach(findViewById(R.id.myView), savedInstanceState);
-```
-
 #### What about Tablets?
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
 
-## What about the (insert thing that looks different than the specs here)?
+#### What about the (insert thing that looks different than the specs here)?
 
-I'll implement the Material Design spec as well as I can. Just give me some time and **all your dreams will come true**.
+Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
