@@ -245,7 +245,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (mItems == null || mItems.length == 0) {
             throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
                     "Please set them first before calling the mapColorForTab method.");
-        } else if (tabPosition > mItems.length || tabPosition < 0) {
+        } else if (tabPosition > mItems.length - 1 || tabPosition < 0) {
             throw new IndexOutOfBoundsException("Cant map color for Tab " +
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
