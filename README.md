@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
 
 ```java
+// If you use normal Fragments, just change the first argument to getFragmentManager(). It's pure magic!
 mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
     new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
     new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
