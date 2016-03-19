@@ -9,16 +9,16 @@ A custom view component that mimics the new [Material Design Bottom Navigation p
 
 **(currently under active development, expect to see new releases almost daily)**
 
-## Does it work on my Grandpa's HTC Dream?
+## Does it work on my Grandpa Gary's HTC Dream?
 
 Nope. The current minSDK version is API level 14.
 
-Your uncle's Galaxy S Mini will probably be supported in the future though. 
+Your uncle Bob's Galaxy S Mini will probably be supported in the future though. 
 
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.0.9'
+compile 'com.roughike:bottom-bar:1.1.1'
 ```
 
 **Maven:**
@@ -26,7 +26,7 @@ compile 'com.roughike:bottom-bar:1.0.9'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.0.9</version>
+  <version>1.1.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -124,6 +124,16 @@ mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
 
+## Customization
+
+```java
+// Use the dark theme. Ignored on mobile when there are more than three tabs.
+mBottomBar.useDarkTheme(true);
+
+// Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+mBottomBar.setActiveTabColor("#009688");
+```
+
 ## Common problems and solutions
 
 #### Can I use it by XML?
@@ -142,9 +152,9 @@ Probably because you're doing some next-level advanced Android stuff (such as us
 mBottomBar.noTopOffset();
 ```
 
-#### I don't like the awesome transparent Navigation Bar / it behaves poorly / breaks my layout!
+#### I don't like the awesome transparent Navigation Bar!
 
-You can disable it. I'm squashing bugs as fast as I can, but they are hard to find.
+You can disable it.
 
 ```java
 mBottomBar.noNavBarGoodness();
