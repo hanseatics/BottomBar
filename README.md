@@ -137,11 +137,11 @@ mBottomBar.useDarkTheme(true);
 mBottomBar.setActiveTabColor("#009688");
 
 // Use custom text appearance in tab titles.
-mBottomBar.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large_Inverse);
+mBottomBar.setTextAppearance(R.style.MyTextAppearance);
 
 // Use custom typeface that's located at the "/src/main/assets" directory. If using with
 // custom text appearance, set the text appearance first.
-mBottomBar.setTypeFace("Bichette.ttf");
+mBottomBar.setTypeFace("MyFont.ttf");
 ```
 
 ## Common problems and solutions
