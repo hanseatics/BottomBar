@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -94,6 +95,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private boolean mDrawBehindNavBar = true;
     private boolean mUseTopOffset = true;
     private boolean mUseOnlyStatusBarOffset;
+
+    private Typeface mPendingTypeface;
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
@@ -387,6 +390,21 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mCustomActiveTabColor = activeTabColor;
     }
 
+    public void setTypeFace(String typeFacePath) {
+        Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),
+                typeFacePath);
+
+        if (mItemContainer != null && mItemContainer.getChildCount() > 0) {
+            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
+                View bottomBarTab = mItemContainer.getChildAt(i);
+                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
+                title.setTypeface(typeface);
+            }
+        } else {
+            mPendingTypeface = typeface;
+        }
+    }
+
     /**
      * Hide the shadow that's normally above the BottomBar.
      */
@@ -571,14 +589,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 layoutResource = R.layout.bb_bottom_bar_item_fixed;
             }
 
-            View bottomBarView = View.inflate(mContext, layoutResource, null);
-            ImageView icon = (ImageView) bottomBarView.findViewById(R.id.bb_bottom_bar_icon);
+            View bottomBarTab = View.inflate(mContext, layoutResource, null);
+            ImageView icon = (ImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
 
             icon.setImageDrawable(bottomBarItemBase.getIcon(mContext));
 
             if (!mIsTabletMode) {
-                TextView title = (TextView) bottomBarView.findViewById(R.id.bb_bottom_bar_title);
+                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 title.setText(bottomBarItemBase.getTitle(mContext));
+
+                if (mPendingTypeface != null) {
+                    title.setTypeface(mPendingTypeface);
+                }
             }
 
             if (mIsDarkTheme || (!mIsTabletMode && mIsShiftingMode)) {
@@ -586,27 +608,27 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
 
             if (bottomBarItemBase instanceof BottomBarTab) {
-                bottomBarView.setId(((BottomBarTab) bottomBarItemBase).id);
+                bottomBarTab.setId(((BottomBarTab) bottomBarItemBase).id);
             }
 
             if (index == mCurrentTabPosition) {
-                selectTab(bottomBarView, false);
+                selectTab(bottomBarTab, false);
             } else {
-                unselectTab(bottomBarView, false);
+                unselectTab(bottomBarTab, false);
             }
 
             if (!mIsTabletMode) {
-                if (bottomBarView.getWidth() > biggestWidth) {
-                    biggestWidth = bottomBarView.getWidth();
+                if (bottomBarTab.getWidth() > biggestWidth) {
+                    biggestWidth = bottomBarTab.getWidth();
                 }
 
-                viewsToAdd[index] = bottomBarView;
+                viewsToAdd[index] = bottomBarTab;
             } else {
-                mItemContainer.addView(bottomBarView);
+                mItemContainer.addView(bottomBarTab);
             }
 
-            bottomBarView.setOnClickListener(this);
-            bottomBarView.setOnLongClickListener(this);
+            bottomBarTab.setOnClickListener(this);
+            bottomBarTab.setOnLongClickListener(this);
             index++;
         }
 
@@ -626,6 +648,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         updateCurrentFragment();
+
+        if (mPendingTypeface != null) {
+            mPendingTypeface = null;
+        }
     }
 
     private void darkThemeMagic() {
