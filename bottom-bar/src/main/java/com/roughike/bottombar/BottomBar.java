@@ -14,8 +14,10 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -921,6 +923,36 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 && ViewConfiguration.get(activity).hasPermanentMenuKey())) {
             return;
         }
+
+        /**
+         * Copy-paste coding made possible by:
+         * http://stackoverflow.com/a/14871974/940036
+         */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Display d = activity.getWindowManager().getDefaultDisplay();
+
+            DisplayMetrics realDisplayMetrics = new DisplayMetrics();
+            d.getRealMetrics(realDisplayMetrics);
+
+            int realHeight = realDisplayMetrics.heightPixels;
+            int realWidth = realDisplayMetrics.widthPixels;
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            d.getMetrics(displayMetrics);
+
+            int displayHeight = displayMetrics.heightPixels;
+            int displayWidth = displayMetrics.widthPixels;
+
+            boolean hasSoftwareKeys = (realWidth - displayWidth) > 0
+                    || (realHeight - displayHeight) > 0;
+
+            if (!hasSoftwareKeys) {
+                return;
+            }
+        }
+        /**
+         * End of delicious copy-paste code
+         */
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
