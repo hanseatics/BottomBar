@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.StyleRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.roughike.bottombar.scrollsweetness.BottomNavigationBehavior;
 
 import java.util.HashMap;
 
@@ -57,6 +61,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private Context mContext;
     private boolean mIsTabletMode;
+    private boolean mIsShy;
+    private boolean mUseExtraOffset;
 
     private ViewGroup mUserContentContainer;
     private View mOuterContainer;
@@ -165,6 +171,42 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         }
 
+        return bottomBar;
+    }
+
+    /**
+     * Adds the BottomBar inside of your CoordinatorLayout and shows / hides
+     * it according to scroll state changes.
+     * <p/>
+     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
+     *
+     * @param coordinatorLayout  a CoordinatorLayout for the BottomBar to add itself into
+     * @param savedInstanceState a Bundle for restoring the state on configuration change.
+     * @return a BottomBar at the bottom of the screen.
+     */
+    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, Bundle savedInstanceState) {
+        final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
+        bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
+        bottomBar.onRestoreInstanceState(savedInstanceState);
+
+        bottomBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                ((CoordinatorLayout.LayoutParams) bottomBar.getLayoutParams())
+                        .setBehavior(new BottomNavigationBehavior(bottomBar.getOuterContainer().getHeight(), 0));
+                ViewTreeObserver obs = bottomBar.getViewTreeObserver();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    obs.removeOnGlobalLayoutListener(this);
+                } else {
+                    obs.removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
+        coordinatorLayout.addView(bottomBar);
         return bottomBar;
     }
 
@@ -534,21 +576,38 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
 
     private void initializeViews() {
-        View rootView = View.inflate(mContext,
-                R.layout.bb_bottom_bar_item_container, null);
+        View rootView = View.inflate(mContext, mIsShy?
+                R.layout.bb_bottom_bar_item_container_shy : R.layout.bb_bottom_bar_item_container, null);
 
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
         mIsTabletMode = mTabletRightBorder != null;
+
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
+        mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
+
         mOuterContainer = rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         mItemContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
 
-        mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
-
         addView(rootView);
+    }
+
+    /**
+     * Makes this BottomBar "shy". In other words, it hides on scroll.
+     */
+    private void toughChildHood(boolean useExtraOffset) {
+        mIsShy = true;
+        mUseExtraOffset = useExtraOffset;
+    }
+
+    protected boolean isShy() {
+        return mIsShy;
+    }
+
+    protected boolean useExtraOffset() {
+        return mUseExtraOffset;
     }
 
     protected ViewGroup getUserContainer() {
@@ -926,7 +985,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    private static void navBarMagic(Activity activity, BottomBar bottomBar) {
+    private static void navBarMagic(Activity activity, final BottomBar bottomBar) {
         Resources res = activity.getResources();
         int softMenuIdentifier = res
                 .getIdentifier("config_showNavigationBar", "bool", "android");
@@ -1009,8 +1068,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 @SuppressWarnings("deprecation")
                 @Override
                 public void onGlobalLayout() {
-                    outerContainer.getLayoutParams().height =
-                            outerContainer.getHeight() + navBarHeightCopy;
+                    int newHeight = outerContainer.getHeight() + navBarHeightCopy;
+                    outerContainer.getLayoutParams().height = newHeight;
+
+                    if (bottomBar.isShy()) {
+                        int defaultOffset = bottomBar.useExtraOffset()? navBarHeightCopy : 0;
+                        bottomBar.setTranslationY(defaultOffset);
+                        ((CoordinatorLayout.LayoutParams) bottomBar.getLayoutParams())
+                                .setBehavior(new BottomNavigationBehavior(newHeight, defaultOffset));
+                    }
+
                     ViewTreeObserver obs = outerContainer.getViewTreeObserver();
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

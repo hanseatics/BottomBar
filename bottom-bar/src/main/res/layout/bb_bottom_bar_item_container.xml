@@ -7,8 +7,7 @@
     <FrameLayout
         android:id="@+id/bb_user_content_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bb_bottom_bar_outer_container">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/bb_bottom_bar_shadow"
