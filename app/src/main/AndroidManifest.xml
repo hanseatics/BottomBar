@@ -17,11 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".BottomBarFragmentActivity"
-            android:launchMode="singleInstance" />
-        <activity android:name=".MenuInflatedActivity"
-            android:launchMode="singleInstance" />
     </application>
 
 </manifest>
