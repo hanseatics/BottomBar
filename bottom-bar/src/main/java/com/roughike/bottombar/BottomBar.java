@@ -859,13 +859,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             activity.getWindow().getAttributes().flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            activity.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                activity.getWindow().getAttributes().flags |=
-                        WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
-            }
 
             int navBarIdentifier = res.getIdentifier("navigation_bar_height",
                     "dimen", "android");

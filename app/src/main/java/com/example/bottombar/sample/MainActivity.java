@@ -16,13 +16,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar.useDarkTheme(true);
         mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
                 new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
                 new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
                 new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
         );
 
-        mBottomBar.useDarkTheme(true);
         mBottomBar.selectTabAtPosition(2, true);
 
         // Setting colors for different tabs when there's more than three of them.
