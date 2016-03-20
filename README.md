@@ -1,5 +1,5 @@
 # BottomBar
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
 **Before sending your pull requests: [How to contribute](https://github.com/roughike/BottomBar/edit/master/README.md#contributions)**
 
