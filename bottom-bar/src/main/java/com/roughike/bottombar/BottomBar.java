@@ -342,6 +342,22 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param darkThemeEnabled whether the dark the should be enabled or not.
      */
     public void useDarkTheme(boolean darkThemeEnabled) {
+        if (mItems != null && mItems.length > 0) {
+            darkThemeMagic();
+
+            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
+                View bottomBarTab = mItemContainer.getChildAt(i);
+                ((ImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
+                        .setColorFilter(mWhiteColor);
+
+                if (i == mCurrentTabPosition) {
+                    selectTab(bottomBarTab, false);
+                } else {
+                    unselectTab(bottomBarTab, false);
+                }
+            }
+        }
+
         mIsDarkTheme = darkThemeEnabled;
     }
 
@@ -540,12 +556,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 navBarMagic((Activity) mContext, this);
             }
         } else if (mIsDarkTheme) {
-            if (!mIsTabletMode) {
-                mBackgroundView.setBackgroundColor(mDarkBackgroundColor);
-            } else {
-                mItemContainer.setBackgroundColor(mDarkBackgroundColor);
-                mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
-            }
+            darkThemeMagic();
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
@@ -614,6 +625,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         updateCurrentFragment();
+    }
+
+    private void darkThemeMagic() {
+        if (!mIsTabletMode) {
+            mBackgroundView.setBackgroundColor(mDarkBackgroundColor);
+        } else {
+            mItemContainer.setBackgroundColor(mDarkBackgroundColor);
+            mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
+        }
     }
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
