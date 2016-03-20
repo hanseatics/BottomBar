@@ -277,9 +277,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         unselectTab(mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), animate);
         selectTab(mItemContainer.getChildAt(position), animate);
 
-        if (mListener != null) {
-            mListener.onItemSelected(position);
-        }
+        updateSelectedTab(position);
     }
 
     /**
