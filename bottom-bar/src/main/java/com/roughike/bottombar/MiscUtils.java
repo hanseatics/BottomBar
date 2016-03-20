@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 /*
  * BottomBar library for Android
@@ -149,5 +150,19 @@ class MiscUtils {
         bgOverlay.setBackgroundColor(newColor);
         bgOverlay.setVisibility(View.VISIBLE);
         animator.start();
+    }
+
+    /**
+     * A convenience method for setting text appearance.
+     * @param textView a TextView which textAppearance to modify.
+     * @param resId a style resource for the text appearance.
+     */
+    @SuppressWarnings("deprecation")
+    public static void setTextAppearance(TextView textView, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textView.setTextAppearance(resId);
+        } else {
+            textView.setTextAppearance(textView.getContext(), resId);
+        }
     }
 }

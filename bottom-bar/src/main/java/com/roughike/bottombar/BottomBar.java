@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
+import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -96,6 +97,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private boolean mUseTopOffset = true;
     private boolean mUseOnlyStatusBarOffset;
 
+    private int mPendingTextAppearance = -1;
     private Typeface mPendingTypeface;
 
     /**
@@ -390,6 +392,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mCustomActiveTabColor = activeTabColor;
     }
 
+    /**
+     * Set a custom TypeFace for the tab titles.
+     * The .ttf file should be located at "/src/main/assets".
+     *
+     * @param typeFacePath path for the custom typeface in the assets directory.
+     */
     public void setTypeFace(String typeFacePath) {
         Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),
                 typeFacePath);
@@ -402,6 +410,22 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         } else {
             mPendingTypeface = typeface;
+        }
+    }
+
+    /**
+     * Set a custom text appearance for the tab title.
+     * @param resId path to the custom text appearance.
+     */
+    public void setTextAppearance(@StyleRes int resId) {
+        if (mItemContainer != null && mItemContainer.getChildCount() > 0) {
+            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
+                View bottomBarTab = mItemContainer.getChildAt(i);
+                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
+                MiscUtils.setTextAppearance(title, resId);
+            }
+        } else {
+            mPendingTextAppearance = resId;
         }
     }
 
@@ -598,6 +622,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 title.setText(bottomBarItemBase.getTitle(mContext));
 
+                if (mPendingTextAppearance != -1) {
+                    MiscUtils.setTextAppearance(title, mPendingTextAppearance);
+                }
+
                 if (mPendingTypeface != null) {
                     title.setTypeface(mPendingTypeface);
                 }
@@ -648,6 +676,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         updateCurrentFragment();
+
+        if (mPendingTextAppearance != -1) {
+            mPendingTextAppearance = -1;
+        }
 
         if (mPendingTypeface != null) {
             mPendingTypeface = null;
