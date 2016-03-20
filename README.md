@@ -1,7 +1,7 @@
 # BottomBar
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo1.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" />
 
-Before sending your pull requests: [How to contribute](https://github.com/roughike/BottomBar/edit/master/README.md#contributions)
+**Before sending your pull requests: [How to contribute](https://github.com/roughike/BottomBar/edit/master/README.md#contributions)**
 
 [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
 
@@ -20,7 +20,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.3'
+compile 'com.roughike:bottom-bar:1.1.4'
 ```
 
 **Maven:**
@@ -28,7 +28,7 @@ compile 'com.roughike:bottom-bar:1.1.3'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.3</version>
+  <version>1.1.4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -90,6 +90,37 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.onSaveInstanceState(outState);
     }
 }
+```
+
+#### What about hiding it automatically on scroll?
+
+Easy-peasy!
+
+**activity_main.xml:**
+
+```xml
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/myCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Your loooong scrolling content here -->
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
+```
+
+**MainActivity.java:**
+
+```java
+// Instead of attach(), use attachShy:
+mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), savedInstanceState);
 ```
 
 #### Can it handle my Fragments and replace them automagically when a different tab is selected?
