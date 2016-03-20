@@ -102,6 +102,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mPendingTextAppearance = -1;
     private Typeface mPendingTypeface;
 
+    // For fragment state restoration
+    private boolean mIsComingFromRestoredState;
+
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
      * <p/>
@@ -295,6 +298,19 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+
+        if (mFragmentManager != null
+                && mFragmentContainer != 0
+                && mItems != null
+                && mItems instanceof BottomBarFragment[]) {
+            BottomBarFragment bottomBarFragment = (BottomBarFragment) mItems[mCurrentTabPosition];
+
+            if (bottomBarFragment.getFragment() != null) {
+                bottomBarFragment.getFragment().onSaveInstanceState(outState);
+            } else if (bottomBarFragment.getSupportFragment() != null) {
+                bottomBarFragment.getSupportFragment().onSaveInstanceState(outState);
+            }
+        }
     }
 
     /**
@@ -417,6 +433,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     /**
      * Set a custom text appearance for the tab title.
+     *
      * @param resId path to the custom text appearance.
      */
     public void setTextAppearance(@StyleRes int resId) {
@@ -707,6 +724,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                         "InstanceState(Bundle outState) and call BottomBar.onSaveInstanc" +
                         "eState(outState) there to restore the state properly.");
             }
+
+            mIsComingFromRestoredState = true;
         }
     }
 
@@ -863,7 +882,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private void updateCurrentFragment() {
-        if (mFragmentManager != null
+        if (!mIsComingFromRestoredState && mFragmentManager != null
                 && mFragmentContainer != 0
                 && mItems != null
                 && mItems instanceof BottomBarFragment[]) {
@@ -881,6 +900,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                         .commit();
             }
         }
+
+        mIsComingFromRestoredState = false;
     }
 
     private void clearItems() {
