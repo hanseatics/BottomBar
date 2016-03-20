@@ -342,7 +342,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param darkThemeEnabled whether the dark the should be enabled or not.
      */
     public void useDarkTheme(boolean darkThemeEnabled) {
-        if (mItems != null && mItems.length > 0) {
+        if (!mIsDarkTheme && darkThemeEnabled
+                && mItems != null && mItems.length > 0) {
             darkThemeMagic();
 
             for (int i = 0; i < mItemContainer.getChildCount(); i++) {
