@@ -28,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -189,22 +190,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
         bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
         bottomBar.onRestoreInstanceState(savedInstanceState);
-
-        bottomBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout() {
-                ((CoordinatorLayout.LayoutParams) bottomBar.getLayoutParams())
-                        .setBehavior(new BottomNavigationBehavior(bottomBar.getOuterContainer().getHeight(), 0));
-                ViewTreeObserver obs = bottomBar.getViewTreeObserver();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    obs.removeOnGlobalLayoutListener(this);
-                } else {
-                    obs.removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
 
         coordinatorLayout.addView(bottomBar);
         return bottomBar;
@@ -576,8 +561,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
 
     private void initializeViews() {
-        View rootView = View.inflate(mContext, mIsShy?
-                R.layout.bb_bottom_bar_item_container_shy : R.layout.bb_bottom_bar_item_container, null);
+        View rootView = View.inflate(mContext, R.layout.bb_bottom_bar_item_container, null);
 
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
         mIsTabletMode = mTabletRightBorder != null;
@@ -678,6 +662,28 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         } else if (mIsDarkTheme) {
             darkThemeMagic();
+        }
+
+        if (mIsShy) {
+            if (!mIsTabletMode) {
+                if (!mDrawBehindNavBar && !mIsShiftingMode) {
+                    getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @SuppressWarnings("deprecation")
+                        @Override
+                        public void onGlobalLayout() {
+                            ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                                    .setBehavior(new BottomNavigationBehavior(getOuterContainer().getHeight(), 0));
+                            ViewTreeObserver obs = getViewTreeObserver();
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                obs.removeOnGlobalLayoutListener(this);
+                            } else {
+                                obs.removeGlobalOnLayoutListener(this);
+                            }
+                        }
+                    });
+                }
+            }
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
