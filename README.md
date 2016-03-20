@@ -20,7 +20,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.2'
+compile 'com.roughike:bottom-bar:1.1.3'
 ```
 
 **Maven:**
@@ -28,7 +28,7 @@ compile 'com.roughike:bottom-bar:1.1.2'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -137,11 +137,11 @@ mBottomBar.useDarkTheme(true);
 mBottomBar.setActiveTabColor("#009688");
 
 // Use custom text appearance in tab titles.
-mBottomBar.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large_Inverse);
+mBottomBar.setTextAppearance(R.style.MyTextAppearance);
 
 // Use custom typeface that's located at the "/src/main/assets" directory. If using with
 // custom text appearance, set the text appearance first.
-mBottomBar.setTypeFace("Bichette.ttf");
+mBottomBar.setTypeFace("MyFont.ttf");
 ```
 
 ## Common problems and solutions
