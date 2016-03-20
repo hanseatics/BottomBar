@@ -191,6 +191,24 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
         bottomBar.onRestoreInstanceState(savedInstanceState);
 
+        if (!coordinatorLayout.getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode)) {
+            bottomBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressWarnings("deprecation")
+                @Override
+                public void onGlobalLayout() {
+                    ((CoordinatorLayout.LayoutParams) bottomBar.getLayoutParams())
+                            .setBehavior(new BottomNavigationBehavior(bottomBar.getOuterContainer().getHeight(), 0));
+                    ViewTreeObserver obs = bottomBar.getViewTreeObserver();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        obs.removeOnGlobalLayoutListener(this);
+                    } else {
+                        obs.removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
+
         coordinatorLayout.addView(bottomBar);
         return bottomBar;
     }
@@ -662,28 +680,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         } else if (mIsDarkTheme) {
             darkThemeMagic();
-        }
-
-        if (mIsShy) {
-            if (!mIsTabletMode) {
-                if (!mDrawBehindNavBar && !mIsShiftingMode) {
-                    getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @SuppressWarnings("deprecation")
-                        @Override
-                        public void onGlobalLayout() {
-                            ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                                    .setBehavior(new BottomNavigationBehavior(getOuterContainer().getHeight(), 0));
-                            ViewTreeObserver obs = getViewTreeObserver();
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                obs.removeOnGlobalLayoutListener(this);
-                            } else {
-                                obs.removeGlobalOnLayoutListener(this);
-                            }
-                        }
-                    });
-                }
-            }
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
