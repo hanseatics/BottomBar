@@ -849,8 +849,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         Resources res = activity.getResources();
         int softMenuIdentifier = res
                 .getIdentifier("config_showNavigationBar", "bool", "android");
+        int navBarIdentifier = res.getIdentifier("navigation_bar_height",
+                "dimen", "android");
+        int navBarHeight = 0;
+
+        if (navBarIdentifier > 0) {
+            navBarHeight = res.getDimensionPixelSize(navBarIdentifier);
+        }
 
         if (!bottomBar.drawBehindNavBar()
+                || navBarHeight == 0
                 || (!(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier))
                 && ViewConfiguration.get(activity).hasPermanentMenuKey())) {
             return;
@@ -859,16 +867,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             activity.getWindow().getAttributes().flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-
-            int navBarIdentifier = res.getIdentifier("navigation_bar_height",
-                    "dimen", "android");
-            final int navBarHeight;
-
-            if (navBarIdentifier > 0) {
-                navBarHeight = res.getDimensionPixelSize(navBarIdentifier);
-            } else {
-                navBarHeight = MiscUtils.dpToPixel(activity, 48);
-            }
 
             if (bottomBar.useTopOffset()) {
                 int offset;
@@ -895,12 +893,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
 
             final View outerContainer = bottomBar.getOuterContainer();
+            final int navBarHeightCopy = navBarHeight;
             bottomBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @SuppressWarnings("deprecation")
                 @Override
                 public void onGlobalLayout() {
                     outerContainer.getLayoutParams().height =
-                            outerContainer.getHeight() + navBarHeight;
+                            outerContainer.getHeight() + navBarHeightCopy;
                     ViewTreeObserver obs = outerContainer.getViewTreeObserver();
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
