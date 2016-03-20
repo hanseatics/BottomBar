@@ -114,17 +114,21 @@ class MiscUtils {
         backgroundView.clearAnimation();
         bgOverlay.clearAnimation();
 
-        Animator circularReveal;
+        Animator animator;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            circularReveal = ViewAnimationUtils
+            if (!bgOverlay.isAttachedToWindow()) {
+                return;
+            }
+
+            animator = ViewAnimationUtils
                     .createCircularReveal(bgOverlay, centerX, centerY, 0, finalRadius);
         } else {
             bgOverlay.setAlpha(0);
-            circularReveal = ObjectAnimator.ofFloat(bgOverlay, "alpha", 0, 1);
+            animator = ObjectAnimator.ofFloat(bgOverlay, "alpha", 0, 1);
         }
 
-        circularReveal.addListener(new AnimatorListenerAdapter() {
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 onCancel();
@@ -144,6 +148,6 @@ class MiscUtils {
 
         bgOverlay.setBackgroundColor(newColor);
         bgOverlay.setVisibility(View.VISIBLE);
-        circularReveal.start();
+        animator.start();
     }
 }
