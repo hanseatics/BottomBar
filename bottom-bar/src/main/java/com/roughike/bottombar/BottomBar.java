@@ -870,10 +870,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mIsDarkTheme) {
             if (title != null) {
-                title.setAlpha(1.0f);
+                ViewCompat.setAlpha(title, 1.0f);
             }
 
-            icon.setAlpha(1.0f);
+            ViewCompat.setAlpha(icon, 1.0f);
         }
 
         if (title == null) {
@@ -883,18 +883,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
 
         if (animate) {
-            title.animate()
+            ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
                     .scaleX(1)
                     .scaleY(1)
                     .start();
-            tab.animate()
+            ViewCompat.animate(tab)
                     .setDuration(ANIMATION_DURATION)
                     .translationY(-translationY)
                     .start();
 
             if (mIsShiftingMode) {
-                icon.animate()
+                ViewCompat.animate(icon)
                         .setDuration(ANIMATION_DURATION)
                         .alpha(1.0f)
                         .start();
@@ -902,12 +902,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             handleBackgroundColorChange(tabPosition, tab);
         } else {
-            title.setScaleX(1);
-            title.setScaleY(1);
-            tab.setTranslationY(-translationY);
+            ViewCompat.setScaleX(title, 1);
+            ViewCompat.setScaleY(title, 1);
+            ViewCompat.setTranslationY(tab, -translationY);
 
             if (mIsShiftingMode) {
-                icon.setAlpha(1.0f);
+                ViewCompat.setAlpha(icon, 1.0f);
             }
         }
     }
@@ -929,10 +929,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mIsDarkTheme) {
             if (title != null) {
-                title.setAlpha(0.6f);
+                ViewCompat.setAlpha(title, 0.6f);
             }
 
-            icon.setAlpha(0.6f);
+            ViewCompat.setAlpha(icon, 0.6f);
         }
 
         if (title == null) {
@@ -942,29 +942,29 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         float scale = mIsShiftingMode ? 0 : 0.86f;
 
         if (animate) {
-            title.animate()
+            ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
                     .scaleX(scale)
                     .scaleY(scale)
                     .start();
-            tab.animate()
+            ViewCompat.animate(tab)
                     .setDuration(ANIMATION_DURATION)
                     .translationY(0)
                     .start();
 
             if (mIsShiftingMode) {
-                icon.animate()
+                ViewCompat.animate(icon)
                         .setDuration(ANIMATION_DURATION)
                         .alpha(0.6f)
                         .start();
             }
         } else {
-            title.setScaleX(scale);
-            title.setScaleY(scale);
-            tab.setTranslationY(0);
+            ViewCompat.setScaleX(title, scale);
+            ViewCompat.setScaleY(title, scale);
+            ViewCompat.setTranslationY(tab, 0);
 
             if (mIsShiftingMode) {
-                icon.setAlpha(0.6f);
+                ViewCompat.setAlpha(icon, 0.6f);
             }
         }
     }
@@ -1010,15 +1010,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 && mItems instanceof BottomBarFragment[]) {
             BottomBarFragment newFragment = ((BottomBarFragment) mItems[mCurrentTabPosition]);
 
-            if (mFragmentManager instanceof android.app.FragmentManager
-                    && newFragment.getFragment() != null) {
-                ((android.app.FragmentManager) mFragmentManager).beginTransaction()
-                        .replace(mFragmentContainer, newFragment.getFragment())
-                        .commit();
-            } else if (mFragmentManager instanceof android.support.v4.app.FragmentManager
+            if (mFragmentManager instanceof android.support.v4.app.FragmentManager
                     && newFragment.getSupportFragment() != null) {
                 ((android.support.v4.app.FragmentManager) mFragmentManager).beginTransaction()
                         .replace(mFragmentContainer, newFragment.getSupportFragment())
+                        .commit();
+            } else if (mFragmentManager instanceof android.app.FragmentManager
+                    && newFragment.getFragment() != null) {
+                ((android.app.FragmentManager) mFragmentManager).beginTransaction()
+                        .replace(mFragmentContainer, newFragment.getFragment())
                         .commit();
             }
         }
