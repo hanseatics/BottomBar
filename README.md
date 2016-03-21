@@ -22,7 +22,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.4'
+compile 'com.roughike:bottom-bar:1.1.5'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.1.4'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -92,6 +92,26 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.onSaveInstanceState(outState);
     }
 }
+```
+
+## Customization
+
+```java
+// Disable the left bar on tablets and behave exactly the same on mobile and tablets instead.
+mBottomBar.noTabletGoodness();
+
+// Use the dark theme. Ignored on mobile when there are more than three tabs.
+mBottomBar.useDarkTheme(true);
+
+// Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+mBottomBar.setActiveTabColor("#009688");
+
+// Use custom text appearance in tab titles.
+mBottomBar.setTextAppearance(R.style.MyTextAppearance);
+
+// Use custom typeface that's located at the "/src/main/assets" directory. If using with
+// custom text appearance, set the text appearance first.
+mBottomBar.setTypeFace("MyFont.ttf");
 ```
 
 #### What about hiding it automatically on scroll?
@@ -159,23 +179,6 @@ mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
 ```
 
 For a working example, refer to [the sample app](https://github.com/roughike/BottomBar/tree/master/app/src/main).
-
-## Customization
-
-```java
-// Use the dark theme. Ignored on mobile when there are more than three tabs.
-mBottomBar.useDarkTheme(true);
-
-// Set the color for the active tab. Ignored on mobile when there are more than three tabs.
-mBottomBar.setActiveTabColor("#009688");
-
-// Use custom text appearance in tab titles.
-mBottomBar.setTextAppearance(R.style.MyTextAppearance);
-
-// Use custom typeface that's located at the "/src/main/assets" directory. If using with
-// custom text appearance, set the text appearance first.
-mBottomBar.setTypeFace("MyFont.ttf");
-```
 
 ## Common problems and solutions
 
