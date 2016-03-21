@@ -15,14 +15,14 @@ A custom view component that mimics the new [Material Design Bottom Navigation p
 
 ## Does it work on my Grandpa Gary's HTC Dream?
 
-Nope. The current minSDK version is API level 14.
+Nope. The current minSDK version is **API level 11 (Honeycomb).**
 
 Your uncle Bob's Galaxy S Mini will probably be supported in the future though. 
 
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.6'
+compile 'com.roughike:bottom-bar:1.1.7'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.1.6'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
   <type>pom</type>
 </dependency>
 ```
