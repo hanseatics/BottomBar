@@ -175,6 +175,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Deprecated. Breaks support for tablets.
+     * Use {@link #attachShy(CoordinatorLayout, View, Bundle)} instead.
+     */
+    @Deprecated
+    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, Bundle savedInstanceState) {
+        return attachShy(coordinatorLayout, null, savedInstanceState);
+    }
+
+    /**
      * Adds the BottomBar inside of your CoordinatorLayout and shows / hides
      * it according to scroll state changes.
      * <p/>
@@ -182,13 +191,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param coordinatorLayout  a CoordinatorLayout for the BottomBar to add itself into
+     * @param userContentView    the view (usually a NestedScrollView) that has your scrolling content.
+     *                           Needed for tablet support.
      * @param savedInstanceState a Bundle for restoring the state on configuration change.
      * @return a BottomBar at the bottom of the screen.
      */
-    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, Bundle savedInstanceState) {
+    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, View userContentView, Bundle savedInstanceState) {
         final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
         bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
         bottomBar.onRestoreInstanceState(savedInstanceState);
+
+        if (userContentView != null && coordinatorLayout.getContext()
+                .getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode)) {
+            bottomBar.setPendingUserContentView(userContentView);
+        }
 
         coordinatorLayout.addView(bottomBar);
         return bottomBar;
@@ -588,12 +604,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
 
+        if (mIsShy && mIgnoreTabletLayout) {
+            mPendingUserContentView = null;
+        }
+
         if (mPendingUserContentView != null) {
             ViewGroup.LayoutParams params = mPendingUserContentView.getLayoutParams();
 
             if (params == null) {
                 params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+
+            if (mIsTabletMode && mIsShy) {
+                ((ViewGroup) mPendingUserContentView.getParent()).removeView(mPendingUserContentView);
             }
 
             mUserContentContainer.addView(mPendingUserContentView, 0, params);
@@ -697,7 +721,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         return true;
     }
 
-    private void updateItems(BottomBarItemBase[] bottomBarItems) {
+    private void updateItems(final BottomBarItemBase[] bottomBarItems) {
         if (mItemContainer == null) {
             initializeViews();
         }
