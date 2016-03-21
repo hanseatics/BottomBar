@@ -22,7 +22,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.5'
+compile 'com.roughike:bottom-bar:1.1.6'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.1.5'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.5</version>
+  <version>1.1.6</version>
   <type>pom</type>
 </dependency>
 ```
@@ -118,6 +118,14 @@ mBottomBar.setTypeFace("MyFont.ttf");
 
 Easy-peasy!
 
+**MainActivity.java:**
+
+```java
+// Instead of attach(), use attachShy:
+mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), 
+    findViewById(R.id.myScrollingContent), savedInstanceState);
+```
+
 **activity_main.xml:**
 
 ```xml
@@ -128,6 +136,7 @@ Easy-peasy!
     android:fitsSystemWindows="true">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -136,13 +145,6 @@ Easy-peasy!
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
-```
-
-**MainActivity.java:**
-
-```java
-// Instead of attach(), use attachShy:
-mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), savedInstanceState);
 ```
 
 #### Can it handle my Fragments and replace them automagically when a different tab is selected?
