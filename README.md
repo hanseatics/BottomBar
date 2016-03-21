@@ -122,7 +122,8 @@ Easy-peasy!
 
 ```java
 // Instead of attach(), use attachShy:
-mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), savedInstanceState);
+mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), 
+    findViewById(R.id.myScrollingContent), savedInstanceState);
 ```
 
 **activity_main.xml:**
@@ -135,6 +136,7 @@ mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordin
     android:fitsSystemWindows="true">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
