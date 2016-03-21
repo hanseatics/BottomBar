@@ -621,6 +621,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
 
             mUserContentContainer.addView(mPendingUserContentView, 0, params);
+            mPendingUserContentView = null;
         }
 
         if (mIsShy && !mIsTabletMode) {
