@@ -118,6 +118,13 @@ mBottomBar.setTypeFace("MyFont.ttf");
 
 Easy-peasy!
 
+**MainActivity.java:**
+
+```java
+// Instead of attach(), use attachShy:
+mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), savedInstanceState);
+```
+
 **activity_main.xml:**
 
 ```xml
@@ -136,13 +143,6 @@ Easy-peasy!
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
-```
-
-**MainActivity.java:**
-
-```java
-// Instead of attach(), use attachShy:
-mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), savedInstanceState);
 ```
 
 #### Can it handle my Fragments and replace them automagically when a different tab is selected?
