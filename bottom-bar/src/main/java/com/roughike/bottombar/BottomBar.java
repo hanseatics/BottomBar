@@ -61,6 +61,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
 
     private Context mContext;
+    private boolean mIgnoreTabletLayout;
     private boolean mIsTabletMode;
     private boolean mIsShy;
     private boolean mUseExtraOffset;
@@ -73,6 +74,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private View mBackgroundOverlay;
     private View mShadowView;
     private View mTabletRightBorder;
+    private View mPendingUserContentView;
 
     private int mPrimaryColor;
     private int mInActiveColor;
@@ -130,11 +132,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         View oldLayout = contentView.getChildAt(0);
         contentView.removeView(oldLayout);
 
-        bottomBar.getUserContainer()
-                .addView(oldLayout, 0, oldLayout.getLayoutParams());
+        bottomBar.setPendingUserContentView(oldLayout);
         contentView.addView(bottomBar, 0);
 
         return bottomBar;
+    }
+
+    private void setPendingUserContentView(View oldLayout) {
+        mPendingUserContentView = oldLayout;
     }
 
     /**
@@ -159,17 +164,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             View oldLayout = contentView.getChildAt(0);
             contentView.removeView(oldLayout);
 
-            bottomBar.getUserContainer()
-                    .addView(oldLayout, oldLayout.getLayoutParams());
+            bottomBar.setPendingUserContentView(oldLayout);
             contentView.addView(bottomBar, 0);
         } else {
-            if (view.getLayoutParams() == null) {
-                bottomBar.getUserContainer()
-                        .addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            } else {
-                bottomBar.getUserContainer()
-                        .addView(view, view.getLayoutParams());
-            }
+            bottomBar.setPendingUserContentView(view);
         }
 
         return bottomBar;
@@ -517,6 +515,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Force the BottomBar to behave exactly same on tablets and phones,
+     * instead of showing a left menu on tablets.
+     */
+    public void noTabletGoodness() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call noTabletGoodness() before setting the items, preferably " +
+                    "right after attaching it to your layout.");
+        }
+
+        mIgnoreTabletLayout = true;
+    }
+
+    /**
      * Super ugly hacks
      * ----------------------------/
      */
@@ -573,16 +585,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
-
-        initializeViews();
     }
 
-
     private void initializeViews() {
-        View rootView = View.inflate(mContext, R.layout.bb_bottom_bar_item_container, null);
+        mIsTabletMode = !mIgnoreTabletLayout &&
+                mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
 
+        View rootView = View.inflate(mContext, mIsTabletMode?
+                        R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
+                null);
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
-        mIsTabletMode = mTabletRightBorder != null;
 
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
         mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
@@ -592,6 +604,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
+
+        if (mPendingUserContentView != null) {
+            ViewGroup.LayoutParams params = mPendingUserContentView.getLayoutParams();
+
+            if (params == null) {
+                params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+
+            mUserContentContainer.addView(mPendingUserContentView, 0, params);
+        }
 
         addView(rootView);
     }
@@ -667,6 +690,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private void updateItems(BottomBarItemBase[] bottomBarItems) {
+        if (mItemContainer == null) {
+            initializeViews();
+        }
+
         int index = 0;
         int biggestWidth = 0;
         mIsShiftingMode = MAX_FIXED_TAB_COUNT < bottomBarItems.length;
@@ -690,7 +717,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             if (mIsShiftingMode && !mIsTabletMode) {
                 layoutResource = R.layout.bb_bottom_bar_item_shifting;
             } else {
-                layoutResource = R.layout.bb_bottom_bar_item_fixed;
+                layoutResource = mIsTabletMode?
+                        R.layout.bb_bottom_bar_item_fixed_tablet : R.layout.bb_bottom_bar_item_fixed;
             }
 
             View bottomBarTab = View.inflate(mContext, layoutResource, null);
@@ -966,11 +994,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private void clearItems() {
-        int childCount = mItemContainer.getChildCount();
+        if (mItemContainer != null) {
+            int childCount = mItemContainer.getChildCount();
 
-        if (childCount > 0) {
-            for (int i = 0; i < childCount; i++) {
-                mItemContainer.removeView(mItemContainer.getChildAt(i));
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+                    mItemContainer.removeView(mItemContainer.getChildAt(i));
+                }
             }
         }
 
