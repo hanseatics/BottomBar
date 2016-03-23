@@ -16,6 +16,11 @@ package com.roughike.bottombar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @deprecated Use {@link OnTabItemClickListener} instead
+ */
+@Deprecated
 public interface OnTabSelectedListener {
     /**
      * The method being called when currently visible {@link BottomBarTab} changes.
