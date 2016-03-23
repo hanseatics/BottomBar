@@ -886,16 +886,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (newPosition != mCurrentTabPosition) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
-
-            if (mListener != null) {
-                mListener.onItemSelected(mCurrentTabPosition);
-            }
-
-            if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
-                mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
-            }
-
             updateCurrentFragment();
+        }
+
+        if (mListener != null) {
+            mListener.onItemSelected(mCurrentTabPosition);
+        }
+
+        if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
+            mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
         }
     }
 
