@@ -642,6 +642,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Get the actual BottomBar that has the tabs inside it for whatever what you may want
+     * to do with it.
+     *
+     * @return the BottomBar.
+     */
+    public View getBar() {
+        return mItemContainer;
+    }
+
+    /**
      * Super ugly hacks
      * ----------------------------/
      */
