@@ -183,7 +183,7 @@ class MiscUtils {
      * @param resId a style resource for the text appearance.
      */
     @SuppressWarnings("deprecation")
-    public static void setTextAppearance(TextView textView, int resId) {
+    protected static void setTextAppearance(TextView textView, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             textView.setTextAppearance(resId);
         } else {
