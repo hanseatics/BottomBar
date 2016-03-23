@@ -2,10 +2,7 @@
 _site
 
 # Ant
-MANIFEST.MF
-./*.jar
 build.num
-build
 
 # ADT
 .classpath
@@ -40,12 +37,9 @@ target
 release.properties
 pom.xml.*
 
-screenshot_one.png
-screenshot_two.png
 demo1.gif
 demo2.gif
 demo2-badge.gif
 tablet.png
 screenshot_tablet.png
 scrolling_demo.gif
-color_demo.gif
