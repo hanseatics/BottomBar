@@ -357,6 +357,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Get the current selected tab position.
+     *
+     * @return the position of currently selected tab.
+     */
+    public int getCurrentTabPosition() {
+        return mCurrentTabPosition;
+    }
+
+    /**
      * Call this method in your Activity's onSaveInstanceState
      * to keep the BottomBar's state on configuration change.
      *
