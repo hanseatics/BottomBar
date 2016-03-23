@@ -107,6 +107,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mDefaultBackgroundColor;
 
     private boolean mIsDarkTheme;
+    private boolean mIgnoreNightMode;
     private int mCustomActiveTabColor = -1;
 
     private boolean mDrawBehindNavBar = true;
@@ -489,6 +490,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         mIsDarkTheme = darkThemeEnabled;
+    }
+
+    /**
+     * Ignore the automatic Night Mode detection and use a light theme by default,
+     * even if the Night Mode is on.
+     */
+    public void ignoreNightMode() {
+        if (mItems != null && mItems.length > 0) {
+            throw new UnsupportedOperationException("This BottomBar " +
+                    "already has items! You must call ignoreNightMode() " +
+                    "before setting any items.");
+        }
+
+        mIgnoreNightMode = true;
     }
 
     /**
@@ -938,7 +953,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         int index = 0;
         int biggestWidth = 0;
+
         mIsShiftingMode = MAX_FIXED_TAB_COUNT < bottomBarItems.length;
+
+        if (!mIsDarkTheme && !mIgnoreNightMode
+                && MiscUtils.isNightMode(mContext)) {
+            mIsDarkTheme = true;
+        }
 
         if (!mIsTabletMode && mIsShiftingMode) {
             mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
