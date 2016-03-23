@@ -476,9 +476,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
      * the specified position.
-     * @param tabPosition zero-based index for the tab.
+     *
+     * @param tabPosition     zero-based index for the tab.
      * @param backgroundColor a color for this badge, such as "#FF0000".
-     * @param initialCount text displayed initially for this Badge.
+     * @param initialCount    text displayed initially for this Badge.
      * @return a {@link BottomBarBadge} object.
      */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, String backgroundColor, int initialCount) {
@@ -488,9 +489,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
      * the specified position.
-     * @param tabPosition zero-based index for the tab.
+     *
+     * @param tabPosition     zero-based index for the tab.
      * @param backgroundColor a color for this badge, such as 0xFFFF0000.
-     * @param initialCount text displayed initially for this Badge.
+     * @param initialCount    text displayed initially for this Badge.
      * @return a {@link BottomBarBadge} object.
      */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
@@ -604,6 +606,39 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         mIgnoreTabletLayout = true;
+    }
+
+    /**
+     * Get this BottomBar's height (or width), depending if the BottomBar
+     * is on the bottom (phones) or the left (tablets) of the screen.
+     *
+     * @param listener {@link OnSizeDeterminedListener} to get the size when it's ready.
+     */
+    public void getBarSize(final OnSizeDeterminedListener listener) {
+        final int sizeCandidate = mIsTabletMode ?
+                mItemContainer.getWidth() : mItemContainer.getHeight();
+
+        if (sizeCandidate == 0) {
+            mItemContainer.getViewTreeObserver().addOnGlobalLayoutListener(
+                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @SuppressWarnings("deprecation")
+                        @Override
+                        public void onGlobalLayout() {
+                            listener.onSizeReady(mIsTabletMode ?
+                                    mItemContainer.getWidth() : mItemContainer.getHeight());
+                            ViewTreeObserver obs = mItemContainer.getViewTreeObserver();
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                obs.removeOnGlobalLayoutListener(this);
+                            } else {
+                                obs.removeGlobalOnLayoutListener(this);
+                            }
+                        }
+                    });
+            return;
+        }
+
+        listener.onSizeReady(sizeCandidate);
     }
 
     /**
