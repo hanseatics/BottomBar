@@ -119,13 +119,6 @@ public class BottomBarBadge extends TextView {
         return isVisible;
     }
 
-    /**
-     * Removes this Badge from your BottomBar.
-     */
-    public void removeFromParent() {
-        ((ViewGroup) getParent()).removeView(this);
-    }
-
     protected BottomBarBadge(Context context, final View tabToAddTo, // Rhyming accidentally! That's a Smoove Move!
                              int backgroundColor) {
         super(context);
