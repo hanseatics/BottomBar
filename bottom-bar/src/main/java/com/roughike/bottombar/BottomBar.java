@@ -366,6 +366,24 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Hide the BottomBar.
+     */
+    public void hide() {
+        if (mOuterContainer != null) {
+            mOuterContainer.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * Show the BottomBar.
+     */
+    public void show() {
+        if (mOuterContainer != null) {
+            mOuterContainer.setVisibility(VISIBLE);
+        }
+    }
+
+    /**
      * Call this method in your Activity's onSaveInstanceState
      * to keep the BottomBar's state on configuration change.
      *
