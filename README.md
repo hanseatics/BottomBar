@@ -100,7 +100,7 @@ You can easily add badges for showing an unread message count or new items / wha
 
 ```java
 // Make a Badge for the first tab, with red background color and a value of "13".
-BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(2, "#FF0000", 13);
+BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(0, "#FF0000", 13);
 
 // Control the badge's visibility
 unreadMessages.show();
