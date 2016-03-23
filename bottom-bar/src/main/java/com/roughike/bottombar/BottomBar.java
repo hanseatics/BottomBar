@@ -878,23 +878,35 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             unselectTab(findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
             selectTab(v, true);
-            updateSelectedTab(findItemPosition(v));
         }
+        updateSelectedTab(findItemPosition(v));
     }
 
     private void updateSelectedTab(int newPosition) {
+        final boolean canNotifyMenuListener = mMenuListener != null && mItems instanceof BottomBarTab[];
+        final boolean canNotifyListener = mListener != null;
+
         if (newPosition != mCurrentTabPosition) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
+
+            if (canNotifyListener) {
+                mListener.onItemSelected(mCurrentTabPosition);
+            }
+
+            if (canNotifyMenuListener) {
+                mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            }
+
             updateCurrentFragment();
-        }
+        } else {
+            if (canNotifyListener && mListener instanceof OnTabItemClickListener) {
+                ((OnTabItemClickListener) mListener).onItemReSelected(mCurrentTabPosition);
+            }
 
-        if (mListener != null) {
-            mListener.onItemSelected(mCurrentTabPosition);
-        }
-
-        if (mMenuListener != null && mItems instanceof BottomBarTab[]) {
-            mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            if (canNotifyMenuListener && mMenuListener instanceof OnMenuTabItemClickListener) {
+                ((OnMenuTabItemClickListener) mMenuListener).onMenuItemReSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            }
         }
     }
 
