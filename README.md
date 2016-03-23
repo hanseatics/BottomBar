@@ -1,5 +1,5 @@
 # BottomBar
-<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_tablet.png" width="307" height="492" /> 
+<img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2-badge.gif" width="278" height="492" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_tablet.png" width="307" height="492" /> 
 
 **Don't send me pull requests just yet, not until the dust settles.**
 
@@ -22,7 +22,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.1.8'
+compile 'com.roughike:bottom-bar:1.1.9'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.1.8'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.1.8</version>
+  <version>1.1.9</version>
   <type>pom</type>
 </dependency>
 ```
@@ -100,7 +100,7 @@ You can easily add badges for showing an unread message count or new items / wha
 
 ```java
 // Make a Badge for the first tab, with red background color and a value of "13".
-BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(2, "#FF0000", 13);
+BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(0, "#FF0000", 13);
 
 // Control the badge's visibility
 unreadMessages.show();
