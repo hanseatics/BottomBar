@@ -471,6 +471,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void setActiveTabColor(int activeTabColor) {
         mCustomActiveTabColor = activeTabColor;
+
+        if (mItems != null && mItems.length > 0) {
+            selectTabAtPosition(mCurrentTabPosition, false);
+        }
     }
 
     /**
