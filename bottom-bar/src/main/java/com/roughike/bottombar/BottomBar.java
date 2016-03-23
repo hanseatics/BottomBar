@@ -369,18 +369,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Hide the BottomBar.
      */
     public void hide() {
-        if (mOuterContainer != null) {
-            mOuterContainer.setVisibility(GONE);
-        }
+        setBarVisibility(GONE);
     }
 
     /**
      * Show the BottomBar.
      */
     public void show() {
-        if (mOuterContainer != null) {
-            mOuterContainer.setVisibility(VISIBLE);
-        }
+        setBarVisibility(VISIBLE);
     }
 
     /**
@@ -861,6 +857,20 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     protected boolean useOnlyStatusbarOffset() {
         return mUseOnlyStatusBarOffset;
+    }
+
+    protected void setBarVisibility(int visibility) {
+        if (mOuterContainer != null) {
+            mOuterContainer.setVisibility(visibility);
+        }
+
+        if (mBackgroundView != null) {
+            mBackgroundView.setVisibility(visibility);
+        }
+
+        if (mBackgroundOverlay != null) {
+            mBackgroundOverlay.setVisibility(visibility);
+        }
     }
 
     @Override
