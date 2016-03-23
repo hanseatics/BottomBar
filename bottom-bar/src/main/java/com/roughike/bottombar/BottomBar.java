@@ -473,6 +473,26 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mCustomActiveTabColor = activeTabColor;
     }
 
+    /**
+     * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
+     * the specified position.
+     * @param tabPosition zero-based index for the tab.
+     * @param backgroundColor a color for this badge, such as "#FF0000".
+     * @param initialCount text displayed initially for this Badge.
+     * @return a {@link BottomBarBadge} object.
+     */
+    public BottomBarBadge makeBadgeForTabAt(int tabPosition, String backgroundColor, int initialCount) {
+        return makeBadgeForTabAt(tabPosition, Color.parseColor(backgroundColor), initialCount);
+    }
+
+    /**
+     * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
+     * the specified position.
+     * @param tabPosition zero-based index for the tab.
+     * @param backgroundColor a color for this badge, such as 0xFFFF0000.
+     * @param initialCount text displayed initially for this Badge.
+     * @return a {@link BottomBarBadge} object.
+     */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
         if (mItems == null || mItems.length == 0) {
             throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
