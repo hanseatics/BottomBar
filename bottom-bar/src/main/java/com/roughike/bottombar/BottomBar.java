@@ -337,6 +337,26 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Sets the default tab for this BottomBar that is shown until the user changes
+     * the selection.
+     *
+     * @param defaultTabPosition the default tab position.
+     */
+    public void setDefaultTabPosition(int defaultTabPosition) {
+        if (mItems == null || mItems.length == 0) {
+            throw new UnsupportedOperationException("Can't set default tab at " +
+                    "position " + defaultTabPosition + ". This BottomBar has no items set yet.");
+        } else if (defaultTabPosition > mItems.length - 1 || defaultTabPosition < 0) {
+            throw new IndexOutOfBoundsException("Can't set default tab at position " +
+                    defaultTabPosition + ". This BottomBar has no items at that position.");
+        }
+
+        if (!mIsComingFromRestoredState) {
+            selectTabAtPosition(defaultTabPosition, false);
+        }
+    }
+
+    /**
      * Call this method in your Activity's onSaveInstanceState
      * to keep the BottomBar's state on configuration change.
      *
