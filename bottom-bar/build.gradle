@@ -8,12 +8,12 @@ ext {
     libraryName = 'bottom-bar'
     artifact = 'bottom-bar'
 
-    libraryDescription = 'A custom view component that mimicks the Material Design "Bottom navigation" pattern.'
+    libraryDescription = 'A custom view component that mimics the Material Design "Bottom navigation" pattern.'
 
     siteUrl = 'https://github.com/roughike/BottomBar'
     gitUrl = 'https://github.com/roughike/BottomBar.git'
 
-    libraryVersion = '1.1.7'
+    libraryVersion = '1.1.8'
 
     developerId = 'roughike'
     developerName = 'Iiro Krankka'
