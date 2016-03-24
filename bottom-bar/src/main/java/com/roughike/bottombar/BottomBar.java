@@ -89,8 +89,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mTenDp;
     private int mMaxFixedItemWidth;
 
-    private OnTabSelectedListener mListener;
-    private OnMenuTabSelectedListener mMenuListener;
+    private Object mListener;
+    private Object mMenuListener;
 
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
@@ -296,11 +296,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set items from an XML menu resource file.
-     *
-     * @param menuRes  the menu resource to inflate items from.
-     * @param listener listener for tab change events.
+     * Deprecated. Use {@link #setItemsFromMenu(int, OnMenuTabClickListener)} instead.
      */
+    @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
         clearItems();
         mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
@@ -309,11 +307,32 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Set items from an XML menu resource file.
+     *
+     * @param menuRes  the menu resource to inflate items from.
+     * @param listener listener for tab change events.
+     */
+    public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabClickListener listener) {
+        clearItems();
+        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
+        mMenuListener = listener;
+        updateItems(mItems);
+    }
+
+    /**
+     * Deprecated. Use {@link #setOnTabClickListener(OnTabClickListener)} instead.
+     */
+    @Deprecated
+    public void setOnItemSelectedListener(OnTabSelectedListener listener) {
+        mListener = listener;
+    }
+
+    /**
      * Set a listener that gets fired when the selected tab changes.
      *
      * @param listener a listener for monitoring changes in tab selection.
      */
-    public void setOnItemSelectedListener(OnTabSelectedListener listener) {
+    public void setOnTabClickListener(OnTabClickListener listener) {
         mListener = listener;
     }
 
@@ -898,29 +917,67 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     private void updateSelectedTab(int newPosition) {
-        final boolean canNotifyMenuListener = mMenuListener != null && mItems instanceof BottomBarTab[];
-        final boolean canNotifyListener = mListener != null;
+        final boolean notifyMenuListener = mMenuListener != null && mItems instanceof BottomBarTab[];
+        final boolean notifyRegularListener = mListener != null;
 
         if (newPosition != mCurrentTabPosition) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
 
-            if (canNotifyListener) {
-                mListener.onItemSelected(mCurrentTabPosition);
+            if (notifyRegularListener) {
+                notifyRegularListener(mListener, false, mCurrentTabPosition);
             }
 
-            if (canNotifyMenuListener) {
-                mMenuListener.onMenuItemSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            if (notifyMenuListener) {
+                notifyMenuListener(mMenuListener, false, ((BottomBarTab) mItems[mCurrentTabPosition]).id);
             }
 
             updateCurrentFragment();
         } else {
-            if (canNotifyListener && mListener instanceof OnTabItemClickListener) {
-                ((OnTabItemClickListener) mListener).onItemReSelected(mCurrentTabPosition);
+            if (notifyRegularListener) {
+                notifyRegularListener(mListener, true, mCurrentTabPosition);
             }
 
-            if (canNotifyMenuListener && mMenuListener instanceof OnMenuTabItemClickListener) {
-                ((OnMenuTabItemClickListener) mMenuListener).onMenuItemReSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            if (notifyMenuListener) {
+                notifyMenuListener(mMenuListener, true, ((BottomBarTab) mItems[mCurrentTabPosition]).id);
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void notifyRegularListener(Object listener, boolean isReselection, int position) {
+        if (listener instanceof OnTabClickListener) {
+            OnTabClickListener onTabClickListener = (OnTabClickListener) listener;
+
+            if (!isReselection) {
+                onTabClickListener.onTabSelected(position);
+            } else {
+                onTabClickListener.onTabReSelected(position);
+            }
+        } else if (listener instanceof OnTabSelectedListener) {
+            OnTabSelectedListener onTabSelectedListener = (OnTabSelectedListener) listener;
+
+            if (!isReselection) {
+                onTabSelectedListener.onItemSelected(position);
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void notifyMenuListener(Object listener, boolean isReselection, @IdRes int menuItemId) {
+        if (listener instanceof OnMenuTabClickListener) {
+            OnMenuTabClickListener onMenuTabClickListener = (OnMenuTabClickListener) listener;
+
+            if (!isReselection) {
+                onMenuTabClickListener.onMenuTabSelected(menuItemId);
+            } else {
+                onMenuTabClickListener.onMenuTabReSelected(menuItemId);
+            }
+        } else if (listener instanceof OnMenuTabSelectedListener) {
+            OnMenuTabSelectedListener onMenuTabSelectedListener = (OnMenuTabSelectedListener) listener;
+
+            if (!isReselection) {
+                onMenuTabSelectedListener.onMenuItemSelected(menuItemId);
             }
         }
     }

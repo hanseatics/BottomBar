@@ -17,12 +17,23 @@ package com.roughike.bottombar;
  * limitations under the License.
  */
 
-public interface OnTabItemClickListener extends OnTabSelectedListener {
+public interface OnTabClickListener {
+    /**
+     * The method being called when currently visible {@link BottomBarTab} changes.
+     * This listener won't be fired until the user changes the selected item the
+     * first time. So you won't get this event when you're just initialized the
+     * BottomBar.
+     *
+     * @param position the new visible {@link BottomBarTab}
+     */
+    void onTabSelected(int position);
+
     /**
      * The method being called when currently visible {@link BottomBarTab} is
-     * reselected.
+     * reselected. Use this method for scrolling to the top of your content,
+     * as recommended by the Material Design spec
      *
-     * @param position the currently selected {@link BottomBarTab}
+     * @param position the {@link BottomBarTab} that was reselected.
      */
-    void onItemReSelected(int position);
+    void onTabReSelected(int position);
 }

@@ -37,7 +37,7 @@ import android.support.annotation.IdRes;
  */
 
 /**
- * @deprecated Use {@link OnMenuTabItemClickListener} instead
+ * @deprecated Use {@link OnMenuTabClickListener} instead
  */
 @Deprecated
 public interface OnMenuTabSelectedListener {

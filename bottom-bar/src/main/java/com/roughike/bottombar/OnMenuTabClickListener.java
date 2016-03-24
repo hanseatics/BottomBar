@@ -18,13 +18,25 @@ import android.support.annotation.IdRes;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public interface OnMenuTabItemClickListener extends OnMenuTabSelectedListener {
+public interface OnMenuTabClickListener {
     /**
-     * The method being called when currently visible {@link BottomBarTab} is
-     * reselected.
+     * The method being called when currently visible {@link BottomBarTab} changes.
+     * This listener won't be fired until the user changes the selected item the
+     * first time. So you won't get this event when you're just initialized the
+     * BottomBar.
      *
      * @param menuItemId the new visible tab's id that
      *                   was assigned in the menu xml resource file.
      */
-    void onMenuItemReSelected(@IdRes int menuItemId);
+    void onMenuTabSelected(@IdRes int menuItemId);
+
+    /**
+     * The method being called when currently visible {@link BottomBarTab} is
+     * reselected. Use this method for scrolling to the top of your content,
+     * as recommended by the Material Design spec
+     *
+     * @param menuItemId the reselected tab's id that was assigned in the menu
+     *                   xml resource file.
+     */
+    void onMenuTabReSelected(@IdRes int menuItemId);
 }

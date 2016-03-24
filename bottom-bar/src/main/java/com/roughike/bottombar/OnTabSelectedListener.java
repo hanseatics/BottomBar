@@ -18,7 +18,7 @@ package com.roughike.bottombar;
  */
 
 /**
- * @deprecated Use {@link OnTabItemClickListener} instead
+ * @deprecated Use {@link OnTabClickListener} instead.
  */
 @Deprecated
 public interface OnTabSelectedListener {
