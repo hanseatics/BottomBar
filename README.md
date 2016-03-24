@@ -22,7 +22,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.2.1'
+compile 'com.roughike:bottom-bar:1.2.3'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.2.1'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -65,11 +65,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);
-        mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabSelectedListener() {
+        mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
             @Override
-            public void onMenuItemSelected(int resId) {
+            public void onMenuTabSelected(@IdRes int menuItemId) {
                 if (resId == R.id.bottomBarItemOne) {
-                    // the user selected item number one
+                    // The user selected item number one.
+                }
+            }
+
+            @Override
+            public void onMenuTabReSelected(@IdRes int menuItemId) {
+                if (resId == R.id.bottomBarItemOne) {
+                    // The user reselected item number one, scroll your content to top.
                 }
             }
         });
