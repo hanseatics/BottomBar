@@ -17,18 +17,12 @@ package com.roughike.bottombar;
  * limitations under the License.
  */
 
-/**
- * @deprecated Use {@link OnTabItemClickListener} instead
- */
-@Deprecated
-public interface OnTabSelectedListener {
+public interface OnTabItemClickListener extends OnTabSelectedListener {
     /**
-     * The method being called when currently visible {@link BottomBarTab} changes.
-     * This listener won't be fired until the user changes the selected item the
-     * first time. So you won't get this event when you're just initialized the
-     * BottomBar.
+     * The method being called when currently visible {@link BottomBarTab} is
+     * reselected.
      *
-     * @param position the new visible {@link BottomBarTab}
+     * @param position the currently selected {@link BottomBarTab}
      */
-    void onItemSelected(int position);
+    void onItemReSelected(int position);
 }

@@ -1,5 +1,7 @@
 package com.roughike.bottombar;
 
+import android.support.annotation.IdRes;
+
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
@@ -16,19 +18,13 @@ package com.roughike.bottombar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * @deprecated Use {@link OnTabItemClickListener} instead
- */
-@Deprecated
-public interface OnTabSelectedListener {
+public interface OnMenuTabItemClickListener extends OnMenuTabSelectedListener {
     /**
-     * The method being called when currently visible {@link BottomBarTab} changes.
-     * This listener won't be fired until the user changes the selected item the
-     * first time. So you won't get this event when you're just initialized the
-     * BottomBar.
+     * The method being called when currently visible {@link BottomBarTab} is
+     * reselected.
      *
-     * @param position the new visible {@link BottomBarTab}
+     * @param menuItemId the new visible tab's id that
+     *                   was assigned in the menu xml resource file.
      */
-    void onItemSelected(int position);
+    void onMenuItemReSelected(@IdRes int menuItemId);
 }
