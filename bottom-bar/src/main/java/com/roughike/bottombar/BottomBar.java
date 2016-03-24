@@ -678,17 +678,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void getBarSize(final OnSizeDeterminedListener listener) {
         final int sizeCandidate = mIsTabletMode ?
-                mItemContainer.getWidth() : mItemContainer.getHeight();
+                mOuterContainer.getWidth() : mOuterContainer.getHeight();
 
         if (sizeCandidate == 0) {
-            mItemContainer.getViewTreeObserver().addOnGlobalLayoutListener(
+            mOuterContainer.getViewTreeObserver().addOnGlobalLayoutListener(
                     new ViewTreeObserver.OnGlobalLayoutListener() {
                         @SuppressWarnings("deprecation")
                         @Override
                         public void onGlobalLayout() {
                             listener.onSizeReady(mIsTabletMode ?
-                                    mItemContainer.getWidth() : mItemContainer.getHeight());
-                            ViewTreeObserver obs = mItemContainer.getViewTreeObserver();
+                                    mOuterContainer.getWidth() : mOuterContainer.getHeight());
+                            ViewTreeObserver obs = mOuterContainer.getViewTreeObserver();
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 obs.removeOnGlobalLayoutListener(this);
@@ -710,7 +710,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @return the BottomBar.
      */
     public View getBar() {
-        return mItemContainer;
+        return mOuterContainer;
     }
 
     /**
