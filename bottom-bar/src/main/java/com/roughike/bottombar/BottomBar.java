@@ -108,7 +108,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private boolean mIsDarkTheme;
     private boolean mIgnoreNightMode;
-    private int mCustomActiveTabColor = -1;
+    private int mCustomActiveTabColor;
 
     private boolean mDrawBehindNavBar = true;
     private boolean mUseTopOffset = true;
@@ -1092,7 +1092,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int tabPosition = findItemPosition(tab);
 
         if (!mIsShiftingMode || mIsTabletMode) {
-            int activeColor = mCustomActiveTabColor != -1 ?
+            int activeColor = mCustomActiveTabColor != 0 ?
                     mCustomActiveTabColor : mPrimaryColor;
             icon.setColorFilter(activeColor);
 
