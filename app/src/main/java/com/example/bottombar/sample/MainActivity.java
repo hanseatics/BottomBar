@@ -3,11 +3,9 @@ package com.example.bottombar.sample;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarFragment;
-import com.roughike.bottombar.OnTabItemClickListener;
 
 public class MainActivity extends AppCompatActivity {
     private BottomBar mBottomBar;
@@ -33,18 +31,6 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.mapColorForTab(2, "#7B1FA2");
         mBottomBar.mapColorForTab(3, "#FF5252");
         mBottomBar.mapColorForTab(4, "#FF9800");
-
-        mBottomBar.setOnItemSelectedListener(new OnTabItemClickListener() {
-            @Override
-            public void onItemReSelected(int position) {
-                Toast.makeText(MainActivity.this, "Reselected", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onItemSelected(int position) {
-
-            }
-        });
     }
 
     @Override
