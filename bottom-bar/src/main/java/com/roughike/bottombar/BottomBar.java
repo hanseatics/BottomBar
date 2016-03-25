@@ -63,6 +63,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private Context mContext;
     private boolean mIsComingFromRestoredState;
+    private boolean mIsClickedBefore;
     private boolean mIgnoreTabletLayout;
     private boolean mIsTabletMode;
     private boolean mIsShy;
@@ -341,6 +342,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public void setOnTabClickListener(OnTabClickListener listener) {
         mListener = listener;
+
+        if (mItems != null && mItems.length > 0) {
+            listener.onTabSelected(0);
+        }
     }
 
     /**
@@ -927,7 +932,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         final boolean notifyMenuListener = mMenuListener != null && mItems instanceof BottomBarTab[];
         final boolean notifyRegularListener = mListener != null;
 
-        if (newPosition != mCurrentTabPosition) {
+        if (newPosition != mCurrentTabPosition || !mIsClickedBefore) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
 
@@ -949,6 +954,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 notifyMenuListener(mMenuListener, true, ((BottomBarTab) mItems[mCurrentTabPosition]).id);
             }
         }
+
+        mIsClickedBefore = true;
     }
 
     @SuppressWarnings("deprecation")
@@ -1121,7 +1128,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         }
 
-        updateCurrentFragment();
+        updateSelectedTab(mCurrentTabPosition);
 
         if (mPendingTextAppearance != -1) {
             mPendingTextAppearance = -1;
