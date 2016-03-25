@@ -250,6 +250,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Deprecated.
+     *
+     * Use either {@link #setItems(BottomBarTab...)} or
+     * {@link #setItemsFromMenu(int, OnMenuTabClickListener)} and add a listener using
+     * {@link #setOnTabClickListener(OnTabClickListener)} to handle tab changes by yourself.
+     *
      * Set tabs and fragments for this BottomBar. When setting more than 3 items,
      * only the icons will show by default, but the selected item
      * will have the text visible.
@@ -258,6 +264,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param containerResource id for the layout to inflate Fragments to.
      * @param fragmentItems     an array of {@link BottomBarFragment} objects.
      */
+    @Deprecated
     public void setFragmentItems(android.support.v4.app.FragmentManager fragmentManager, @IdRes int containerResource,
                                  BottomBarFragment... fragmentItems) {
         if (fragmentItems.length > 0) {
