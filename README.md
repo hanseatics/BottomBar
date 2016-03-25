@@ -22,7 +22,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.2.3'
+compile 'com.roughike:bottom-bar:1.2.4'
 ```
 
 **Maven:**
@@ -30,7 +30,7 @@ compile 'com.roughike:bottom-bar:1.2.3'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.2.3</version>
+  <version>1.2.4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -176,35 +176,27 @@ mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordin
 </android.support.design.widget.CoordinatorLayout>
 ```
 
-#### Can it handle my Fragments and replace them automagically when a different tab is selected?
+#### I don't want to set items from a menu resource!
 
-Yep yep yep! Just call ```setFragmentItems()``` instead of ```setItemsFromMenu()```:
-
-```java
-// If you use normal Fragments, just change the first argument to getFragmentManager(). It's pure magic!
-mBottomBar.setFragmentItems(getSupportFragmentManager(), R.id.fragmentContainer,
-    new BottomBarFragment(SampleFragment.newInstance("Content for recents."), R.drawable.ic_recents, "Recents"),
-    new BottomBarFragment(SampleFragment.newInstance("Content for favorites."), R.drawable.ic_favorites, "Favorites"),
-    new BottomBarFragment(SampleFragment.newInstance("Content for nearby stuff."), R.drawable.ic_nearby, "Nearby")
-);
-```
-
-#### I hate Fragments and wanna do everything by myself!
-
-That's alright, you can also do it the hard way if you're living on the edge.
+That's alright, you can also do it the hard way if you like living on the edge.
 
 ```java
 mBottomBar.setItems(
-        new BottomBarTab(R.drawable.ic_recents, "Recents"),
-        new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
-        new BottomBarTab(R.drawable.ic_nearby, "Nearby")
+  new BottomBarTab(R.drawable.ic_recents, "Recents"),
+  new BottomBarTab(R.drawable.ic_favorites, "Favorites"),
+  new BottomBarTab(R.drawable.ic_nearby, "Nearby")
 );
 
 // Listen for tab changes
-mBottomBar.setOnItemSelectedListener(new OnTabSelectedListener() {
+mBottomBar.setOnTabClickListener(new OnTabClickListener() {
     @Override
-    public void onItemSelected(int position) {
-        // user selected a different tab
+    public void onTabSelected(int position) {
+        // The user selected a tab at the specified position
+    }
+
+    @Override
+    public void onTabReSelected(int position) {
+        // The user reselected a tab at the specified position!
     }
 });
 ```
