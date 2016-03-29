@@ -248,7 +248,7 @@ Just give me some time and **all your dreams will come true**.
 
 ## Apps using BottomBar
 
-  * FragNav : An Android Library for managing multiple stacks of Fragments. BottomBar is used in the sample app.
+  * [FragNav](https://github.com/ncapdevi/FragNav) : An Android Library for managing multiple stacks of Fragments. BottomBar is used in the sample app.
   
 Send me a pull request with modified README.md to get a shoutout!
 
