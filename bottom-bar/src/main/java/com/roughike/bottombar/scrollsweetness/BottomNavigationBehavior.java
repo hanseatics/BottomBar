@@ -138,7 +138,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                     mSnackbarHeight = dependency.getHeight();
                 }
                 int targetPadding = (mSnackbarHeight +
-                        child.getMeasuredHeight());
+                        mBottomNavHeight);
                 dependency.setPadding(dependency.getPaddingLeft(),
                         dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
                 );
