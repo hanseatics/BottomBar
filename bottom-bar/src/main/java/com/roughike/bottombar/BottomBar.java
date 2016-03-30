@@ -810,7 +810,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void initializeViews() {
         mIsTabletMode = !mIgnoreTabletLayout &&
                 mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
-
+        ViewCompat.setElevation(this, MiscUtils.dpToPixel(mContext, 8));
         View rootView = View.inflate(mContext, mIsTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
                 null);
@@ -852,7 +852,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 public void onGlobalLayout() {
                     if (!mShyHeightAlreadyCalculated) {
                         ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                                .setBehavior(new BottomNavigationBehavior(getOuterContainer().getHeight(), 0));
+                                .setBehavior(new BottomNavigationBehavior(getOuterContainer().getHeight(), 0, isShy(), mIsTabletMode));
                     }
 
                     ViewTreeObserver obs = getViewTreeObserver();
@@ -1461,7 +1461,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                         int defaultOffset = bottomBar.useExtraOffset() ? navBarHeightCopy : 0;
                         bottomBar.setTranslationY(defaultOffset);
                         ((CoordinatorLayout.LayoutParams) bottomBar.getLayoutParams())
-                                .setBehavior(new BottomNavigationBehavior(newHeight, defaultOffset));
+                                .setBehavior(new BottomNavigationBehavior(newHeight, defaultOffset, bottomBar.isShy(), bottomBar.mIsTabletMode));
                     }
 
                     ViewTreeObserver obs = outerContainer.getViewTreeObserver();
