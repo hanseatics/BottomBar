@@ -1,10 +1,6 @@
 # BottomBar
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo2-badge.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_tablet.png" width="33%" /> 
 
-**Development has been on a break due to switching systems and losing the original Android Studio project.**
-
-Stay patient, I'll be back as soon as I can.
-
 **Don't send me pull requests just yet, not until the dust settles.**
 
 **[How to contribute](https://github.com/roughike/BottomBar/blob/master/README.md#contributions)**
