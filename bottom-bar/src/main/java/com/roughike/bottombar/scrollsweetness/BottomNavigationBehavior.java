@@ -25,7 +25,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
 
     private ViewPropertyAnimatorCompat mTranslationAnimator;
     private boolean hidden = false;
-    private int mSnackbarHeight;
+    private int mSnackbarHeight = -1;
     private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
     private boolean mScrollingEnabled = true;
 
@@ -115,7 +115,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
-                int targetPadding = mBottomNavHeight + mSnackbarHeight;
+                int targetPadding = mBottomNavHeight + mSnackbarHeight - mDefaultOffset;
 
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
                 layoutParams.bottomMargin = targetPadding;
@@ -137,8 +137,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
-                int targetPadding = (mSnackbarHeight +
-                        mBottomNavHeight);
+                int targetPadding = (mSnackbarHeight +  mBottomNavHeight - mDefaultOffset);
                 dependency.setPadding(dependency.getPaddingLeft(),
                         dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
                 );
