@@ -88,6 +88,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mTwoDp;
     private int mTenDp;
     private int mMaxFixedItemWidth;
+    private int mMaxInActiveShiftingItemWidth;
+    private int mInActiveShiftingItemWidth;
+    private int mActiveShiftingItemWidth;
 
     private Object mListener;
     private Object mMenuListener;
@@ -108,6 +111,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private boolean mIsDarkTheme;
     private boolean mIgnoreNightMode;
+    private boolean mIgnoreShiftingResize;
+
     private int mCustomActiveTabColor;
 
     private boolean mDrawBehindNavBar = true;
@@ -706,6 +711,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     * Don't resize the tabs when selecting a new one, so every tab is the same0 if you have more than three
+     * tabs. The text still displays the scale animation and the icon moves up, but the badass width animation
+     * is ignored.
+     */
+    public void noResizeGoodness() {
+        mIgnoreShiftingResize = true;
+    }
+
+    /**
      * Get this BottomBar's height (or width), depending if the BottomBar
      * is on the bottom (phones) or the left (tablets) of the screen.
      *
@@ -805,6 +819,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mTwoDp = MiscUtils.dpToPixel(mContext, 2);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
+        mMaxInActiveShiftingItemWidth = MiscUtils.dpToPixel(mContext, 96);
     }
 
     private void initializeViews() {
@@ -926,8 +941,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     @Override
     public void onClick(View v) {
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            unselectTab(findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), true);
+            View oldTab = findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+
+            unselectTab(oldTab, true);
             selectTab(v, true);
+
+            if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
+                MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
+                MiscUtils.resizeTab(v, v.getWidth(), mActiveShiftingItemWidth);
+            }
         }
         updateSelectedTab(findItemPosition(v));
     }
@@ -1121,10 +1143,25 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     mMaxFixedItemWidth
             );
 
-            LinearLayout.LayoutParams params = new LinearLayout
-                    .LayoutParams(proposedItemWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+            mInActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
+            mActiveShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.length * 0.1)));
 
             for (View bottomBarView : viewsToAdd) {
+                LinearLayout.LayoutParams params;
+
+                if (mIsShiftingMode && !mIgnoreShiftingResize) {
+                    if (TAG_BOTTOM_BAR_VIEW_ACTIVE.equals(bottomBarView.getTag())) {
+                        params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                    } else {
+                        params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                    }
+                } else {
+                    params = new LinearLayout.LayoutParams(proposedItemWidth,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                }
+
                 bottomBarView.setLayoutParams(params);
                 mItemContainer.addView(bottomBarView);
             }
