@@ -481,7 +481,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
-        if (!mIsShiftingMode || mIsTabletMode) return;
+        if (mIsDarkTheme || !mIsShiftingMode || mIsTabletMode) return;
 
         if (mColorMap == null) {
             mColorMap = new HashMap<>();
@@ -1082,15 +1082,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             mIsDarkTheme = true;
         }
 
-        if (!mIsTabletMode && mIsShiftingMode) {
+        if (mIsDarkTheme) {
+            darkThemeMagic();
+        } else if (!mIsTabletMode && mIsShiftingMode) {
             mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
             mBackgroundView.setBackgroundColor(mDefaultBackgroundColor);
 
             if (mContext instanceof Activity) {
                 navBarMagic((Activity) mContext, this);
             }
-        } else if (mIsDarkTheme) {
-            darkThemeMagic();
         }
 
         View[] viewsToAdd = new View[bottomBarItems.length];
