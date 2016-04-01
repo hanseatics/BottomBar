@@ -150,7 +150,7 @@ Easy-peasy!
 **MainActivity.java:**
 
 ```java
-// Instead of attach(), use attachShy:
+// Instead of attach(), use attachShy():
 mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator), 
     findViewById(R.id.myScrollingContent), savedInstanceState);
 ```
@@ -242,10 +242,6 @@ mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
 
-#### What about the (insert thing that looks different than the specs here)?
-
-Just give me some time and **all your dreams will come true**.
-
 ## Apps using BottomBar
 
   * [FragNav](https://github.com/ncapdevi/FragNav) : An Android Library for managing multiple stacks of Fragments. BottomBar is used in the sample app.
@@ -255,7 +251,6 @@ Send me a pull request with modified README.md to get a shoutout!
 ## Contributions
 
 Feel free to create issues. 
-
 
 **Don't send me pull requests just yet, not until the dust settles.**
 
