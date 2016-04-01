@@ -371,10 +371,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     position + ". This BottomBar has no items at that position.");
         }
 
-        unselectTab(mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE), animate);
-        selectTab(mItemContainer.getChildAt(position), animate);
+        View oldTab = mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+        View newTab = mItemContainer.getChildAt(position);
+
+        unselectTab(oldTab, animate);
+        selectTab(newTab, animate);
 
         updateSelectedTab(position);
+        shiftingMagic(oldTab, newTab);
     }
 
     /**
@@ -384,10 +388,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param defaultTabPosition the default tab position.
      */
     public void setDefaultTabPosition(int defaultTabPosition) {
-        if (mItems == null || mItems.length == 0) {
-            throw new UnsupportedOperationException("Can't set default tab at " +
-                    "position " + defaultTabPosition + ". This BottomBar has no items set yet.");
-        } else if (defaultTabPosition > mItems.length - 1 || defaultTabPosition < 0) {
+        if (mItems == null) {
+            mCurrentTabPosition = defaultTabPosition;
+            return;
+        } else if (mItems.length == 0 || defaultTabPosition > mItems.length - 1
+                || defaultTabPosition < 0) {
             throw new IndexOutOfBoundsException("Can't set default tab at position " +
                     defaultTabPosition + ". This BottomBar has no items at that position.");
         }
@@ -946,12 +951,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             unselectTab(oldTab, true);
             selectTab(v, true);
 
-            if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
-                MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
-                MiscUtils.resizeTab(v, v.getWidth(), mActiveShiftingItemWidth);
-            }
+            shiftingMagic(oldTab, v);
         }
         updateSelectedTab(findItemPosition(v));
+    }
+
+    private void shiftingMagic(View oldTab, View newTab) {
+        if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
+            MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
+            MiscUtils.resizeTab(newTab, newTab.getWidth(), mActiveShiftingItemWidth);
+        }
     }
 
     private void updateSelectedTab(int newPosition) {
