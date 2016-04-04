@@ -617,7 +617,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
-        BottomBarBadge badge = new BottomBarBadge(mContext,
+        BottomBarBadge badge = new BottomBarBadge(mContext, tabPosition,
                 mItemContainer.getChildAt(tabPosition), backgroundColor);
         badge.setTag(TAG_BADGE + tabPosition);
         badge.setCount(initialCount);
@@ -627,7 +627,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         mBadgeMap.put(tabPosition, badge.getTag());
-        mOuterContainer.addView(badge);
 
         boolean canShow = true;
 

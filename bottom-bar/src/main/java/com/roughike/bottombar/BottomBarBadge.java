@@ -26,6 +26,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /*
@@ -132,12 +133,14 @@ public class BottomBarBadge extends TextView {
         return isVisible;
     }
 
-    protected BottomBarBadge(Context context, final View tabToAddTo, // Rhyming accidentally! That's a Smoove Move!
+    protected BottomBarBadge(Context context, int position, final View tabToAddTo, // Rhyming accidentally! That's a Smoove Move!
                              int backgroundColor) {
         super(context);
 
-        setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        setLayoutParams(params);
         setGravity(Gravity.CENTER);
         MiscUtils.setTextAppearance(this,
                 R.style.BB_BottomBarBadge_Text);
@@ -147,24 +150,30 @@ public class BottomBarBadge extends TextView {
         setPadding(three, three, three, three);
         setBackgroundCompat(backgroundCircle);
 
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        FrameLayout container = new FrameLayout(context);
+        container.setLayoutParams(params);
+
+        ViewGroup parent = (ViewGroup) tabToAddTo.getParent();
+        parent.removeView(tabToAddTo);
+        container.addView(tabToAddTo);
+        container.addView(this);
+        parent.addView(container, position);
+
+        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
                 adjustPositionAndSize(tabToAddTo);
-                ViewTreeObserver obs = getViewTreeObserver();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    obs.removeOnGlobalLayoutListener(this);
-                } else {
-                    obs.removeGlobalOnLayoutListener(this);
-                }
             }
         });
     }
 
-    private void adjustPositionAndSize(View tabToAddTo) {
+    protected void adjustPosition(View tabToAddTo) {
         setX((float) (tabToAddTo.getX() + (tabToAddTo.getWidth() / 1.75)));
+    }
+
+    private void adjustPositionAndSize(View tabToAddTo) {
+        adjustPosition(tabToAddTo);
         setTranslationY(10);
 
         int size = Math.max(getWidth(), getHeight());

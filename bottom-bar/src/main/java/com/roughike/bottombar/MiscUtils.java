@@ -111,7 +111,7 @@ class MiscUtils {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tab.getLayoutParams();
+                ViewGroup.LayoutParams params = tab.getLayoutParams();
                 if (params == null) return;
 
                 params.width = Math.round((float) animator.getAnimatedValue());
