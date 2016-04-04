@@ -24,7 +24,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.2.8'
+compile 'com.roughike:bottom-bar:1.2.9'
 ```
 
 **Maven:**
@@ -32,7 +32,7 @@ compile 'com.roughike:bottom-bar:1.2.8'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.2.8</version>
+  <version>1.2.9</version>
   <type>pom</type>
 </dependency>
 ```
