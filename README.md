@@ -7,6 +7,8 @@
 
 [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
 
+[Changelog](https://github.com/roughike/BottomBar/blob/master/CHANGELOG.md)
+
 ## What?
 
 A custom view component that mimics the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
