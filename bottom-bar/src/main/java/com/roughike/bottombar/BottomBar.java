@@ -208,8 +208,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      */
     public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, View userContentView, Bundle savedInstanceState) {
         final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
-        bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
         bottomBar.onRestoreInstanceState(savedInstanceState);
+        bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
 
         if (userContentView != null && coordinatorLayout.getContext()
                 .getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode)) {
@@ -378,7 +378,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         selectTab(newTab, animate);
 
         updateSelectedTab(position);
-        shiftingMagic(oldTab, newTab);
+        shiftingMagic(oldTab, newTab, false);
     }
 
     /**
@@ -388,6 +388,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * @param defaultTabPosition the default tab position.
      */
     public void setDefaultTabPosition(int defaultTabPosition) {
+        if (mIsComingFromRestoredState) return;
+
         if (mItems == null) {
             mCurrentTabPosition = defaultTabPosition;
             return;
@@ -397,9 +399,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     defaultTabPosition + ". This BottomBar has no items at that position.");
         }
 
-        if (!mIsComingFromRestoredState) {
-            selectTabAtPosition(defaultTabPosition, false);
-        }
+        selectTabAtPosition(defaultTabPosition, false);
     }
 
     /**
@@ -957,16 +957,27 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             unselectTab(oldTab, true);
             selectTab(v, true);
 
-            shiftingMagic(oldTab, v);
+            shiftingMagic(oldTab, v, true);
         }
         updateSelectedTab(findItemPosition(v));
     }
 
-    private void shiftingMagic(View oldTab, View newTab) {
+    private void shiftingMagic(View oldTab, View newTab, boolean animate) {
         if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
-            MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
-            MiscUtils.resizeTab(newTab, newTab.getWidth(), mActiveShiftingItemWidth);
+            if (animate) {
+                MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
+                MiscUtils.resizeTab(newTab, newTab.getWidth(), mActiveShiftingItemWidth);
+            } else {
+                oldTab.getLayoutParams().width = mInActiveShiftingItemWidth;
+                newTab.getLayoutParams().width = mActiveShiftingItemWidth;
+            }
         }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.d("sizeChang", "JEPA");
     }
 
     private void updateSelectedTab(int newPosition) {
