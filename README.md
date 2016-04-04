@@ -7,6 +7,8 @@
 
 [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
 
+[Changelog](https://github.com/roughike/BottomBar/blob/master/CHANGELOG.md)
+
 ## What?
 
 A custom view component that mimics the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
@@ -22,7 +24,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.2.7'
+compile 'com.roughike:bottom-bar:1.2.8'
 ```
 
 **Maven:**
@@ -30,7 +32,7 @@ compile 'com.roughike:bottom-bar:1.2.7'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.2.7</version>
+  <version>1.2.8</version>
   <type>pom</type>
 </dependency>
 ```
