@@ -974,12 +974,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        Log.d("sizeChang", "JEPA");
-    }
-
     private void updateSelectedTab(int newPosition) {
         final boolean notifyMenuListener = mMenuListener != null && mItems instanceof BottomBarTab[];
         final boolean notifyRegularListener = mListener != null;
