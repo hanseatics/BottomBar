@@ -155,8 +155,11 @@ public class BottomBarBadge extends TextView {
 
         ViewGroup parent = (ViewGroup) tabToAddTo.getParent();
         parent.removeView(tabToAddTo);
+
+        container.setTag(tabToAddTo.getTag());
         container.addView(tabToAddTo);
         container.addView(this);
+
         parent.addView(container, position);
 
         container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

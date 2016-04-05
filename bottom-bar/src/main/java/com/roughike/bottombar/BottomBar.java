@@ -617,10 +617,19 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
+        final View tab = mItemContainer.getChildAt(tabPosition);
+
         BottomBarBadge badge = new BottomBarBadge(mContext, tabPosition,
-                mItemContainer.getChildAt(tabPosition), backgroundColor);
+                tab, backgroundColor);
         badge.setTag(TAG_BADGE + tabPosition);
         badge.setCount(initialCount);
+
+        tab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleClick((View) tab.getParent());
+            }
+        });
 
         if (mBadgeMap == null) {
             mBadgeMap = new HashMap<>();
@@ -950,6 +959,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     @Override
     public void onClick(View v) {
+        handleClick(v);
+    }
+
+    private void handleClick(View v) {
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             View oldTab = findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
 
@@ -963,6 +976,16 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private void shiftingMagic(View oldTab, View newTab, boolean animate) {
         if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
+            if (oldTab instanceof FrameLayout) {
+                // It's a badge, goddammit!
+                oldTab = ((FrameLayout) oldTab).getChildAt(0);
+            }
+
+            if (newTab instanceof FrameLayout) {
+                // It's a badge, goddammit!
+                newTab = ((FrameLayout) newTab).getChildAt(0);
+            }
+
             if (animate) {
                 MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
                 MiscUtils.resizeTab(newTab, newTab.getWidth(), mActiveShiftingItemWidth);
