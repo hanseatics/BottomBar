@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.mapColorForTab(2, "#7B1FA2");
         mBottomBar.mapColorForTab(3, "#FF5252");
         mBottomBar.mapColorForTab(4, "#FF9800");
+
+        // Add some badges that stay until they're explicitly removed.
+        mBottomBar.makeBadgeForTabAt(1, 0xFFFF0000, 20).setAutoShowAfterUnSelection(true);
+        mBottomBar.makeBadgeForTabAt(3, 0xFFFF0000, 13).setAutoShowAfterUnSelection(true);
     }
 
     private String getMessage(int menuItemId, boolean isReselection) {
