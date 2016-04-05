@@ -631,6 +631,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             }
         });
 
+        tab.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return handleLongClick((View) tab.getParent());
+            }
+        });
+
         if (mBadgeMap == null) {
             mBadgeMap = new HashMap<>();
         }
@@ -1087,6 +1094,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     @Override
     public boolean onLongClick(View v) {
+        return handleLongClick(v);
+    }
+
+    private boolean handleLongClick(View v) {
         if ((mIsShiftingMode || mIsTabletMode) && v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             Toast.makeText(mContext, mItems[findItemPosition(v)].getTitle(mContext), Toast.LENGTH_SHORT).show();
         }
