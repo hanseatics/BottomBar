@@ -2,7 +2,15 @@
 
 (or: why are you updating this all the time?)
 
-### Newest version: 1.2.9
+### Newest version: 1.3.1
+
+* Fixed a critical bug in OnLongClickListener behavior (why didn't I see that before?) when using badges.
+
+### 1.3.0
+
+* Fixed a critical bug in OnClickListener behavior when using badges.
+
+### 1.2.9
 
 * Fixed the issue when using badges and the tab resize animation is enabled. Now the badges automatically adjust their position when the tab's size (or position) updates.
 
