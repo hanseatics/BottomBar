@@ -53,7 +53,6 @@ import java.util.HashMap;
  */
 public class BottomBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final long ANIMATION_DURATION = 150;
-    private static final int MAX_FIXED_TAB_COUNT = 3;
 
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
     private static final String STATE_BADGE_STATES_BUNDLE = "STATE_BADGE_STATES_BUNDLE";
@@ -124,6 +123,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     // For fragment state restoration
     private boolean mShouldUpdateFragmentInitially;
+    
+    private int mMaxFixedTabCount = 3;
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
@@ -424,7 +425,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     public void show() {
         setBarVisibility(VISIBLE);
     }
-
+    
+    /**
+    * Set Maximum Fixed Tab Items Count.
+    * /
+    public void setMaxFixedTabCount(int count) {
+        mMaxFixedTabCount = count;
+    }
+    
     /**
      * Call this method in your Activity's onSaveInstanceState
      * to keep the BottomBar's state on configuration change.
@@ -1113,7 +1121,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int index = 0;
         int biggestWidth = 0;
 
-        mIsShiftingMode = MAX_FIXED_TAB_COUNT < bottomBarItems.length;
+        mIsShiftingMode = mMaxFixedTabCount < bottomBarItems.length;
 
         if (!mIsDarkTheme && !mIgnoreNightMode
                 && MiscUtils.isNightMode(mContext)) {
