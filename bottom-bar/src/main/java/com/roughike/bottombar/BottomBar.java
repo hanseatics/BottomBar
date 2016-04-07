@@ -429,9 +429,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Set the maximum number of tabs, after which the tabs should be shifting
      * ones with a background color.
+     *
+     * NOTE: You must call this method before setting any items.
+     *
      * @param count maximum number of fixed tabs.
      */
     public void setMaxFixedTabs(int count) {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call the setMaxFixedTabs() method before specifying any items.");
+        }
+
         mMaxFixedTabCount = count;
     }
     
