@@ -425,11 +425,13 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     public void show() {
         setBarVisibility(VISIBLE);
     }
-    
+
     /**
-    * Set Maximum Fixed Tab Items Count.
-    * /
-    public void setMaxFixedTabCount(int count) {
+     * Set the maximum number of tabs, after which the tabs should be shifting
+     * ones with a background color.
+     * @param count maximum number of fixed tabs.
+     */
+    public void setMaxFixedTabs(int count) {
         mMaxFixedTabCount = count;
     }
     
