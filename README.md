@@ -39,7 +39,7 @@ compile 'com.roughike:bottom-bar:1.3.2'
 
 ## How?
 
-BottomBar likes Fragments very much, but you can also handle your tab changes by yourself. You can add items by specifying an array of items or **by xml menu resources**.
+You can add items by specifying an array of items or **by xml menu resources**.
 
 #### Adding items from menu resource
 
