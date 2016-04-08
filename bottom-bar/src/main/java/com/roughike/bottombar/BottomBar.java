@@ -442,6 +442,19 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         mMaxFixedTabCount = count;
     }
+
+    /**
+     * Always show the titles and icons also on inactive tabs, even if there's more
+     * than three of them.
+     */
+    public void useFixedMode() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call the forceFixedMode() method before specifying any items.");
+        }
+
+        mMaxFixedTabCount = -1;
+    }
     
     /**
      * Call this method in your Activity's onSaveInstanceState
@@ -1131,7 +1144,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int index = 0;
         int biggestWidth = 0;
 
-        mIsShiftingMode = mMaxFixedTabCount < bottomBarItems.length;
+        mIsShiftingMode = mMaxFixedTabCount >= 0 && mMaxFixedTabCount < bottomBarItems.length;
 
         if (!mIsDarkTheme && !mIgnoreNightMode
                 && MiscUtils.isNightMode(mContext)) {
