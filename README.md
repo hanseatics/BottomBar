@@ -24,7 +24,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.3.1'
+compile 'com.roughike:bottom-bar:1.3.2'
 ```
 
 **Maven:**
@@ -32,7 +32,7 @@ compile 'com.roughike:bottom-bar:1.3.1'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.3.1</version>
+  <version>1.3.2</version>
   <type>pom</type>
 </dependency>
 ```
@@ -130,6 +130,9 @@ unreadMessages.setAutoShowAfterUnSelection(true);
 ```java
 // Disable the left bar on tablets and behave exactly the same on mobile and tablets instead.
 mBottomBar.noTabletGoodness();
+
+// Show all titles even when there's more than three tabs.
+mBottomBar.useFixedMode();
 
 // Use the dark theme.
 mBottomBar.useDarkTheme();
