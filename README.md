@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
-                if (resId == R.id.bottomBarItemOne) {
+                if (menuItemId == R.id.bottomBarItemOne) {
                     // The user selected item number one.
                 }
             }
 
             @Override
             public void onMenuTabReSelected(@IdRes int menuItemId) {
-                if (resId == R.id.bottomBarItemOne) {
+                if (menuItemId == R.id.bottomBarItemOne) {
                     // The user reselected item number one, scroll your content to top.
                 }
             }
