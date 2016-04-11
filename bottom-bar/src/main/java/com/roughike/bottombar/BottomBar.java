@@ -15,6 +15,7 @@ import android.support.annotation.StyleRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -1336,11 +1337,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
 
         if (animate) {
-            ViewCompat.animate(title)
+            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
                     .scaleX(1)
-                    .scaleY(1)
-                    .start();
+                    .scaleY(1);
+
+            if (mIsShiftingMode) {
+                titleAnimator.alpha(1.0f);
+            }
+
+            titleAnimator.start();
+
             ViewCompat.animate(tab)
                     .setDuration(ANIMATION_DURATION)
                     .translationY(-translationY)
@@ -1361,6 +1368,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 1.0f);
+                ViewCompat.setAlpha(title, 1.0f);
             }
         }
     }
@@ -1395,11 +1403,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         float scale = mIsShiftingMode ? 0 : 0.86f;
 
         if (animate) {
-            ViewCompat.animate(title)
+            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
                     .scaleX(scale)
-                    .scaleY(scale)
-                    .start();
+                    .scaleY(scale);
+
+            if (mIsShiftingMode) {
+                titleAnimator.alpha(0);
+            }
+
+            titleAnimator.start();
+
             ViewCompat.animate(tab)
                     .setDuration(ANIMATION_DURATION)
                     .translationY(0)
@@ -1418,6 +1432,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 0.6f);
+                ViewCompat.setAlpha(title, 0);
             }
         }
     }
