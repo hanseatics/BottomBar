@@ -1,6 +1,7 @@
 package com.roughike.bottombar.scrollsweetness;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
@@ -12,7 +13,7 @@ import android.view.animation.Interpolator;
 
 /**
  * Created by Nikola D. on 3/15/2016.
- * <p/>
+ * <p>
  * Credit goes to Nikola Despotoski:
  * https://github.com/NikolaDespotoski
  */
@@ -102,6 +103,30 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
     }
 
 
+    public void setHidden(@NonNull  V view, boolean bottomLayoutHidden) {
+        if (!bottomLayoutHidden && hidden) {
+            animateOffset(view, mDefaultOffset);
+        } else if (bottomLayoutHidden && !hidden) {
+            animateOffset(view,  mBottomNavHeight + mDefaultOffset);
+        }
+        hidden = bottomLayoutHidden;
+    }
+
+
+    public static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (!(params instanceof CoordinatorLayout.LayoutParams)) {
+            throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
+        }
+        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams) params)
+                .getBehavior();
+        if (!(behavior instanceof BottomNavigationBehavior)) {
+            throw new IllegalArgumentException(
+                    "The view is not associated with BottomNavigationBehavior");
+        }
+        return (BottomNavigationBehavior<V>) behavior;
+    }
+
     private interface BottomNavigationWithSnackbar {
         void updateSnackbar(CoordinatorLayout parent, View dependency, View child);
     }
@@ -115,6 +140,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
+                if (ViewCompat.getTranslationY(child) != 0) return;
                 int targetPadding = mBottomNavHeight + mSnackbarHeight - mDefaultOffset;
 
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
@@ -137,7 +163,8 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
-                int targetPadding = (mSnackbarHeight +  mBottomNavHeight - mDefaultOffset);
+                if (ViewCompat.getTranslationY(child) != 0) return;
+                int targetPadding = (mSnackbarHeight + mBottomNavHeight - mDefaultOffset);
                 dependency.setPadding(dependency.getPaddingLeft(),
                         dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
                 );

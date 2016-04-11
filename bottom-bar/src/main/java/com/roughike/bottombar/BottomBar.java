@@ -497,6 +497,27 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
+     *  Resets BottomBar translation to normal
+     */
+    public void resetBottomTabLayout() {
+        BottomNavigationBehavior<BottomBar> from =BottomNavigationBehavior.from(this);
+        if (from != null) {
+            from.setHidden(this, false);
+        }
+    }
+
+    /**
+     *    Toggle translation of BottomBar to hidden and visible
+     * @param visible  true resets translation to 0, false translates view to hidden
+     */
+    public void setBottomBarVisible(boolean visible) {
+        BottomNavigationBehavior<BottomBar> from =BottomNavigationBehavior.from(this);
+        if (from != null) {
+            from.setHidden(this, visible);
+        }
+    }
+
+    /**
      * Map a background color for a Tab, that changes the whole BottomBar
      * background color when the Tab is selected.
      *
