@@ -24,7 +24,7 @@ Your uncle Bob's Galaxy S Mini will probably be supported in the future though.
 ## Gimme that Gradle sweetness, pls?
 
 ```groovy
-compile 'com.roughike:bottom-bar:1.3.1'
+compile 'com.roughike:bottom-bar:1.3.2'
 ```
 
 **Maven:**
@@ -32,14 +32,14 @@ compile 'com.roughike:bottom-bar:1.3.1'
 <dependency>
   <groupId>com.roughike</groupId>
   <artifactId>bottom-bar</artifactId>
-  <version>1.3.1</version>
+  <version>1.3.2</version>
   <type>pom</type>
 </dependency>
 ```
 
 ## How?
 
-BottomBar likes Fragments very much, but you can also handle your tab changes by yourself. You can add items by specifying an array of items or **by xml menu resources**.
+You can add items by specifying an array of items or **by xml menu resources**.
 
 #### Adding items from menu resource
 
@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
         mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
-                if (resId == R.id.bottomBarItemOne) {
+                if (menuItemId == R.id.bottomBarItemOne) {
                     // The user selected item number one.
                 }
             }
 
             @Override
             public void onMenuTabReSelected(@IdRes int menuItemId) {
-                if (resId == R.id.bottomBarItemOne) {
+                if (menuItemId == R.id.bottomBarItemOne) {
                     // The user reselected item number one, scroll your content to top.
                 }
             }
@@ -130,6 +130,9 @@ unreadMessages.setAutoShowAfterUnSelection(true);
 ```java
 // Disable the left bar on tablets and behave exactly the same on mobile and tablets instead.
 mBottomBar.noTabletGoodness();
+
+// Show all titles even when there's more than three tabs.
+mBottomBar.useFixedMode();
 
 // Use the dark theme.
 mBottomBar.useDarkTheme();

@@ -123,7 +123,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     // For fragment state restoration
     private boolean mShouldUpdateFragmentInitially;
-    
+
     private int mMaxFixedTabCount = 3;
 
     /**
@@ -429,7 +429,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Set the maximum number of tabs, after which the tabs should be shifting
      * ones with a background color.
-     *
+     * <p/>
      * NOTE: You must call this method before setting any items.
      *
      * @param count maximum number of fixed tabs.
@@ -455,7 +455,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         mMaxFixedTabCount = -1;
     }
-    
+
     /**
      * Call this method in your Activity's onSaveInstanceState
      * to keep the BottomBar's state on configuration change.
@@ -982,6 +982,11 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     protected void setBarVisibility(int visibility) {
+        if (mIsShy) {
+            toggleShyVisibility(visibility == VISIBLE);
+            return;
+        }
+
         if (mOuterContainer != null) {
             mOuterContainer.setVisibility(visibility);
         }
@@ -992,6 +997,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mBackgroundOverlay != null) {
             mBackgroundOverlay.setVisibility(visibility);
+        }
+    }
+
+    /**
+     * Toggle translation of BottomBar to hidden and visible in a CoordinatorLayout.
+     *
+     * @param visible true resets translation to 0, false translates view to hidden
+     */
+    protected void toggleShyVisibility(boolean visible) {
+        BottomNavigationBehavior<BottomBar> from = BottomNavigationBehavior.from(this);
+        if (from != null) {
+            from.setHidden(this, visible);
         }
     }
 
@@ -1236,14 +1253,14 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 if (mIsShiftingMode && !mIgnoreShiftingResize) {
                     if (TAG_BOTTOM_BAR_VIEW_ACTIVE.equals(bottomBarView.getTag())) {
                         params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
                     } else {
                         params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth,
                                 LinearLayout.LayoutParams.WRAP_CONTENT);
                     }
                 } else {
                     params = new LinearLayout.LayoutParams(proposedItemWidth,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
                 }
 
                 bottomBarView.setLayoutParams(params);

@@ -2,7 +2,11 @@
 
 (or: why are you updating this all the time?)
 
-### Newest version: 1.3.1
+### Newest version: 1.3.2
+
+* Now it's possible to use fixed mode (show titles on inactive tabs) even when there's more than three tabs.
+
+### 1.3.1
 
 * Fixed a critical bug in OnLongClickListener behavior (why didn't I see that before?) when using badges.
 
