@@ -2,7 +2,12 @@
 
 (or: why are you updating this all the time?)
 
-### Newest version: 1.3.2
+### Newest version: 1.3.3
+
+* The show / hide methods now behave nicely with CoordinatorLayout.
+* Added alpha animation for the tab titles when using the shifting tabs.
+
+### 1.3.2
 
 * Now it's possible to use fixed mode (show titles on inactive tabs) even when there's more than three tabs.
 
