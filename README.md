@@ -250,6 +250,7 @@ It works nicely with tablets straight out of the box. When the library detects t
 ## Apps using BottomBar
 
   * [FragNav](https://github.com/ncapdevi/FragNav) : An Android Library for managing multiple stacks of Fragments. BottomBar is used in the sample app.
+  * [BottomNavigationBar](https://github.com/pocheshire/BottomNavigationBar) : BottomBar ported to C# for Xamarin developers
   
 Send me a pull request with modified README.md to get a shoutout!
 
