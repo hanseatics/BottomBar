@@ -253,7 +253,7 @@ By default, BottomBar only starts to use the specified `mapColorForTab` value fo
 mBottomBar.setMaxFixedTabs(n-1);
 ```
 
-(where n is the number of tabs: so, if you have a BottomBar with 3 items, you would call `setMaxFixedTabs(2);`
+(where n is the number of tabs: so, if you have a BottomBar with 3 items, you would call `setMaxFixedTabs(2);`)
 
 ## Apps using BottomBar
 
