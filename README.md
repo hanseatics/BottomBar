@@ -1,8 +1,6 @@
 # BottomBar
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/scrolling_demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/demo_shifting.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/screenshot_tablet.png" width="33%" /> 
 
-**Don't send me pull requests just yet, not until the dust settles.**
-
 **[How to contribute](https://github.com/roughike/BottomBar/blob/master/README.md#contributions)**
 
 [Common problems and solutions](https://github.com/roughike/BottomBar/blob/master/README.md#common-problems-and-solutions)
@@ -264,11 +262,9 @@ Send me a pull request with modified README.md to get a shoutout!
 
 ## Contributions
 
-Feel free to create issues. 
+Feel free to create issues and pull requests.
 
-**Don't send me pull requests just yet, not until the dust settles.**
-
-I'm fixing issues and busting my ass to make this library better, _several hours_ every day. Your hard work could be for nothing, as I'm probably fixing / implementing the same problems that you are.
+When creating pull requests, **more is more:** I'd like to see ten small pull requests separated by feature rather than all those combined into a huge one.
 
 ## License
 
