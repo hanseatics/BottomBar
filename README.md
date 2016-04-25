@@ -246,6 +246,14 @@ mBottomBar.attach(findViewById(R.id.fragmentContainer), savedInstanceState);
 
 It works nicely with tablets straight out of the box. When the library detects that the user has a tablet, the BottomBar will become a "LeftBar", just like [in the Material Design Guidelines](https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B3321sZLoP_HSTd3UFY2aEp2ZDg/components_bottomnavigation_usage2.png).
 
+#### The fancy colour changing background animation isn't working!
+By default, BottomBar only starts to use the specified `mapColorForTab` value for the BottomBar background if you have more than three tabs. If you want to enable this functionality for tab bars with three items or less, do the following before you add any items to the BottomBar:
+
+```java
+mBottomBar.setMaxFixedTabs(n-1);
+```
+
+(where n is the number of tabs: so, if you have a BottomBar with 3 items, you would call `setMaxFixedTabs(2);`)
 
 ## Apps using BottomBar
 
