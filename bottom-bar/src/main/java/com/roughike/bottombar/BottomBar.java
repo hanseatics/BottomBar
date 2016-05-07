@@ -1,5 +1,6 @@
 package com.roughike.bottombar;
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -1305,7 +1306,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private void selectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        final ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         int tabPosition = findItemPosition(tab);
@@ -1346,10 +1347,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             titleAnimator.start();
 
-            ViewCompat.animate(tab)
-                    .setDuration(ANIMATION_DURATION)
-                    .translationY(-translationY)
-                    .start();
+            // We only want to animate the icon to avoid moving the title
+            ValueAnimator paddingAnimator =
+                ValueAnimator.ofInt(icon.getPaddingTop(), icon.getPaddingTop() - translationY);
+            paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    icon.setPadding(icon.getPaddingLeft(), (Integer) animation.getAnimatedValue(),
+                        icon.getPaddingRight(), icon.getPaddingBottom());
+                }
+            });
+            paddingAnimator.setDuration(ANIMATION_DURATION);
+            paddingAnimator.start();
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
@@ -1374,7 +1383,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void unselectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
 
-        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        final ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         if (!mIsShiftingMode || mIsTabletMode) {
@@ -1399,6 +1408,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         float scale = mIsShiftingMode ? 0 : 0.86f;
+        int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
 
         if (animate) {
             ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
@@ -1412,10 +1422,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             titleAnimator.start();
 
-            ViewCompat.animate(tab)
-                    .setDuration(ANIMATION_DURATION)
-                    .translationY(0)
-                    .start();
+            ValueAnimator paddingAnimator =
+                ValueAnimator.ofInt(icon.getPaddingTop(), icon.getPaddingTop() + translationY);
+            paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    icon.setPadding(icon.getPaddingLeft(), (Integer) animation.getAnimatedValue(),
+                        icon.getPaddingRight(), icon.getPaddingBottom());
+                }
+            });
+            paddingAnimator.setDuration(ANIMATION_DURATION);
+            paddingAnimator.start();
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
