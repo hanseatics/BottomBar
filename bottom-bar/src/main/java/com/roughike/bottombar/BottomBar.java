@@ -1248,20 +1248,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             mInActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
             mActiveShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.length * 0.1)));
 
+            int height = Math.round(mContext.getResources().getDimension(R.dimen.bb_height));
             for (View bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
                 if (mIsShiftingMode && !mIgnoreShiftingResize) {
                     if (TAG_BOTTOM_BAR_VIEW_ACTIVE.equals(bottomBarView.getTag())) {
-                        params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth, height);
                     } else {
-                        params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth, height);
                     }
                 } else {
-                    params = new LinearLayout.LayoutParams(proposedItemWidth,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params = new LinearLayout.LayoutParams(proposedItemWidth, height);
                 }
 
                 bottomBarView.setLayoutParams(params);
