@@ -1304,6 +1304,37 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            updateTitleBottomPadding();
+        }
+    }
+
+    /**
+     * Material Design specify that there should be a 10dp padding under the text, it seems that
+     * it means 10dp starting from the text baseline.
+     * This method takes care of calculating the amount of padding that needs to be added to the
+     * Title TextView in order to comply with the Material Design specifications.
+     */
+    private void updateTitleBottomPadding() {
+        int childCount = mItemContainer.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View tab = mItemContainer.getChildAt(i);
+            TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+            if (title == null) {
+                continue;
+            }
+            int baseline = title.getBaseline();
+            int height = title.getHeight();
+            int paddingInsideTitle = height - baseline;
+            int missingPadding = mTenDp - paddingInsideTitle;
+            title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
+                title.getPaddingRight(), missingPadding);
+        }
+    }
+
     private void selectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
         final ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
