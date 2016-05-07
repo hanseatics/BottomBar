@@ -1371,7 +1371,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             ViewCompat.setScaleX(title, 1);
             ViewCompat.setScaleY(title, 1);
-            ViewCompat.setTranslationY(tab, -translationY);
+            icon.setPadding(icon.getPaddingLeft(), icon.getPaddingTop() - translationY,
+                icon.getPaddingRight(), icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 1.0f);
