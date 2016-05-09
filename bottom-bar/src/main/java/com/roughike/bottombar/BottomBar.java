@@ -1,6 +1,5 @@
 package com.roughike.bottombar;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -1341,7 +1340,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private void selectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        final ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         int tabPosition = findItemPosition(tab);
@@ -1382,16 +1381,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             // We only want to animate the icon to avoid moving the title
             // Shifting or fixed the padding above icon is always 6dp
-            ValueAnimator paddingAnimator = ValueAnimator.ofInt(icon.getPaddingTop(), mSixDp);
-            paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    icon.setPadding(icon.getPaddingLeft(), (Integer) animation.getAnimatedValue(),
-                        icon.getPaddingRight(), icon.getPaddingBottom());
-                }
-            });
-            paddingAnimator.setDuration(ANIMATION_DURATION);
-            paddingAnimator.start();
+            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), mSixDp, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
@@ -1417,7 +1407,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private void unselectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
 
-        final ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         if (!mIsShiftingMode || mIsTabletMode) {
@@ -1456,17 +1446,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             titleAnimator.start();
 
-            ValueAnimator paddingAnimator =
-                ValueAnimator.ofInt(icon.getPaddingTop(), iconPaddingTop);
-            paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    icon.setPadding(icon.getPaddingLeft(), (Integer) animation.getAnimatedValue(),
-                        icon.getPaddingRight(), icon.getPaddingBottom());
-                }
-            });
-            paddingAnimator.setDuration(ANIMATION_DURATION);
-            paddingAnimator.start();
+            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
