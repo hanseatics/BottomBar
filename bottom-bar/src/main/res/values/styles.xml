@@ -13,10 +13,15 @@
         <item name="android:paddingRight">12dp</item>
     </style>
 
-    <style name="BB_BottomBarItem_Fixed.Title" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">14sp</item>
+    <style name="BB_BottomBarItem_TitleStyle">
+        <!-- Material spec: "Avoid long text labels as these labels do not truncate or wrap." -->
         <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
         <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="BB_BottomBarItem_Fixed.TitleAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="BB_BottomBarItem_Shifting" parent="BB_BottomBarItem">
@@ -24,7 +29,7 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="BB_BottomBarItem_Shifting.Title" parent="BB_BottomBarItem_Fixed.Title">
+    <style name="BB_BottomBarItem_Shifting.TitleAppearance" parent="BB_BottomBarItem_Fixed.TitleAppearance">
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
