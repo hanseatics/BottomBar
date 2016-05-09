@@ -86,8 +86,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mWhiteColor;
 
     private int mScreenWidth;
-    private int mTwoDp;
     private int mTenDp;
+    private int mSixDp;
+    private int mSixteenDp;
+    private int mEightDp;
     private int mMaxFixedItemWidth;
     private int mMaxInActiveShiftingItemWidth;
     private int mInActiveShiftingItemWidth;
@@ -875,8 +877,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
-        mTwoDp = MiscUtils.dpToPixel(mContext, 2);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
+        mSixteenDp = MiscUtils.dpToPixel(mContext, 16);
+        mSixDp = MiscUtils.dpToPixel(mContext, 6);
+        mEightDp = MiscUtils.dpToPixel(mContext, 8);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
         mMaxInActiveShiftingItemWidth = MiscUtils.dpToPixel(mContext, 96);
     }
@@ -1364,8 +1368,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             return;
         }
 
-        int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
-
         if (animate) {
             ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
@@ -1379,8 +1381,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             titleAnimator.start();
 
             // We only want to animate the icon to avoid moving the title
-            ValueAnimator paddingAnimator =
-                ValueAnimator.ofInt(icon.getPaddingTop(), icon.getPaddingTop() - translationY);
+            // Shifting or fixed the padding above icon is always 6dp
+            ValueAnimator paddingAnimator = ValueAnimator.ofInt(icon.getPaddingTop(), mSixDp);
             paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -1402,8 +1404,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             ViewCompat.setScaleX(title, 1);
             ViewCompat.setScaleY(title, 1);
-            icon.setPadding(icon.getPaddingLeft(), icon.getPaddingTop() - translationY,
-                icon.getPaddingRight(), icon.getPaddingBottom());
+            icon.setPadding(icon.getPaddingLeft(), mSixDp, icon.getPaddingRight(),
+                icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 1.0f);
@@ -1440,7 +1442,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         float scale = mIsShiftingMode ? 0 : 0.86f;
-        int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
+        int iconPaddingTop = mIsShiftingMode ? mSixteenDp : mEightDp;
 
         if (animate) {
             ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
@@ -1455,7 +1457,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             titleAnimator.start();
 
             ValueAnimator paddingAnimator =
-                ValueAnimator.ofInt(icon.getPaddingTop(), icon.getPaddingTop() + translationY);
+                ValueAnimator.ofInt(icon.getPaddingTop(), iconPaddingTop);
             paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -1475,7 +1477,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             ViewCompat.setScaleX(title, scale);
             ViewCompat.setScaleY(title, scale);
-            ViewCompat.setTranslationY(tab, 0);
+            icon.setPadding(icon.getPaddingLeft(), iconPaddingTop, icon.getPaddingRight(),
+                icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 0.6f);
