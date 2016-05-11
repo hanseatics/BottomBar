@@ -1330,11 +1330,15 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 continue;
             }
             int baseline = title.getBaseline();
+            // Height already includes any possible top/bottom padding
             int height = title.getHeight();
             int paddingInsideTitle = height - baseline;
             int missingPadding = mTenDp - paddingInsideTitle;
-            title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
-                title.getPaddingRight(), missingPadding);
+            if (missingPadding > 0) {
+                // Only update the padding if really needed
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
+                    title.getPaddingRight(), missingPadding + title.getPaddingBottom());
+            }
         }
     }
 
