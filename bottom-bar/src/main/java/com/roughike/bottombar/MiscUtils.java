@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -43,7 +42,7 @@ import android.widget.TextView;
 class MiscUtils {
     protected static int getColor(Context context, int color) {
         TypedValue tv = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, tv, true);
+        context.getTheme().resolveAttribute(color, tv, true);
         return tv.data;
     }
 
