@@ -380,7 +380,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         selectTab(newTab, animate);
 
         updateSelectedTab(position);
-        shiftingMagic(oldTab, newTab, false);
+        shiftingMagic(oldTab, newTab, animate);
     }
 
     /**
