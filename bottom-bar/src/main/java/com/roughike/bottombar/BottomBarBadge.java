@@ -50,6 +50,7 @@ public class BottomBarBadge extends TextView {
     private boolean isVisible = false;
     private long animationDuration = 150;
     private boolean autoShowAfterUnSelection = false;
+    private boolean autoHideWhenSelection = true;
 
     /**
      * Set the unread / new item / whatever count for this Badge.
@@ -68,6 +69,27 @@ public class BottomBarBadge extends TextView {
      */
     public int getCount() {
         return count;
+    }
+
+    /**
+     * Controls whether you want this Badge to be hidden automatically when the
+     * BottomBar tab containing it is selected.
+     *
+     * @param autoHideWhenSelection false if you don't want this Badge to hide every time
+     *                              the BottomBar tab containing it is selected
+     */
+    public void setAutoHideWhenSelection(boolean autoHideWhenSelection) {
+        this.autoHideWhenSelection = autoHideWhenSelection;
+    }
+
+    /**
+     * Is this Badge automatically hidden after selecting the BottomBar tab that
+     * contains it?
+     *
+     * @return true if this Badge is automatically hidden after selection, otherwise false. Default is true.
+     */
+    public boolean getAutoHideWhenSelection() {
+        return autoHideWhenSelection;
     }
 
     /**
