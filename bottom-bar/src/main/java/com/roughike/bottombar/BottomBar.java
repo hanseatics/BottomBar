@@ -1142,7 +1142,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             BottomBarBadge newBadge = (BottomBarBadge) mOuterContainer
                     .findViewWithTag(mBadgeMap.get(newPosition));
 
-            if (newBadge.getAutoHideWhenSelection()) {
+            if (newBadge.getAutoHideOnSelection()) {
                 newBadge.hide();
             }
         }
