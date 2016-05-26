@@ -85,8 +85,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private int mWhiteColor;
 
     private int mScreenWidth;
-    private int mTwoDp;
     private int mTenDp;
+    private int mSixDp;
+    private int mSixteenDp;
+    private int mEightDp;
     private int mMaxFixedItemWidth;
     private int mMaxInActiveShiftingItemWidth;
     private int mInActiveShiftingItemWidth;
@@ -874,8 +876,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
-        mTwoDp = MiscUtils.dpToPixel(mContext, 2);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
+        mSixteenDp = MiscUtils.dpToPixel(mContext, 16);
+        mSixDp = MiscUtils.dpToPixel(mContext, 6);
+        mEightDp = MiscUtils.dpToPixel(mContext, 8);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
         mMaxInActiveShiftingItemWidth = MiscUtils.dpToPixel(mContext, 96);
     }
@@ -1248,20 +1252,18 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             mInActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
             mActiveShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.length * 0.1)));
 
+            int height = Math.round(mContext.getResources().getDimension(R.dimen.bb_height));
             for (View bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
                 if (mIsShiftingMode && !mIgnoreShiftingResize) {
                     if (TAG_BOTTOM_BAR_VIEW_ACTIVE.equals(bottomBarView.getTag())) {
-                        params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth, height);
                     } else {
-                        params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth, height);
                     }
                 } else {
-                    params = new LinearLayout.LayoutParams(proposedItemWidth,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params = new LinearLayout.LayoutParams(proposedItemWidth, height);
                 }
 
                 bottomBarView.setLayoutParams(params);
@@ -1305,6 +1307,41 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            updateTitleBottomPadding();
+        }
+    }
+
+    /**
+     * Material Design specify that there should be a 10dp padding under the text, it seems that
+     * it means 10dp starting from the text baseline.
+     * This method takes care of calculating the amount of padding that needs to be added to the
+     * Title TextView in order to comply with the Material Design specifications.
+     */
+    private void updateTitleBottomPadding() {
+        int childCount = mItemContainer.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View tab = mItemContainer.getChildAt(i);
+            TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+            if (title == null) {
+                continue;
+            }
+            int baseline = title.getBaseline();
+            // Height already includes any possible top/bottom padding
+            int height = title.getHeight();
+            int paddingInsideTitle = height - baseline;
+            int missingPadding = mTenDp - paddingInsideTitle;
+            if (missingPadding > 0) {
+                // Only update the padding if really needed
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
+                    title.getPaddingRight(), missingPadding + title.getPaddingBottom());
+            }
+        }
+    }
+
     private void selectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
         ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
@@ -1334,8 +1371,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             return;
         }
 
-        int translationY = mIsShiftingMode ? mTenDp : mTwoDp;
-
         if (animate) {
             ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
                     .setDuration(ANIMATION_DURATION)
@@ -1348,10 +1383,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             titleAnimator.start();
 
-            ViewCompat.animate(tab)
-                    .setDuration(ANIMATION_DURATION)
-                    .translationY(-translationY)
-                    .start();
+            // We only want to animate the icon to avoid moving the title
+            // Shifting or fixed the padding above icon is always 6dp
+            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), mSixDp, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
@@ -1364,7 +1398,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             ViewCompat.setScaleX(title, 1);
             ViewCompat.setScaleY(title, 1);
-            ViewCompat.setTranslationY(tab, -translationY);
+            icon.setPadding(icon.getPaddingLeft(), mSixDp, icon.getPaddingRight(),
+                icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 1.0f);
@@ -1401,6 +1436,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         float scale = mIsShiftingMode ? 0 : 0.86f;
+        int iconPaddingTop = mIsShiftingMode ? mSixteenDp : mEightDp;
 
         if (animate) {
             ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
@@ -1414,10 +1450,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
             titleAnimator.start();
 
-            ViewCompat.animate(tab)
-                    .setDuration(ANIMATION_DURATION)
-                    .translationY(0)
-                    .start();
+            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
@@ -1428,7 +1461,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         } else {
             ViewCompat.setScaleX(title, scale);
             ViewCompat.setScaleY(title, scale);
-            ViewCompat.setTranslationY(tab, 0);
+            icon.setPadding(icon.getPaddingLeft(), iconPaddingTop, icon.getPaddingRight(),
+                icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
                 ViewCompat.setAlpha(icon, 0.6f);
