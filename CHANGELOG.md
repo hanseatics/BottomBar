@@ -2,7 +2,15 @@
 
 (or: why are you updating this all the time?)
 
-### Newest version: 1.3.3
+### Newest version: 1.3.4
+
+* Now the BottomBar is 56dp tall, as it should be! Make sure your icons are 24dp and **untrimmed**, meaning that the whole png size musn't be more than 24dp.
+* Fixed a minor bug when programmatically selecting a tab.
+* Added a ```setAutoHideOnSelection(boolean autoHideOnSelection)``` method for the BottomBarBadge to control whether it is automatically hidden after the tab that contains it is selected or not. 
+* Titles are now forced to be single line, make sure your title texts are short enough, or else they'll get truncated with a "..." !
+* Updated some dependencies and Gradle.
+
+### 1.3.3
 
 * The show / hide methods now behave nicely with CoordinatorLayout.
 * Added alpha animation for the tab titles when using the shifting tabs.
