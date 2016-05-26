@@ -42,7 +42,7 @@ import android.widget.TextView;
 class MiscUtils {
     protected static int getColor(Context context, int color) {
         TypedValue tv = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, tv, true);
+        context.getTheme().resolveAttribute(color, tv, true);
         return tv.data;
     }
 
