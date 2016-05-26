@@ -11,8 +11,6 @@
 
 A custom view component that mimics the new [Material Design Bottom Navigation pattern](https://www.google.com/design/spec/components/bottom-navigation.html).
 
-**(currently under active development, expect to see new releases almost daily)**
-
 ## Does it work on my Grandpa Gary's HTC Dream?
 
 Nope. The current minSDK version is **API level 11 (Honeycomb).**
