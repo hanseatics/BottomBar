@@ -132,7 +132,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
      * <p/>
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * Remember to also call {@link #onSaveInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param activity           an Activity to attach to.
