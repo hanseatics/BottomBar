@@ -121,6 +121,9 @@ unreadMessages.setAnimationDuration(200);
 
 // If you want the badge be shown always after unselecting the tab that contains it.
 unreadMessages.setAutoShowAfterUnSelection(true);
+
+// If you don't want this badge to be hidden after selecting the tab contains it.
+unreadMessages.setAutoShowAfterUnSelection(false);
 ```
 
 ## Customization
