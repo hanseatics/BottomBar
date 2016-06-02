@@ -380,6 +380,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * Set a listener that gets fired when the selected tab changes, when the
      * tabs are created from an XML menu resource file.
      *
+     * Note: If listener is set after items are added to the BottomBar, onMenuTabSelected
+     * will be immediately called for the currently selected tab
+     *
      * @param listener a listener for monitoring changes in tab selection.
      */
     public void setOnMenuTabClickListener(@Nullable OnMenuTabClickListener listener) {
