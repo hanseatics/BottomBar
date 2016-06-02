@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -299,9 +300,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set tabs for this BottomBar. When setting more than 3 items,
-     * only the icons will show by default, but the selected item
-     * will have the text visible.
+     * Set items for this BottomBar.
+     *
+     * When setting more than 3 items, only the icons will show by
+     * default, but the selected item will have the text visible.
      *
      * @param bottomBarTabs an array of {@link BottomBarTab} objects.
      */
@@ -310,9 +312,23 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mItems = bottomBarTabs;
         updateItems(mItems);
     }
+    /**
+     * Set items for this BottomBar from an XML menu resource file.
+     *
+     * When setting more than 3 items, only the icons will show by
+     * default, but the selected item will have the text visible.
+     *
+     * @param menuRes  the menu resource to inflate items from.
+     */
+    public void setItems(@MenuRes int menuRes) {
+        clearItems();
+        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
+        updateItems(mItems);
+    }
 
     /**
-     * Deprecated. Use {@link #setItemsFromMenu(int, OnMenuTabClickListener)} instead.
+     * Deprecated. Use {@link #setItems(int)} and
+     * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
      */
     @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
@@ -323,11 +339,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set items from an XML menu resource file.
-     *
-     * @param menuRes  the menu resource to inflate items from.
-     * @param listener listener for tab change events.
+     * Deprecated. Use {@link #setItems(int)} and
+     * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
      */
+    @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabClickListener listener) {
         clearItems();
         mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
@@ -358,6 +373,21 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
         if (mItems != null && mItems.length > 0) {
             listener.onTabSelected(mCurrentTabPosition);
+        }
+    }
+
+    /**
+     * Set a listener that gets fired when the selected tab changes, when the
+     * tabs are created from an XML menu resource file.
+     *
+     * @param listener a listener for monitoring changes in tab selection.
+     */
+    public void setOnMenuTabClickListener(@Nullable OnMenuTabClickListener listener) {
+        mMenuListener = listener;
+
+        if (mMenuListener != null && mItems != null && mItems.length > 0
+                && mItems instanceof BottomBarTab[]) {
+            listener.onMenuTabSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
         }
     }
 
