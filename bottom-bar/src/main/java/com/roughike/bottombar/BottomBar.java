@@ -357,8 +357,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      *
      * @param listener a listener for monitoring changes in tab selection.
      */
-    @Nullable
-    public void setOnTabClickListener(OnTabClickListener listener) {
+    public void setOnTabClickListener(@Nullable OnTabClickListener listener) {
         mListener = listener;
 
         if (mListener != null && mItems != null && mItems.length > 0) {
