@@ -179,6 +179,7 @@ public class BottomBarBadge extends TextView {
         parent.removeView(tabToAddTo);
 
         container.setTag(tabToAddTo.getTag());
+        tabToAddTo.setTag(null);
         container.addView(tabToAddTo);
         container.addView(this);
 
