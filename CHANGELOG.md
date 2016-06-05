@@ -4,7 +4,7 @@
 
 ### Newest version: 1.3.4
 
-* Now the BottomBar is 56dp tall, as it should be! Make sure your icons are 24dp and **untrimmed**, meaning that the whole png size musn't be more than 24dp.
+* Now the BottomBar is 56dp tall, as it should be! Make sure your icons are 24dp and **trimmed**, meaning that the whole png size musn't be more than 24dp. So **don't use padding** around the icon.
 * Fixed a minor bug when programmatically selecting a tab.
 * Added a ```setAutoHideOnSelection(boolean autoHideOnSelection)``` method for the BottomBarBadge to control whether it is automatically hidden after the tab that contains it is selected or not. 
 * Titles are now forced to be single line, make sure your title texts are short enough, or else they'll get truncated with a "..." !
