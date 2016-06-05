@@ -1508,14 +1508,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         return position;
     }
 
-    /**
-     * remove bottom bar badge at index
-     */
-    public void removeBadgeAt(int tabPosition) {
-        mBadgeMap.remove(tabPosition);
-        mBadgeStateMap.remove(tabPosition);
-    }
-
     private void updateCurrentFragment() {
         if (!mShouldUpdateFragmentInitially && mFragmentManager != null
                 && mFragmentContainer != 0
