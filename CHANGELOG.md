@@ -2,7 +2,13 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.3.5
+### Newest version: 1.3.6
+
+* Fixed a bug that would cause the navigation bar to not be transparent.
+* Flattened View hierarchy.
+* Throwing a nice little Exception if someone tries to call ```noResizeGoodness()``` improperly, instead of just failing silently.
+
+### 1.3.5
 
 * [Merged](https://github.com/roughike/BottomBar/pull/260) [some](https://github.com/roughike/BottomBar/pull/268) [pull](https://github.com/roughike/BottomBar/pull/269) [requests.](https://github.com/roughike/BottomBar/pull/271)
 * Thanks to @henhal, now the unselection bug when using badges is fixed.
