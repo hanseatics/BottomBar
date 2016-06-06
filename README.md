@@ -39,7 +39,7 @@ You can add items by specifying an array of items or **by xml menu resources**.
 
 #### Creating the icons
 
-The icons must be fully opaque, solid color, 24dp and **with no padding**. [With Android Asset Studio Generic Icon generator](https://romannurik.github.io/AndroidAssetStudio/icons-generic.html), select "TRIM" and make sure the padding is 0dp. Here's what your icons should look like:
+The icons must be fully opaque, solid color, 24dp and **with no padding**. For example, [with Android Asset Studio Generic Icon generator](https://romannurik.github.io/AndroidAssetStudio/icons-generic.html), select "TRIM" and make sure the padding is 0dp. Here's what your icons should look like:
 
 ![Sample icons](https://raw.githubusercontent.com/roughike/BottomBar/master/icons-howto.png)
 
