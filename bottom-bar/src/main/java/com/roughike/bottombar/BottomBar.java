@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ import java.util.HashMap;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
+public class BottomBar extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final long ANIMATION_DURATION = 150;
 
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
@@ -924,9 +925,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mIsTabletMode = !mIgnoreTabletLayout &&
                 mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         ViewCompat.setElevation(this, MiscUtils.dpToPixel(mContext, 8));
-        View rootView = View.inflate(mContext, mIsTabletMode ?
+        View rootView = inflate(mContext, mIsTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
-                null);
+                this);
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
 
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
@@ -978,8 +979,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 }
             });
         }
-
-        addView(rootView);
     }
 
     /**
