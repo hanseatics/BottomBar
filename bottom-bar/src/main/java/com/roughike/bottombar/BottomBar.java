@@ -1618,6 +1618,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 (!(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier)))) {
             return;
         }
+
         /**
          * Copy-paste coding made possible by:
          * http://stackoverflow.com/a/14871974/940036
