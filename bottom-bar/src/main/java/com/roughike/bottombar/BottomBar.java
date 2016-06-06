@@ -813,6 +813,12 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * is ignored.
      */
     public void noResizeGoodness() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call noResizeGoodness() before setting the items, preferably " +
+                    "right after attaching it to your layout.");
+        }
+
         mIgnoreShiftingResize = true;
     }
 
