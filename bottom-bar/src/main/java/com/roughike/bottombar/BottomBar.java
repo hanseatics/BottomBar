@@ -1594,6 +1594,8 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     private static void navBarMagic(Activity activity, final BottomBar bottomBar) {
         Resources res = activity.getResources();
 
+        int softMenuIdentifier = res
+                .getIdentifier("config_showNavigationBar", "bool", "android");
         int navBarIdentifier = res.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         int navBarHeight = 0;
@@ -1612,6 +1614,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
             return;
         }
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 &&
+                (!(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier)))) {
+            return;
+        }
         /**
          * Copy-paste coding made possible by:
          * http://stackoverflow.com/a/14871974/940036
