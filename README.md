@@ -37,6 +37,12 @@ compile 'com.roughike:bottom-bar:1.3.5'
 
 You can add items by specifying an array of items or **by xml menu resources**.
 
+#### Creating the icons
+
+The icons must be fully opaque, solid color, 24dp and **with no padding**. [With Android Asset Studio Generic Icon generator](https://romannurik.github.io/AndroidAssetStudio/icons-generic.html), select "TRIM" and make sure the padding is 0dp. Here's what your icons should look like:
+
+![Sample icons](https://raw.githubusercontent.com/roughike/BottomBar/master/icons-howto.png)
+
 #### Adding items from menu resource
 
 **res/menu/bottombar_menu.xml:**
