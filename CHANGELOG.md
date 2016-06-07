@@ -7,7 +7,7 @@
 * Merged a [PR that fixes elliptical Badges](https://github.com/roughike/BottomBar/pull/275).
 * Fixed issues [#276](https://github.com/roughike/BottomBar/issues/276) and [#277](https://github.com/roughike/BottomBar/issues/277)
 
-### Newest version: 1.3.6
+### 1.3.6
 
 * Fixed a bug that would cause the navigation bar to not be transparent.
 * Flattened View hierarchy.
