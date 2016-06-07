@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.MenuRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +54,7 @@ import java.util.HashMap;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBar extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
+public class BottomBar extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final long ANIMATION_DURATION = 150;
 
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
@@ -132,7 +134,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
      * <p/>
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * Remember to also call {@link #onSaveInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param activity           an Activity to attach to.
@@ -299,9 +301,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set tabs for this BottomBar. When setting more than 3 items,
-     * only the icons will show by default, but the selected item
-     * will have the text visible.
+     * Set items for this BottomBar.
+     *
+     * When setting more than 3 items, only the icons will show by
+     * default, but the selected item will have the text visible.
      *
      * @param bottomBarTabs an array of {@link BottomBarTab} objects.
      */
@@ -310,9 +313,23 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mItems = bottomBarTabs;
         updateItems(mItems);
     }
+    /**
+     * Set items for this BottomBar from an XML menu resource file.
+     *
+     * When setting more than 3 items, only the icons will show by
+     * default, but the selected item will have the text visible.
+     *
+     * @param menuRes  the menu resource to inflate items from.
+     */
+    public void setItems(@MenuRes int menuRes) {
+        clearItems();
+        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
+        updateItems(mItems);
+    }
 
     /**
-     * Deprecated. Use {@link #setItemsFromMenu(int, OnMenuTabClickListener)} instead.
+     * Deprecated. Use {@link #setItems(int)} and
+     * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
      */
     @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
@@ -323,11 +340,10 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     }
 
     /**
-     * Set items from an XML menu resource file.
-     *
-     * @param menuRes  the menu resource to inflate items from.
-     * @param listener listener for tab change events.
+     * Deprecated. Use {@link #setItems(int)} and
+     * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
      */
+    @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabClickListener listener) {
         clearItems();
         mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
@@ -351,13 +367,34 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
     /**
      * Set a listener that gets fired when the selected tab changes.
      *
+     * Note: If listener is set after items are added to the BottomBar, onTabSelected
+     * will be immediately called for the currently selected tab
+     *
      * @param listener a listener for monitoring changes in tab selection.
      */
-    public void setOnTabClickListener(OnTabClickListener listener) {
+    public void setOnTabClickListener(@Nullable OnTabClickListener listener) {
         mListener = listener;
 
-        if (mItems != null && mItems.length > 0) {
+        if (mListener != null && mItems != null && mItems.length > 0) {
             listener.onTabSelected(mCurrentTabPosition);
+        }
+    }
+
+    /**
+     * Set a listener that gets fired when the selected tab changes, when the
+     * tabs are created from an XML menu resource file.
+     *
+     * Note: If listener is set after items are added to the BottomBar, onMenuTabSelected
+     * will be immediately called for the currently selected tab
+     *
+     * @param listener a listener for monitoring changes in tab selection.
+     */
+    public void setOnMenuTabClickListener(@Nullable OnMenuTabClickListener listener) {
+        mMenuListener = listener;
+
+        if (mMenuListener != null && mItems != null && mItems.length > 0
+                && mItems instanceof BottomBarTab[]) {
+            listener.onMenuTabSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
         }
     }
 
@@ -776,6 +813,12 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
      * is ignored.
      */
     public void noResizeGoodness() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call noResizeGoodness() before setting the items, preferably " +
+                    "right after attaching it to your layout.");
+        }
+
         mIgnoreShiftingResize = true;
     }
 
@@ -888,9 +931,9 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         mIsTabletMode = !mIgnoreTabletLayout &&
                 mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         ViewCompat.setElevation(this, MiscUtils.dpToPixel(mContext, 8));
-        View rootView = View.inflate(mContext, mIsTabletMode ?
+        View rootView = inflate(mContext, mIsTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
-                null);
+                this);
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
 
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
@@ -942,8 +985,6 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
                 }
             });
         }
-
-        addView(rootView);
     }
 
     /**
@@ -1557,6 +1598,7 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
 
     private static void navBarMagic(Activity activity, final BottomBar bottomBar) {
         Resources res = activity.getResources();
+
         int softMenuIdentifier = res
                 .getIdentifier("config_showNavigationBar", "bool", "android");
         int navBarIdentifier = res.getIdentifier("navigation_bar_height",
@@ -1568,13 +1610,17 @@ public class BottomBar extends FrameLayout implements View.OnClickListener, View
         }
 
         if (!bottomBar.drawBehindNavBar()
-                || navBarHeight == 0
-                || (!(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier)))) {
+                || navBarHeight == 0) {
             return;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
                 && ViewConfiguration.get(activity).hasPermanentMenuKey()) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 &&
+                (!(softMenuIdentifier > 0 && res.getBoolean(softMenuIdentifier)))) {
             return;
         }
 
