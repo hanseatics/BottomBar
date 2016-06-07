@@ -7,6 +7,12 @@
     android:padding="16dp"
     tools:ignore="HardcodedText">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Check out these samples and their sources for the most basic use cases.\n\nIMPORTANT: These samples look a bit different on tablets. If you want same behavior for tablets and phones, use mBottomBar.noTabletGoodness();"
+        android:layout_marginBottom="16dp" />
+
     <Button
         android:id="@+id/simple_three_tabs"
         android:layout_width="wrap_content"
