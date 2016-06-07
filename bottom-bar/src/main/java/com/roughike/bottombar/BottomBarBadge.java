@@ -203,8 +203,11 @@ public class BottomBarBadge extends TextView {
         setTranslationY(10);
 
         int size = Math.max(getWidth(), getHeight());
-        getLayoutParams().width = size;
-        getLayoutParams().height = size;
+
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.width = size;
+        params.height = size;
+        setLayoutParams(params);
     }
 
     @SuppressWarnings("deprecation")
