@@ -56,7 +56,12 @@ class MiscUtils {
     protected static int dpToPixel(Context context, float dp) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        return (int) (dp * (metrics.densityDpi / 160f));
+
+        try {
+            return (int) (dp * (metrics.densityDpi / 160f));
+        } catch (NoSuchFieldError ignored) {
+            return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, metrics);
+        }
     }
 
     /**
