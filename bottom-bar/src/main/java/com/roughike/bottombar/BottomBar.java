@@ -1366,7 +1366,12 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * Title TextView in order to comply with the Material Design specifications.
      */
     private void updateTitleBottomPadding() {
+        if (mItemContainer == null) {
+            return;
+        }
+
         int childCount = mItemContainer.getChildCount();
+
         for (int i = 0; i < childCount; i++) {
             View tab = mItemContainer.getChildAt(i);
             TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
