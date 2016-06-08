@@ -17,6 +17,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -600,7 +600,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
             for (int i = 0; i < mItemContainer.getChildCount(); i++) {
                 View bottomBarTab = mItemContainer.getChildAt(i);
-                ((ImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
+                ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
                         .setColorFilter(mWhiteColor);
 
                 if (i == mCurrentTabPosition) {
@@ -1241,7 +1241,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             }
 
             View bottomBarTab = View.inflate(mContext, layoutResource, null);
-            ImageView icon = (ImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
+            AppCompatImageView icon = (AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
 
             icon.setImageDrawable(bottomBarItemBase.getIcon(mContext));
 
@@ -1393,7 +1393,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private void selectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         int tabPosition = findItemPosition(tab);
@@ -1460,7 +1460,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private void unselectTab(View tab, boolean animate) {
         tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
 
-        ImageView icon = (ImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
+        AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
         if (!mIsShiftingMode || mIsTabletMode) {

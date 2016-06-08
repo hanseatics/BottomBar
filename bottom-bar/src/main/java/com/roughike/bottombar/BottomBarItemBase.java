@@ -19,7 +19,8 @@ package com.roughike.bottombar;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 
 /*
  * BottomBar library for Android
@@ -46,7 +47,7 @@ class BottomBarItemBase {
     
     protected Drawable getIcon(Context context) {
         if (this.iconResource != 0) {
-            return ContextCompat.getDrawable(context, this.iconResource);
+            return AppCompatDrawableManager.get().getDrawable(context, iconResource);
         } else {
             return this.icon;
         }
