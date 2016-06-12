@@ -172,7 +172,7 @@ public class BottomBarBadge extends TextView {
         setPadding(three, three, three, three);
         setBackgroundCompat(backgroundCircle);
 
-        FrameLayout container = new FrameLayout(context);
+        final FrameLayout container = new FrameLayout(context);
         container.setLayoutParams(params);
 
         ViewGroup parent = (ViewGroup) tabToAddTo.getParent();
@@ -189,6 +189,8 @@ public class BottomBarBadge extends TextView {
             @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
+                container.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
                 adjustPositionAndSize(tabToAddTo);
             }
         });
