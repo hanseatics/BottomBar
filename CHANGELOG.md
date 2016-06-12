@@ -2,7 +2,11 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.3.7
+### Newest version: 1.3.8
+
+* Merged a [PR that fixes infinite loop caused by a layout listener when adding Badges.](https://github.com/roughike/BottomBar/pull/286)
+
+### 1.3.7
 
 * Merged a [PR that fixes elliptical Badges](https://github.com/roughike/BottomBar/pull/275).
 * Fixed issues [#276](https://github.com/roughike/BottomBar/issues/276) and [#277](https://github.com/roughike/BottomBar/issues/277)
