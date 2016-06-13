@@ -2,7 +2,11 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.3.8
+### Newest version: 1.3.9
+
+* Merged [another PR that should get rid of the infinite Badge loop for good](https://github.com/roughike/BottomBar/pull/289).
+
+### 1.3.8
 
 * Merged a [PR that fixes infinite loop caused by a layout listener when adding Badges.](https://github.com/roughike/BottomBar/pull/286)
 
