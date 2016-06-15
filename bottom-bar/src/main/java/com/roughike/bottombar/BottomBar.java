@@ -116,6 +116,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private boolean mIsDarkTheme;
     private boolean mIgnoreNightMode;
     private boolean mIgnoreShiftingResize;
+    private boolean mIgnoreScalingResize;
 
     private int mCustomActiveTabColor;
 
@@ -808,7 +809,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Don't resize the tabs when selecting a new one, so every tab is the same0 if you have more than three
+     * Don't resize the tabs when selecting a new one, so every tab is the same if you have more than three
      * tabs. The text still displays the scale animation and the icon moves up, but the badass width animation
      * is ignored.
      */
@@ -820,6 +821,20 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         mIgnoreShiftingResize = true;
+    }
+
+    /**
+     * Don't animate the scaling of the text when selecting a new tab. The text still displays the badass width animation,
+     * but the scale animation is ignored.
+     */
+    public void noScalingGoodness() {
+        if (mItems != null) {
+            throw new UnsupportedOperationException("This BottomBar already has items! " +
+                    "You must call noScalingGoodness() before setting the items, preferably " +
+                    "right after attaching it to your layout.");
+        }
+
+        mIgnoreScalingResize = true;
     }
 
     /**
@@ -1067,8 +1082,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
             View oldTab = findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
 
-            unselectTab(oldTab, true);
-            selectTab(v, true);
+            unselectTab(oldTab, !mIgnoreScalingResize);
+            selectTab(v, !mIgnoreScalingResize);
 
             shiftingMagic(oldTab, v, true);
         }
