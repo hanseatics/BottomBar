@@ -3,6 +3,7 @@ package com.example.bottombar.sample;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +30,8 @@ public class CustomColorActivity extends AppCompatActivity {
         // Customize the colors here
         mBottomBar = BottomBar.attach(this, savedInstanceState,
                 Color.parseColor("#FFFFFF"), // Background Color
-                Color.parseColor("#0DA5F2"), // Tab Item Color
-                0.25f);                      // Tab Item Alpha
+                ContextCompat.getColor(this, R.color.colorAccent), // Tab Item Color
+                0.25f); // Tab Item Alpha
 
         mBottomBar.setItems(R.menu.bottombar_menu);
 
