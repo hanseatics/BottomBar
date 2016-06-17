@@ -81,10 +81,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private View mTabletRightBorder;
     private View mPendingUserContentView;
 
-    private int mPrimaryColor;
-    private int mInActiveColor;
-    private int mDarkBackgroundColor;
-    private int mWhiteColor;
+    private Integer mPrimaryColor;
+    private Integer mInActiveColor;
+    private Integer mDarkBackgroundColor;
+    private Integer mWhiteColor;
+    private float mTabAlpha = 0.6f;
 
     private int mScreenWidth;
     private int mTenDp;
@@ -143,6 +144,20 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      */
     public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
         BottomBar bottomBar = new BottomBar(activity);
+        bottomBar.onRestoreInstanceState(savedInstanceState);
+
+        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
+        View oldLayout = contentView.getChildAt(0);
+        contentView.removeView(oldLayout);
+
+        bottomBar.setPendingUserContentView(oldLayout);
+        contentView.addView(bottomBar, 0);
+
+        return bottomBar;
+    }
+
+    public static BottomBar attach(Activity activity, Bundle savedInstanceState, int backgroundColor, int activeIconColor, float alpha) {
+        BottomBar bottomBar = new BottomBar(activity, backgroundColor, activeIconColor, alpha);
         bottomBar.onRestoreInstanceState(savedInstanceState);
 
         ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
@@ -894,6 +909,14 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         init(context, null, 0, 0);
     }
 
+    public BottomBar(Context context, int backgroundColor, int activeColor, float alpha) {
+        super(context);
+        mTabAlpha = alpha;
+        mWhiteColor = activeColor;
+        mPrimaryColor = backgroundColor;
+        init(context, null, 0, 0);
+    }
+
     public BottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0, 0);
@@ -914,9 +937,22 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mContext = context;
 
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
-        mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
-        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-        mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+
+
+        if (mWhiteColor == null) {
+            mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
+            mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
+            mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+        }
+
+        //mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
+        //mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
+        //mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+
+
+        //mWhiteColor = Color.parseColor("#000000");
+        //mPrimaryColor = Color.parseColor("#555555");
+        //mInActiveColor = Color.parseColor("#ffffff");
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
@@ -937,6 +973,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
 
         mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
+
         mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
 
         mOuterContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
@@ -1406,6 +1443,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             if (title != null) {
                 title.setTextColor(activeColor);
             }
+        } else {
+            title.setTextColor(mWhiteColor);
         }
 
         if (mIsDarkTheme) {
@@ -1474,10 +1513,10 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
         if (mIsDarkTheme) {
             if (title != null) {
-                ViewCompat.setAlpha(title, 0.6f);
+                ViewCompat.setAlpha(title, mTabAlpha);
             }
 
-            ViewCompat.setAlpha(icon, 0.6f);
+            ViewCompat.setAlpha(icon, mTabAlpha);
         }
 
         if (title == null) {
@@ -1504,7 +1543,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
                         .setDuration(ANIMATION_DURATION)
-                        .alpha(0.6f)
+                        .alpha(mTabAlpha)
                         .start();
             }
         } else {
@@ -1514,7 +1553,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                 icon.getPaddingBottom());
 
             if (mIsShiftingMode) {
-                ViewCompat.setAlpha(icon, 0.6f);
+                ViewCompat.setAlpha(icon, mTabAlpha);
                 ViewCompat.setAlpha(title, 0);
             }
         }

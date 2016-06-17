@@ -17,12 +17,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ThreeTabsActivity" />
         <activity android:name=".FiveColorChangingTabsActivity" />
         <activity android:name=".ThreeTabsQRActivity" />
         <activity android:name=".BadgeActivity" />
-
+        <activity
+            android:name=".CustomColorActivity"
+            android:label="@string/title_activity_custom_color"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
