@@ -1,9 +1,9 @@
 package com.example.bottombar.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,7 +13,7 @@ import com.roughike.bottombar.OnMenuTabClickListener;
 /**
  * Created by iiro on 7.6.2016.
  */
-public class ThreeTabsActivity extends AppCompatActivity {
+public class ThreeTabsActivity extends Activity {
     private BottomBar mBottomBar;
     private TextView mMessageView;
 
