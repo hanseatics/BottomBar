@@ -490,7 +490,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     public void useFixedMode() {
         if (mItems != null) {
             throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call the forceFixedMode() method before specifying any items.");
+                    "You must call the useFixedMode() method before specifying any items.");
         }
 
         mMaxFixedTabCount = -1;
