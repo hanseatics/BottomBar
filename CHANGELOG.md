@@ -2,7 +2,14 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.3.9
+### Newest version: 1.4.0
+
+* Started writing some tests. **Contributions more than welcome**, as I'm still a noob when it comes to testing.
+* Merged a [PR that adds support for vector drawables](https://github.com/roughike/BottomBar/pull/280).
+* Merged a [PR that adds support for disabling text scale animation](https://github.com/roughike/BottomBar/pull/298)
+* 
+
+### 1.3.9
 
 * Merged [another PR that should get rid of the infinite Badge loop for good](https://github.com/roughike/BottomBar/pull/289).
 
