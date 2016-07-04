@@ -659,6 +659,40 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
+     * Set a custom color for inactive icons in fixed mode.
+     * <p/>
+     * NOTE: This value is ignored if not in fixed mode.
+     *
+     * @param iconColor a hex color used for icons, such as 0xFF00FF00.
+     */
+    public void setFixedInactiveIconColor(int iconColor) {
+        mInActiveColor = iconColor;
+
+        if (mItems != null && mItems.length > 0) {
+            throw new UnsupportedOperationException("This BottomBar " +
+                    "already has items! You must call setFixedInactiveIconColor() " +
+                    "before setting any items.");
+        }
+    }
+
+    /**
+     * Set a custom color for icons in shifting mode.
+     * <p/>
+     * NOTE: This value is ignored in fixed mode.
+     *
+     * @param iconColor a hex color used for icons, such as 0xFF00FF00.
+     */
+    public void setShiftingIconColor(int iconColor) {
+        mWhiteColor = iconColor;
+
+        if (mItems != null && mItems.length > 0) {
+            throw new UnsupportedOperationException("This BottomBar " +
+                    "already has items! You must call setShiftingIconColor() " +
+                    "before setting any items.");
+        }
+    }
+
+    /**
      * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
      * the specified position.
      *
