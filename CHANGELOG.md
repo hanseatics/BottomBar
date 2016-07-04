@@ -5,9 +5,10 @@
 ### Newest version: 1.4.0
 
 * Started writing some tests. **Contributions more than welcome**, as I'm still a noob when it comes to testing.
-* Merged a [PR that adds support for vector drawables](https://github.com/roughike/BottomBar/pull/280).
+* Merged a [PR that adds support for vector drawables](https://github.com/roughike/BottomBar/pull/280)
 * Merged a [PR that adds support for disabling text scale animation](https://github.com/roughike/BottomBar/pull/298)
-* 
+* Merged a [PR that adds support for custom background and tab icon colors, and also custom alpha](https://github.com/roughike/BottomBar/pull/302)
+* Merged a [PR that fixes wrong method name for message shown by an exception](https://github.com/roughike/BottomBar/pull/320)
 
 ### 1.3.9
 
