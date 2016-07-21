@@ -2,7 +2,11 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.4.0
+### Newest version: 1.4.0.1
+
+* Merged a [PR that fixes removing all tabs from BottomBar](https://github.com/roughike/BottomBar/pull/339)
+
+### 1.4.0
 
 * Started writing some tests. **Contributions more than welcome**, as I'm still a noob when it comes to testing.
 * Merged a [PR that adds support for vector drawables](https://github.com/roughike/BottomBar/pull/280)
