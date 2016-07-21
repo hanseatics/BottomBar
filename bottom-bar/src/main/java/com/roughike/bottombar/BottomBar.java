@@ -208,7 +208,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Deprecated. Breaks support for tablets.
-     * Use {@link #attachShy(CoordinatorLayout, View, Bundle)} instead.
+     * Use #attachShy(CoordinatorLayout, View, Bundle) instead.
      */
     @Deprecated
     public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, Bundle savedInstanceState) {
