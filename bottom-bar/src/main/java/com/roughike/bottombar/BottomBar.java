@@ -97,8 +97,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private int mInActiveShiftingItemWidth;
     private int mActiveShiftingItemWidth;
 
-    private Object mListener;
-    private Object mMenuListener;
+    private OnTabClickListener mListener;
+    private OnMenuTabClickListener mMenuListener;
 
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
@@ -106,7 +106,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private Object mFragmentManager;
     private int mFragmentContainer;
 
-    private BottomBarItemBase[] mItems;
+    private BottomBarTab[] mItems;
     private HashMap<Integer, Integer> mColorMap;
     private HashMap<Integer, Object> mBadgeMap;
     private HashMap<Integer, Boolean> mBadgeStateMap;
@@ -127,9 +127,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private int mPendingTextAppearance = -1;
     private Typeface mPendingTypeface;
-
-    // For fragment state restoration
-    private boolean mShouldUpdateFragmentInitially;
 
     private int mMaxFixedTabCount = 3;
 
@@ -243,80 +240,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Set tabs and fragments for this BottomBar. When setting more than 3 items,
-     * only the icons will show by default, but the selected item
-     * will have the text visible.
-     *
-     * @param fragmentManager   a FragmentManager for managing the Fragments.
-     * @param containerResource id for the layout to inflate Fragments to.
-     * @param fragmentItems     an array of {@link BottomBarFragment} objects.
-     */
-    public void setFragmentItems(android.app.FragmentManager fragmentManager, @IdRes int containerResource,
-                                 BottomBarFragment... fragmentItems) {
-        if (fragmentItems.length > 0) {
-            int index = 0;
-
-            for (BottomBarFragment fragmentItem : fragmentItems) {
-                if (fragmentItem.getFragment() == null
-                        && fragmentItem.getSupportFragment() != null) {
-                    throw new IllegalArgumentException("Conflict: cannot use android.app.FragmentManager " +
-                            "to handle a android.support.v4.app.Fragment object at position " + index +
-                            ". If you want BottomBar to handle support Fragments, use getSupportFragment" +
-                            "Manager() instead of getFragmentManager().");
-                }
-
-                index++;
-            }
-        }
-
-        clearItems();
-        mFragmentManager = fragmentManager;
-        mFragmentContainer = containerResource;
-        mItems = fragmentItems;
-        updateItems(mItems);
-    }
-
-    /**
-     * Deprecated.
-     * 
-     * Use either {@link #setItems(BottomBarTab...)} or
-     * {@link #setItemsFromMenu(int, OnMenuTabClickListener)} and add a listener using
-     * {@link #setOnTabClickListener(OnTabClickListener)} to handle tab changes by yourself.
-     * 
-     * Set tabs and fragments for this BottomBar. When setting more than 3 items,
-     * only the icons will show by default, but the selected item
-     * will have the text visible.
-     *
-     * @param fragmentManager   a FragmentManager for managing the Fragments.
-     * @param containerResource id for the layout to inflate Fragments to.
-     * @param fragmentItems     an array of {@link BottomBarFragment} objects.
-     */
-    @Deprecated
-    public void setFragmentItems(android.support.v4.app.FragmentManager fragmentManager, @IdRes int containerResource,
-                                 BottomBarFragment... fragmentItems) {
-        if (fragmentItems.length > 0) {
-            int index = 0;
-
-            for (BottomBarFragment fragmentItem : fragmentItems) {
-                if (fragmentItem.getSupportFragment() == null
-                        && fragmentItem.getFragment() != null) {
-                    throw new IllegalArgumentException("Conflict: cannot use android.support.v4.app.FragmentManager " +
-                            "to handle a android.app.Fragment object at position " + index +
-                            ". If you want BottomBar to handle normal Fragments, use getFragment" +
-                            "Manager() instead of getSupportFragmentManager().");
-                }
-
-                index++;
-            }
-        }
-        clearItems();
-        mFragmentManager = fragmentManager;
-        mFragmentContainer = containerResource;
-        mItems = fragmentItems;
-        updateItems(mItems);
-    }
-
-    /**
      * Set items for this BottomBar.
      *
      * When setting more than 3 items, only the icons will show by
@@ -348,36 +271,15 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
      */
     @Deprecated
-    public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabSelectedListener listener) {
-        clearItems();
-        mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
-        mMenuListener = listener;
-        updateItems(mItems);
-    }
-
-    /**
-     * Deprecated. Use {@link #setItems(int)} and
-     * {@link #setOnMenuTabClickListener(OnMenuTabClickListener)}instead.
-     */
-    @Deprecated
     public void setItemsFromMenu(@MenuRes int menuRes, OnMenuTabClickListener listener) {
         clearItems();
         mItems = MiscUtils.inflateMenuFromResource((Activity) getContext(), menuRes);
         mMenuListener = listener;
         updateItems(mItems);
 
-        if (mItems != null && mItems.length > 0
-                && mItems instanceof BottomBarTab[]) {
-            listener.onMenuTabSelected(((BottomBarTab) mItems[mCurrentTabPosition]).id);
+        if (mItems != null && mItems.length > 0) {
+            listener.onMenuTabSelected(mItems[mCurrentTabPosition].id);
         }
-    }
-
-    /**
-     * Deprecated. Use {@link #setOnTabClickListener(OnTabClickListener)} instead.
-     */
-    @Deprecated
-    public void setOnItemSelectedListener(OnTabSelectedListener listener) {
-        mListener = listener;
     }
 
     /**
@@ -536,19 +438,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             }
 
             outState.putSerializable(STATE_BADGE_STATES_BUNDLE, mBadgeStateMap);
-        }
-
-        if (mFragmentManager != null
-                && mFragmentContainer != 0
-                && mItems != null
-                && mItems instanceof BottomBarFragment[]) {
-            BottomBarFragment bottomBarFragment = (BottomBarFragment) mItems[mCurrentTabPosition];
-
-            if (bottomBarFragment.getFragment() != null) {
-                bottomBarFragment.getFragment().onSaveInstanceState(outState);
-            } else if (bottomBarFragment.getSupportFragment() != null) {
-                bottomBarFragment.getSupportFragment().onSaveInstanceState(outState);
-            }
         }
     }
 
@@ -1196,56 +1085,32 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             }
 
             if (notifyMenuListener) {
-                notifyMenuListener(mMenuListener, false, ((BottomBarTab) mItems[mCurrentTabPosition]).id);
+                notifyMenuListener(mMenuListener, false, mItems[mCurrentTabPosition].id);
             }
-
-            updateCurrentFragment();
         } else {
             if (notifyRegularListener) {
                 notifyRegularListener(mListener, true, mCurrentTabPosition);
             }
 
             if (notifyMenuListener) {
-                notifyMenuListener(mMenuListener, true, ((BottomBarTab) mItems[mCurrentTabPosition]).id);
+                notifyMenuListener(mMenuListener, true, mItems[mCurrentTabPosition].id);
             }
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void notifyRegularListener(Object listener, boolean isReselection, int position) {
-        if (listener instanceof OnTabClickListener) {
-            OnTabClickListener onTabClickListener = (OnTabClickListener) listener;
-
-            if (!isReselection) {
-                onTabClickListener.onTabSelected(position);
-            } else {
-                onTabClickListener.onTabReSelected(position);
-            }
-        } else if (listener instanceof OnTabSelectedListener) {
-            OnTabSelectedListener onTabSelectedListener = (OnTabSelectedListener) listener;
-
-            if (!isReselection) {
-                onTabSelectedListener.onItemSelected(position);
-            }
+    private void notifyRegularListener(OnTabClickListener listener, boolean isReselection, int position) {
+        if (!isReselection) {
+            listener.onTabSelected(position);
+        } else {
+            listener.onTabReSelected(position);
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void notifyMenuListener(Object listener, boolean isReselection, @IdRes int menuItemId) {
-        if (listener instanceof OnMenuTabClickListener) {
-            OnMenuTabClickListener onMenuTabClickListener = (OnMenuTabClickListener) listener;
-
-            if (!isReselection) {
-                onMenuTabClickListener.onMenuTabSelected(menuItemId);
-            } else {
-                onMenuTabClickListener.onMenuTabReSelected(menuItemId);
-            }
-        } else if (listener instanceof OnMenuTabSelectedListener) {
-            OnMenuTabSelectedListener onMenuTabSelectedListener = (OnMenuTabSelectedListener) listener;
-
-            if (!isReselection) {
-                onMenuTabSelectedListener.onMenuItemSelected(menuItemId);
-            }
+    private void notifyMenuListener(OnMenuTabClickListener listener, boolean isReselection, @IdRes int menuItemId) {
+        if (!isReselection) {
+            listener.onMenuTabSelected(menuItemId);
+        } else {
+            listener.onMenuTabReSelected(menuItemId);
         }
     }
 
@@ -1288,7 +1153,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         return true;
     }
 
-    private void updateItems(final BottomBarItemBase[] bottomBarItems) {
+    private void updateItems(final BottomBarTab[] bottomBarItems) {
         if (mItemContainer == null) {
             initializeViews();
         }
@@ -1316,7 +1181,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
         View[] viewsToAdd = new View[bottomBarItems.length];
 
-        for (BottomBarItemBase bottomBarItemBase : bottomBarItems) {
+        for (BottomBarTab bottomBarItemBase : bottomBarItems) {
             int layoutResource;
 
             if (mIsShiftingMode && !mIsTabletMode) {
@@ -1348,9 +1213,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                 icon.setColorFilter(mWhiteColor);
             }
 
-            if (bottomBarItemBase instanceof BottomBarTab) {
-                bottomBarTab.setId(((BottomBarTab) bottomBarItemBase).id);
-            }
+            bottomBarTab.setId(bottomBarItemBase.id);
 
             if (index == mCurrentTabPosition) {
                 selectTab(bottomBarTab, false);
@@ -1433,7 +1296,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             }
 
             mIsComingFromRestoredState = true;
-            mShouldUpdateFragmentInitially = true;
         }
     }
 
@@ -1640,29 +1502,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         return position;
-    }
-
-    private void updateCurrentFragment() {
-        if (!mShouldUpdateFragmentInitially && mFragmentManager != null
-                && mFragmentContainer != 0
-                && mItems != null
-                && mItems instanceof BottomBarFragment[]) {
-            BottomBarFragment newFragment = ((BottomBarFragment) mItems[mCurrentTabPosition]);
-
-            if (mFragmentManager instanceof android.support.v4.app.FragmentManager
-                    && newFragment.getSupportFragment() != null) {
-                ((android.support.v4.app.FragmentManager) mFragmentManager).beginTransaction()
-                        .replace(mFragmentContainer, newFragment.getSupportFragment())
-                        .commit();
-            } else if (mFragmentManager instanceof android.app.FragmentManager
-                    && newFragment.getFragment() != null) {
-                ((android.app.FragmentManager) mFragmentManager).beginTransaction()
-                        .replace(mFragmentContainer, newFragment.getFragment())
-                        .commit();
-            }
-        }
-
-        mShouldUpdateFragmentInitially = false;
     }
 
     private void clearItems() {

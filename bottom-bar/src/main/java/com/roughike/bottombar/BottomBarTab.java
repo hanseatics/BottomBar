@@ -1,9 +1,11 @@
 package com.roughike.bottombar;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.AppCompatDrawableManager;
 
 /*
  * BottomBar library for Android
@@ -21,8 +23,13 @@ import android.support.annotation.StringRes;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBarTab extends BottomBarItemBase {
+public class BottomBarTab {
+    private int titleResource;
+    private Drawable icon;
+    private int iconResource;
+    private String title;
     protected int id = -1;
+
     /**
      * Creates a new Tab for the BottomBar.
      *
@@ -65,5 +72,23 @@ public class BottomBarTab extends BottomBarItemBase {
     public BottomBarTab(@DrawableRes int iconResource, @StringRes int titleResource) {
         this.iconResource = iconResource;
         this.titleResource = titleResource;
+    }
+
+
+
+    protected Drawable getIcon(Context context) {
+        if (this.iconResource != 0) {
+            return AppCompatDrawableManager.get().getDrawable(context, iconResource);
+        } else {
+            return this.icon;
+        }
+    }
+
+    protected String getTitle(Context context) {
+        if (this.titleResource != 0) {
+            return context.getString(this.titleResource);
+        } else {
+            return this.title;
+        }
     }
 }
