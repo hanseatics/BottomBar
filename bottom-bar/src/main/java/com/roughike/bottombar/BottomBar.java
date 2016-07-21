@@ -135,7 +135,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
-     * <p/>
+     * 
      * Remember to also call {@link #onSaveInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
@@ -179,7 +179,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * Bind the BottomBar to the specified View's parent, and inflate
      * your layout there. Useful when the BottomBar overlaps some content
      * that shouldn't be overlapped.
-     * <p/>
+     * 
      * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
@@ -218,7 +218,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     /**
      * Adds the BottomBar inside of your CoordinatorLayout and shows / hides
      * it according to scroll state changes.
-     * <p/>
+     * 
      * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
@@ -278,11 +278,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Deprecated.
-     * <p/>
+     * 
      * Use either {@link #setItems(BottomBarTab...)} or
      * {@link #setItemsFromMenu(int, OnMenuTabClickListener)} and add a listener using
      * {@link #setOnTabClickListener(OnTabClickListener)} to handle tab changes by yourself.
-     * <p/>
+     * 
      * Set tabs and fragments for this BottomBar. When setting more than 3 items,
      * only the icons will show by default, but the selected item
      * will have the text visible.
@@ -485,7 +485,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     /**
      * Set the maximum number of tabs, after which the tabs should be shifting
      * ones with a background color.
-     * <p/>
+     * 
      * NOTE: You must call this method before setting any items.
      *
      * @param count maximum number of fixed tabs.
@@ -605,7 +605,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Use dark theme instead of the light one.
-     * <p/>
+     * 
      * NOTE: You might want to change your active tab color to something else
      * using {@link #setActiveTabColor(int)}, as the default primary color might
      * not have enough contrast for the dark background.
@@ -647,7 +647,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     /**
      * Set a custom color for an active tab when there's three
      * or less items.
-     * <p/>
+     * 
      * NOTE: This value is ignored on mobile devices if you have more than
      * three items.
      *
@@ -660,7 +660,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     /**
      * Set a custom color for an active tab when there's three
      * or less items.
-     * <p/>
+     * 
      * NOTE: This value is ignored if you have more than three items.
      *
      * @param activeTabColor a hex color used for active tabs, such as 0xFF00FF00.
@@ -675,7 +675,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Set a custom color for inactive icons in fixed mode.
-     * <p/>
+     * 
      * NOTE: This value is ignored if not in fixed mode.
      *
      * @param iconColor a hex color used for icons, such as 0xFF00FF00.
@@ -692,7 +692,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Set a custom color for icons in shifting mode.
-     * <p/>
+     * 
      * NOTE: This value is ignored in fixed mode.
      *
      * @param iconColor a hex color used for icons, such as 0xFF00FF00.
