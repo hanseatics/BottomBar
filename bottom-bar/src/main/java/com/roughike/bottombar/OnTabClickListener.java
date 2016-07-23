@@ -17,6 +17,8 @@ package com.roughike.bottombar;
  * limitations under the License.
  */
 
+import android.support.annotation.IdRes;
+
 public interface OnTabClickListener {
     /**
      * The method being called when currently visible {@link BottomBarTab} changes.
@@ -25,16 +27,16 @@ public interface OnTabClickListener {
      * also after a configuration change, such as when screen orientation changes
      * from portrait to landscape.
      *
-     * @param position the new visible {@link BottomBarTab}
+     * @param tabId the new visible {@link BottomBarTab}
      */
-    void onTabSelected(int position);
+    void onTabSelected(@IdRes int tabId);
 
     /**
      * The method being called when currently visible {@link BottomBarTab} is
      * reselected. Use this method for scrolling to the top of your content,
      * as recommended by the Material Design spec
      *
-     * @param position the {@link BottomBarTab} that was reselected.
+     * @param tabId the {@link BottomBarTab} that was reselected.
      */
-    void onTabReSelected(int position);
+    void onTabReSelected(@IdRes int tabId);
 }

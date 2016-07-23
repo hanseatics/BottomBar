@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabClickListener;
+import com.roughike.bottombar.OnTabClickListener;
 
 /**
  * Created by iiro on 7.6.2016.
@@ -26,16 +26,16 @@ public class FiveColorChangingTabsActivity extends AppCompatActivity {
         mMessageView = (TextView) findViewById(R.id.messageView);
 
         mBottomBar = BottomBar.attach(this, savedInstanceState);
-        mBottomBar.setItems(R.menu.bottombar_menu);
-        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+        mBottomBar.setItems(R.xml.bottombar_tabs_five);
+        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                mMessageView.setText(TabMessage.get(menuItemId, false));
+            public void onTabSelected(@IdRes int tabId) {
+                mMessageView.setText(TabMessage.get(tabId, false));
             }
 
             @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-                Toast.makeText(getApplicationContext(), TabMessage.get(menuItemId, true), Toast.LENGTH_SHORT).show();
+            public void onTabReSelected(@IdRes int tabId) {
+                Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_SHORT).show();
             }
         });
 

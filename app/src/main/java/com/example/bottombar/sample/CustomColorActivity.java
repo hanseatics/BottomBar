@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabClickListener;
+import com.roughike.bottombar.OnTabClickListener;
 
 /**
  * Created by mikemilla on 7.17.2016.
@@ -33,17 +33,17 @@ public class CustomColorActivity extends AppCompatActivity {
                 ContextCompat.getColor(this, R.color.colorAccent), // Tab Item Color
                 0.25f); // Tab Item Alpha
 
-        mBottomBar.setItems(R.menu.bottombar_menu);
+        mBottomBar.setItems(R.xml.bottombar_tabs_five);
 
-        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                mMessageView.setText(TabMessage.get(menuItemId, false));
+            public void onTabSelected(@IdRes int tabId) {
+                mMessageView.setText(TabMessage.get(tabId, false));
             }
 
             @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-                Toast.makeText(getApplicationContext(), TabMessage.get(menuItemId, true), Toast.LENGTH_SHORT).show();
+            public void onTabReSelected(@IdRes int tabId) {
+                Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_SHORT).show();
             }
         });
     }

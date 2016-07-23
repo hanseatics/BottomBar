@@ -7,7 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabClickListener;
+import com.roughike.bottombar.OnTabClickListener;
 
 /**
  * Created by iiro on 7.6.2016.
@@ -22,18 +22,18 @@ public class ThreeTabsQRActivity extends AppCompatActivity {
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator),
                 findViewById(R.id.myScrollingContent), savedInstanceState);
-        mBottomBar.setItems(R.menu.bottombar_menu_three_items);
+        mBottomBar.setItems(R.xml.bottombar_tabs_three);
 
         // We're doing nothing with this listener here this time. Check example usage
         // from ThreeTabsActivity on how to use it.
-        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
+            public void onTabSelected(@IdRes int tabId) {
 
             }
 
             @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
+            public void onTabReSelected(@IdRes int tabId) {
 
             }
         });

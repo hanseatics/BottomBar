@@ -8,19 +8,19 @@ public class TabMessage {
         String message = "Content for ";
 
         switch (menuItemId) {
-            case R.id.bb_menu_recents:
+            case R.id.tab_recents:
                 message += "recents";
                 break;
-            case R.id.bb_menu_favorites:
+            case R.id.tab_favorites:
                 message += "favorites";
                 break;
-            case R.id.bb_menu_nearby:
+            case R.id.tab_nearby:
                 message += "nearby";
                 break;
-            case R.id.bb_menu_friends:
+            case R.id.tab_friends:
                 message += "friends";
                 break;
-            case R.id.bb_menu_food:
+            case R.id.tab_food:
                 message += "food";
                 break;
         }

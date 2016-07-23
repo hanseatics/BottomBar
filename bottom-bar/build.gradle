@@ -33,6 +33,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
@@ -41,7 +43,17 @@ dependencies {
     compile 'com.android.support:appcompat-v7:' + rootProject.ext.supportLibraryVersion
     compile 'com.android.support:design:' + rootProject.ext.supportLibraryVersion
 
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+
     testCompile 'junit:junit:' + rootProject.ext.junitVersion
+    testCompile 'org.mockito:mockito-core:2.0.87-beta'
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile('org.robolectric:robolectric:3.1-rc1') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
 }
 
 apply plugin: 'com.github.dcendents.android-maven'

@@ -9,19 +9,19 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
-import android.support.annotation.MenuRes;
+import android.support.annotation.XmlRes;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
-import android.support.v7.widget.PopupMenu;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.List;
 
 /*
  * BottomBar library for Android
@@ -75,32 +75,9 @@ class MiscUtils {
         return (int) (displayMetrics.widthPixels / displayMetrics.density);
     }
 
-    /**
-     * A hacky method for inflating menus from xml resources to an array
-     * of BottomBarTabs.
-     *
-     * @param activity the activity context for retrieving the MenuInflater.
-     * @param menuRes  the xml menu resource to inflate
-     * @return an Array of BottomBarTabs.
-     */
-    protected static BottomBarTab[] inflateMenuFromResource(Activity activity, @MenuRes int menuRes) {
-        // A bit hacky, but hey hey what can I do
-        PopupMenu popupMenu = new PopupMenu(activity, null);
-        Menu menu = popupMenu.getMenu();
-        activity.getMenuInflater().inflate(menuRes, menu);
-
-        int menuSize = menu.size();
-        BottomBarTab[] tabs = new BottomBarTab[menuSize];
-
-        for (int i = 0; i < menuSize; i++) {
-            MenuItem item = menu.getItem(i);
-            BottomBarTab tab = new BottomBarTab(item.getIcon(),
-                    String.valueOf(item.getTitle()));
-            tab.id = item.getItemId();
-            tabs[i] = tab;
-        }
-
-        return tabs;
+    protected static List<BottomBarTab> inflateFromXMLResource(Context context, @XmlRes int xmlRes) {
+        TabParser parser = new TabParser(context, xmlRes);
+        return parser.getTabs();
     }
 
     /**
