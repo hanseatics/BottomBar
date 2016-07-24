@@ -21,6 +21,7 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -1059,14 +1060,14 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private void updateSelectedTab(int newPosition) {
-        int tabId = mItems.get(mCurrentTabPosition).id;
+        int newTabId = mItems.get(newPosition).id;
 
         if (newPosition != mCurrentTabPosition && mListener != null) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
-            mListener.onTabSelected(tabId);
+            mListener.onTabSelected(newTabId);
         } else if (mReselectionListener != null && !mIgnoreTabReselectionListener) {
-            mReselectionListener.onTabReSelected(tabId);
+            mReselectionListener.onTabReSelected(newTabId);
         }
 
         if (mIgnoreTabReselectionListener) {
