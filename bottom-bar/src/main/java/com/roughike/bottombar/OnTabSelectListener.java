@@ -1,5 +1,7 @@
 package com.roughike.bottombar;
 
+import android.support.annotation.IdRes;
+
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
@@ -16,10 +18,7 @@ package com.roughike.bottombar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import android.support.annotation.IdRes;
-
-public interface OnTabClickListener {
+public interface OnTabSelectListener {
     /**
      * The method being called when currently visible {@link BottomBarTab} changes.
      *
@@ -30,13 +29,4 @@ public interface OnTabClickListener {
      * @param tabId the new visible {@link BottomBarTab}
      */
     void onTabSelected(@IdRes int tabId);
-
-    /**
-     * The method being called when currently visible {@link BottomBarTab} is
-     * reselected. Use this method for scrolling to the top of your content,
-     * as recommended by the Material Design spec
-     *
-     * @param tabId the {@link BottomBarTab} that was reselected.
-     */
-    void onTabReSelected(@IdRes int tabId);
 }

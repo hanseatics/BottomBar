@@ -7,7 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabClickListener;
+import com.roughike.bottombar.OnTabSelectListener;
 
 /**
  * Created by iiro on 7.6.2016.
@@ -26,14 +26,9 @@ public class ThreeTabsQRActivity extends AppCompatActivity {
 
         // We're doing nothing with this listener here this time. Check example usage
         // from ThreeTabsActivity on how to use it.
-        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-
-            }
-
-            @Override
-            public void onTabReSelected(@IdRes int tabId) {
 
             }
         });

@@ -21,7 +21,6 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -101,8 +100,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private int mInActiveShiftingItemWidth;
     private int mActiveShiftingItemWidth;
 
-    private OnTabClickListener mListener;
-    private OnMenuTabClickListener mMenuListener;
+    private OnTabSelectListener mListener;
+    private OnTabReselectListener mReselectionListener;
 
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
@@ -253,12 +252,21 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      *
      * @param listener a listener for monitoring changes in tab selection.
      */
-    public void setOnTabClickListener(@Nullable OnTabClickListener listener) {
+    public void setOnTabSelectListener(@Nullable OnTabSelectListener listener) {
         mListener = listener;
 
         if (mListener != null && mItems != null && mItems.size() > 0) {
             listener.onTabSelected(mItems.get(mCurrentTabPosition).id);
         }
+    }
+
+    /**
+     * Set a listener that gets fired when a currently selected tab is clicked.
+     *
+     * @param listener a listener for handling tab reselections.
+     */
+    public void setOnTabReselectListener(@Nullable OnTabReselectListener listener) {
+        mReselectionListener = listener;
     }
 
     /**
@@ -1053,12 +1061,12 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private void updateSelectedTab(int newPosition) {
         int tabId = mItems.get(mCurrentTabPosition).id;
 
-        if (newPosition != mCurrentTabPosition) {
+        if (newPosition != mCurrentTabPosition && mListener != null) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
             mListener.onTabSelected(tabId);
-        } else if (!mIgnoreTabReselectionListener) {
-            mListener.onTabReSelected(tabId);
+        } else if (mReselectionListener != null && !mIgnoreTabReselectionListener) {
+            mReselectionListener.onTabReSelected(tabId);
         }
 
         if (mIgnoreTabReselectionListener) {
