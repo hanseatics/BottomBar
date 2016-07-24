@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.XmlRes;
@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.roughike.bottombar.scrollsweetness.BottomNavigationBehavior;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private Context mContext;
     private boolean mIsComingFromRestoredState;
+    private boolean mIgnoreTabReselectionListener;
     private boolean mIgnoreTabletLayout;
     private boolean mIsTabletMode;
     private boolean mIsShy;
@@ -134,9 +136,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Bind the BottomBar to your Activity, and inflate your layout here.
-     * 
-     * Remember to also call {@link #onSaveInstanceState(Bundle)} inside
-     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param activity           an Activity to attach to.
      * @param savedInstanceState a Bundle for restoring the state on configuration change.
@@ -144,7 +143,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      */
     public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
         BottomBar bottomBar = new BottomBar(activity);
-        bottomBar.onRestoreInstanceState(savedInstanceState);
+        bottomBar.restoreState(savedInstanceState);
 
         ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
         View oldLayout = contentView.getChildAt(0);
@@ -158,7 +157,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     public static BottomBar attach(Activity activity, Bundle savedInstanceState, int backgroundColor, int activeIconColor, float alpha) {
         BottomBar bottomBar = new BottomBar(activity, backgroundColor, activeIconColor, alpha);
-        bottomBar.onRestoreInstanceState(savedInstanceState);
+        bottomBar.restoreState(savedInstanceState);
 
         ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
         View oldLayout = contentView.getChildAt(0);
@@ -179,7 +178,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * your layout there. Useful when the BottomBar overlaps some content
      * that shouldn't be overlapped.
      * 
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * Remember to also call {@link #restoreState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param view               a View, which parent we're going to attach to.
@@ -188,7 +187,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      */
     public static BottomBar attach(View view, Bundle savedInstanceState) {
         BottomBar bottomBar = new BottomBar(view.getContext());
-        bottomBar.onRestoreInstanceState(savedInstanceState);
+        bottomBar.restoreState(savedInstanceState);
 
         ViewGroup contentView = (ViewGroup) view.getParent();
 
@@ -206,19 +205,10 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Deprecated. Breaks support for tablets.
-     * Use #attachShy(CoordinatorLayout, View, Bundle) instead.
-     */
-    @Deprecated
-    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, Bundle savedInstanceState) {
-        return attachShy(coordinatorLayout, null, savedInstanceState);
-    }
-
-    /**
      * Adds the BottomBar inside of your CoordinatorLayout and shows / hides
      * it according to scroll state changes.
      * 
-     * Remember to also call {@link #onRestoreInstanceState(Bundle)} inside
+     * Remember to also call {@link #restoreState(Bundle)} inside
      * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
      *
      * @param coordinatorLayout  a CoordinatorLayout for the BottomBar to add itself into
@@ -229,7 +219,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      */
     public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, View userContentView, Bundle savedInstanceState) {
         final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
-        bottomBar.onRestoreInstanceState(savedInstanceState);
+        bottomBar.restoreState(savedInstanceState);
         bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
 
         if (userContentView != null && coordinatorLayout.getContext()
@@ -267,7 +257,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mListener = listener;
 
         if (mListener != null && mItems != null && mItems.size() > 0) {
-            listener.onTabSelected(mCurrentTabPosition);
+            listener.onTabSelected(mItems.get(mCurrentTabPosition).id);
         }
     }
 
@@ -367,33 +357,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         mMaxFixedTabCount = -1;
-    }
-
-    /**
-     * Call this method in your Activity's onSaveInstanceState
-     * to keep the BottomBar's state on configuration change.
-     *
-     * @param outState the Bundle to save data to.
-     */
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
-
-        if (mBadgeMap != null && mBadgeMap.size() > 0) {
-            if (mBadgeStateMap == null) {
-                mBadgeStateMap = new HashMap<>();
-            }
-
-            for (Integer key : mBadgeMap.keySet()) {
-                BottomBarBadge badgeCandidate = (BottomBarBadge) mOuterContainer
-                        .findViewWithTag(mBadgeMap.get(key));
-
-                if (badgeCandidate != null) {
-                    mBadgeStateMap.put(key, badgeCandidate.isVisible());
-                }
-            }
-
-            outState.putSerializable(STATE_BADGE_STATES_BUNDLE, mBadgeStateMap);
-        }
     }
 
     /**
@@ -826,6 +789,66 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = saveState();
+        bundle.putParcelable("superstate", super.onSaveInstanceState());
+        return bundle;
+    }
+
+    private Bundle saveState() {
+        Bundle outState = new Bundle();
+        outState.putInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+
+        if (mBadgeMap != null && mBadgeMap.size() > 0) {
+            if (mBadgeStateMap == null) {
+                mBadgeStateMap = new HashMap<>();
+            }
+
+            for (Integer key : mBadgeMap.keySet()) {
+                BottomBarBadge badgeCandidate = (BottomBarBadge) mOuterContainer
+                        .findViewWithTag(mBadgeMap.get(key));
+
+                if (badgeCandidate != null) {
+                    mBadgeStateMap.put(key, badgeCandidate.isVisible());
+                }
+            }
+
+            outState.putSerializable(STATE_BADGE_STATES_BUNDLE, mBadgeStateMap);
+        }
+
+        return outState;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            restoreState(bundle);
+
+            state = bundle.getParcelable("superstate");
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            Serializable restoredBadgeStateMap = savedInstanceState.getSerializable(STATE_BADGE_STATES_BUNDLE);
+
+            if (restoredBadgeStateMap instanceof HashMap) {
+                try {
+                    //noinspection unchecked
+                    mBadgeStateMap = (HashMap<Integer, Boolean>) restoredBadgeStateMap;
+                } catch (ClassCastException ignored) {}
+            }
+
+            mIsComingFromRestoredState = true;
+            mIgnoreTabReselectionListener = true;
+
+            selectTabAtPosition(savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition), false);
+        }
+    }
+
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mContext = context;
 
@@ -1034,8 +1057,12 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
             mCurrentTabPosition = newPosition;
             mListener.onTabSelected(tabId);
-        } else {
+        } else if (!mIgnoreTabReselectionListener) {
             mListener.onTabReSelected(tabId);
+        }
+
+        if (mIgnoreTabReselectionListener) {
+            mIgnoreTabReselectionListener = false;
         }
     }
 
@@ -1205,23 +1232,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         } else {
             mItemContainer.setBackgroundColor(mDarkBackgroundColor);
             mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
-        }
-    }
-
-    private void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mCurrentTabPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, -1);
-            mBadgeStateMap = (HashMap<Integer, Boolean>) savedInstanceState
-                    .getSerializable(STATE_BADGE_STATES_BUNDLE);
-
-            if (mCurrentTabPosition == -1) {
-                mCurrentTabPosition = 0;
-                Log.e("BottomBar", "You must override the Activity's onSave" +
-                        "InstanceState(Bundle outState) and call BottomBar.onSaveInstanc" +
-                        "eState(outState) there to restore the state properly.");
-            }
-
-            mIsComingFromRestoredState = true;
         }
     }
 

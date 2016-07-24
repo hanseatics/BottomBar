@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +23,11 @@ public class BadgeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic);
+        setContentView(R.layout.activity_inflated_in_xml);
 
         mMessageView = (TextView) findViewById(R.id.messageView);
 
-        mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
         mBottomBar.setItems(R.xml.bottombar_tabs_three);
         mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
@@ -45,14 +46,5 @@ public class BadgeActivity extends AppCompatActivity {
         // We want the nearbyBadge to be always shown, except when the Favorites tab is selected.
         BottomBarBadge nearbyBadge = mBottomBar.makeBadgeForTabAt(1, redColor, 5);
         nearbyBadge.setAutoShowAfterUnSelection(true);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Necessary to restore the BottomBar's state, otherwise we would
-        // lose the current tab on orientation change.
-        mBottomBar.onSaveInstanceState(outState);
     }
 }
