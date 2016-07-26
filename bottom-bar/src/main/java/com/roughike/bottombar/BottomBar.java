@@ -76,7 +76,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private ViewGroup mUserContentContainer;
     private ViewGroup mOuterContainer;
-    private ViewGroup mItemContainer;
+    private ViewGroup mTabContainer;
 
     private View mBackgroundView;
     private View mBackgroundOverlay;
@@ -241,7 +241,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     public void setItems(@XmlRes int xmlRes) {
         clearItems();
         mItems = MiscUtils.inflateFromXMLResource(getContext(), xmlRes);
-        updateItems(mItems);
+        newUpdateItems(mItems);
     }
 
     /**
@@ -283,8 +283,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                     position + ". This BottomBar has no items at that position.");
         }
 
-        View oldTab = mItemContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        View newTab = mItemContainer.getChildAt(position);
+        View oldTab = mTabContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+        View newTab = mTabContainer.getChildAt(position);
 
         unselectTab(oldTab, animate);
         selectTab(newTab, animate);
@@ -429,8 +429,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         if (!mIsDarkTheme && mItems != null && mItems.size() > 0) {
             darkThemeMagic();
 
-            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
-                View bottomBarTab = mItemContainer.getChildAt(i);
+            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
+                View bottomBarTab = mTabContainer.getChildAt(i);
                 ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
                         .setColorFilter(mWhiteColor);
 
@@ -553,7 +553,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
-        final View tab = mItemContainer.getChildAt(tabPosition);
+        final View tab = mTabContainer.getChildAt(tabPosition);
 
         BottomBarBadge badge = new BottomBarBadge(mContext, tabPosition,
                 tab, backgroundColor);
@@ -607,9 +607,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),
                 typeFacePath);
 
-        if (mItemContainer != null && mItemContainer.getChildCount() > 0) {
-            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
-                View bottomBarTab = mItemContainer.getChildAt(i);
+        if (mTabContainer != null && mTabContainer.getChildCount() > 0) {
+            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
+                View bottomBarTab = mTabContainer.getChildAt(i);
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 title.setTypeface(typeface);
             }
@@ -624,9 +624,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * @param resId path to the custom text appearance.
      */
     public void setTextAppearance(@StyleRes int resId) {
-        if (mItemContainer != null && mItemContainer.getChildCount() > 0) {
-            for (int i = 0; i < mItemContainer.getChildCount(); i++) {
-                View bottomBarTab = mItemContainer.getChildAt(i);
+        if (mTabContainer != null && mTabContainer.getChildCount() > 0) {
+            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
+                View bottomBarTab = mTabContainer.getChildAt(i);
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 MiscUtils.setTextAppearance(title, resId);
             }
@@ -901,7 +901,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
 
         mOuterContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
-        mItemContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
+        mTabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
         mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
@@ -1113,8 +1113,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         return true;
     }
 
-    private void updateItems(final List<BottomBarTab> bottomBarItems) {
-        if (mItemContainer == null) {
+    private void newUpdateItems(final List<BottomBarTab> bottomBarItems) {
+        if (mTabContainer == null) {
             initializeViews();
         }
 
@@ -1141,37 +1141,35 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
         View[] viewsToAdd = new View[bottomBarItems.size()];
 
-        for (BottomBarTab bottomBarItemBase : bottomBarItems) {
-            int layoutResource;
+        for (BottomBarTab bottomBarTab : bottomBarItems) {
+            BottomBarTab.Type type;
 
             if (mIsShiftingMode && !mIsTabletMode) {
-                layoutResource = R.layout.bb_bottom_bar_item_shifting;
+                type = BottomBarTab.Type.SHIFTING;
+            } else if (mIsTabletMode) {
+                type = BottomBarTab.Type.TABLET;
             } else {
-                layoutResource = mIsTabletMode ?
-                        R.layout.bb_bottom_bar_item_fixed_tablet : R.layout.bb_bottom_bar_item_fixed;
+                type = BottomBarTab.Type.FIXED;
             }
 
-            View bottomBarTab = View.inflate(mContext, layoutResource, null);
+            bottomBarTab.setType(type);
+            bottomBarTab.prepareLayout();
+
             AppCompatImageView icon = (AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
 
             if (!mIsTabletMode) {
-                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
-                title.setText(bottomBarItemBase.getTitle());
-
                 if (mPendingTextAppearance != -1) {
-                    MiscUtils.setTextAppearance(title, mPendingTextAppearance);
+                    bottomBarTab.setTitleTextAppearance(mPendingTextAppearance);
                 }
 
                 if (mPendingTypeface != null) {
-                    title.setTypeface(mPendingTypeface);
+                    bottomBarTab.setTitleTypeface(mPendingTypeface);
                 }
             }
 
             if (mIsDarkTheme || (!mIsTabletMode && mIsShiftingMode)) {
-                icon.setColorFilter(mWhiteColor);
+                bottomBarTab.setIconTint(mWhiteColor);
             }
-
-            bottomBarTab.setId(bottomBarItemBase.getId());
 
             if (index == mCurrentTabPosition) {
                 selectTab(bottomBarTab, false);
@@ -1186,7 +1184,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
                 viewsToAdd[index] = bottomBarTab;
             } else {
-                mItemContainer.addView(bottomBarTab);
+                mTabContainer.addView(bottomBarTab);
             }
 
             bottomBarTab.setOnClickListener(this);
@@ -1218,7 +1216,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                 }
 
                 bottomBarView.setLayoutParams(params);
-                mItemContainer.addView(bottomBarView);
+                mTabContainer.addView(bottomBarView);
             }
         }
 
@@ -1235,7 +1233,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         if (!mIsTabletMode) {
             mBackgroundView.setBackgroundColor(mDarkBackgroundColor);
         } else {
-            mItemContainer.setBackgroundColor(mDarkBackgroundColor);
+            mTabContainer.setBackgroundColor(mDarkBackgroundColor);
             mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
         }
     }
@@ -1255,14 +1253,14 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * Title TextView in order to comply with the Material Design specifications.
      */
     private void updateTitleBottomPadding() {
-        if (mItemContainer == null) {
+        if (mTabContainer == null) {
             return;
         }
 
-        int childCount = mItemContainer.getChildCount();
+        int childCount = mTabContainer.getChildCount();
 
         for (int i = 0; i < childCount; i++) {
-            View tab = mItemContainer.getChildAt(i);
+            View tab = mTabContainer.getChildAt(i);
             TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
             if (title == null) {
                 continue;
@@ -1433,8 +1431,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private int findItemPosition(View viewToFind) {
         int position = 0;
 
-        for (int i = 0; i < mItemContainer.getChildCount(); i++) {
-            View candidate = mItemContainer.getChildAt(i);
+        for (int i = 0; i < mTabContainer.getChildCount(); i++) {
+            View candidate = mTabContainer.getChildAt(i);
 
             if (candidate.equals(viewToFind)) {
                 position = i;
@@ -1446,8 +1444,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private void clearItems() {
-        if (mItemContainer != null) {
-            mItemContainer.removeAllViews();
+        if (mTabContainer != null) {
+            mTabContainer.removeAllViews();
         }
 
         if (mFragmentManager != null) {

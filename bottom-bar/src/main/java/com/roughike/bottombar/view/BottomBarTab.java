@@ -1,8 +1,12 @@
 package com.roughike.bottombar.view;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Build;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.roughike.bottombar.R;
 
@@ -27,6 +31,9 @@ public class BottomBarTab extends FrameLayout {
     private int iconResId;
     private String title;
     private int activeIconColor;
+
+    private AppCompatImageView iconView;
+    private TextView titleView;
 
     public enum Type {
         FIXED, SHIFTING, TABLET
@@ -68,7 +75,7 @@ public class BottomBarTab extends FrameLayout {
         this.activeIconColor = activeIconColor;
     }
 
-    public void addToRoot(ViewGroup root) {
+    public void prepareLayout() {
         int layoutResource;
 
         switch (type) {
@@ -79,7 +86,7 @@ public class BottomBarTab extends FrameLayout {
                 layoutResource = R.layout.bb_bottom_bar_item_shifting;
                 break;
             case TABLET:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed;
+                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
                 break;
             default:
                 // should never happen
@@ -87,6 +94,28 @@ public class BottomBarTab extends FrameLayout {
         }
 
         inflate(getContext(), layoutResource, this);
-        root.addView(this);
+
+        iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
+        titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
+
+        iconView.setImageResource(iconResId);
+        titleView.setText(title);
+    }
+
+    public void setIconTint(int tint) {
+        iconView.setColorFilter(tint);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void setTitleTextAppearance(int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            titleView.setTextAppearance(resId);
+        } else {
+            titleView.setTextAppearance(getContext(), resId);
+        }
+    }
+
+    public void setTitleTypeface(Typeface typeface) {
+        titleView.setTypeface(typeface);
     }
 }
