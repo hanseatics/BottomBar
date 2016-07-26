@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -15,11 +14,12 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.roughike.bottombar.view.BottomBarTab;
 
 import java.util.List;
 
@@ -116,15 +116,15 @@ class MiscUtils {
     }
 
     /**
-     * Animate a background color change. Uses Circular Reveal if supported,
-     * otherwise crossfades the background color in.
+     * Animate a background activeIconColor change. Uses Circular Reveal if supported,
+     * otherwise crossfades the background activeIconColor in.
      *
      * @param clickedView    the view that was clicked for calculating the start position
      *                       for the Circular Reveal.
-     * @param backgroundView the currently showing background color.
-     * @param bgOverlay      the overlay view for the new background color that will be
+     * @param backgroundView the currently showing background activeIconColor.
+     * @param bgOverlay      the overlay view for the new background activeIconColor that will be
      *                       animated in.
-     * @param newColor       the new color.
+     * @param newColor       the new activeIconColor.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected static void animateBGColorChange(View clickedView, final View backgroundView,

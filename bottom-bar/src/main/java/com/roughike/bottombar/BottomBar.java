@@ -17,11 +17,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -36,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.scrollsweetness.BottomNavigationBehavior;
+import com.roughike.bottombar.view.BottomBarTab;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -257,7 +256,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mListener = listener;
 
         if (mListener != null && mItems != null && mItems.size() > 0) {
-            listener.onTabSelected(mItems.get(mCurrentTabPosition).id);
+            listener.onTabSelected(mItems.get(mCurrentTabPosition).getId());
         }
     }
 
@@ -340,7 +339,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     /**
      * Set the maximum number of tabs, after which the tabs should be shifting
-     * ones with a background color.
+     * ones with a background activeIconColor.
      * 
      * NOTE: You must call this method before setting any items.
      *
@@ -369,18 +368,18 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Map a background color for a Tab, that changes the whole BottomBar
-     * background color when the Tab is selected.
+     * Map a background activeIconColor for a Tab, that changes the whole BottomBar
+     * background activeIconColor when the Tab is selected.
      *
      * @param tabPosition zero-based index for the tab.
-     * @param color       a hex color for the tab, such as 0xFF00FF00.
+     * @param color       a hex activeIconColor for the tab, such as 0xFF00FF00.
      */
     public void mapColorForTab(int tabPosition, int color) {
         if (mItems == null || mItems.size() == 0) {
             throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
                     "Please set them first before calling the mapColorForTab method.");
         } else if (tabPosition > mItems.size() - 1 || tabPosition < 0) {
-            throw new IndexOutOfBoundsException("Cant map color for Tab " +
+            throw new IndexOutOfBoundsException("Cant map activeIconColor for Tab " +
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
@@ -400,11 +399,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Map a background color for a Tab, that changes the whole BottomBar
-     * background color when the Tab is selected.
+     * Map a background activeIconColor for a Tab, that changes the whole BottomBar
+     * background activeIconColor when the Tab is selected.
      *
      * @param tabPosition zero-based index for the tab.
-     * @param color       a hex color for the tab, such as "#00FF000".
+     * @param color       a hex activeIconColor for the tab, such as "#00FF000".
      */
     public void mapColorForTab(int tabPosition, String color) {
         mapColorForTab(tabPosition, Color.parseColor(color));
@@ -422,8 +421,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     /**
      * Use dark theme instead of the light one.
      * 
-     * NOTE: You might want to change your active tab color to something else
-     * using {@link #setActiveTabColor(int)}, as the default primary color might
+     * NOTE: You might want to change your active tab activeIconColor to something else
+     * using {@link #setActiveTabColor(int)}, as the default primary activeIconColor might
      * not have enough contrast for the dark background.
      */
     public void useDarkTheme() {
@@ -461,25 +460,25 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Set a custom color for an active tab when there's three
+     * Set a custom activeIconColor for an active tab when there's three
      * or less items.
      * 
      * NOTE: This value is ignored on mobile devices if you have more than
      * three items.
      *
-     * @param activeTabColor a hex color used for active tabs, such as "#00FF000".
+     * @param activeTabColor a hex activeIconColor used for active tabs, such as "#00FF000".
      */
     public void setActiveTabColor(String activeTabColor) {
         setActiveTabColor(Color.parseColor(activeTabColor));
     }
 
     /**
-     * Set a custom color for an active tab when there's three
+     * Set a custom activeIconColor for an active tab when there's three
      * or less items.
      * 
      * NOTE: This value is ignored if you have more than three items.
      *
-     * @param activeTabColor a hex color used for active tabs, such as 0xFF00FF00.
+     * @param activeTabColor a hex activeIconColor used for active tabs, such as 0xFF00FF00.
      */
     public void setActiveTabColor(int activeTabColor) {
         mCustomActiveTabColor = activeTabColor;
@@ -490,11 +489,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Set a custom color for inactive icons in fixed mode.
+     * Set a custom activeIconColor for inactive icons in fixed mode.
      * 
      * NOTE: This value is ignored if not in fixed mode.
      *
-     * @param iconColor a hex color used for icons, such as 0xFF00FF00.
+     * @param iconColor a hex activeIconColor used for icons, such as 0xFF00FF00.
      */
     public void setFixedInactiveIconColor(int iconColor) {
         mInActiveColor = iconColor;
@@ -507,11 +506,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Set a custom color for icons in shifting mode.
+     * Set a custom activeIconColor for icons in shifting mode.
      * 
      * NOTE: This value is ignored in fixed mode.
      *
-     * @param iconColor a hex color used for icons, such as 0xFF00FF00.
+     * @param iconColor a hex activeIconColor used for icons, such as 0xFF00FF00.
      */
     public void setShiftingIconColor(int iconColor) {
         mWhiteColor = iconColor;
@@ -528,7 +527,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * the specified position.
      *
      * @param tabPosition     zero-based index for the tab.
-     * @param backgroundColor a color for this badge, such as "#FF0000".
+     * @param backgroundColor a activeIconColor for this badge, such as "#FF0000".
      * @param initialCount    text displayed initially for this Badge.
      * @return a {@link BottomBarBadge} object.
      */
@@ -541,7 +540,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
      * the specified position.
      *
      * @param tabPosition     zero-based index for the tab.
-     * @param backgroundColor a color for this badge, such as 0xFFFF0000.
+     * @param backgroundColor a activeIconColor for this badge, such as 0xFFFF0000.
      * @param initialCount    text displayed initially for this Badge.
      * @return a {@link BottomBarBadge} object.
      */
@@ -870,9 +869,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
         }
 
-        //mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
+        //mWhiteColor = ContextCompat.getColor(getContext(), R.activeIconColor.white);
         //mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-        //mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
+        //mInActiveColor = ContextCompat.getColor(getContext(), R.activeIconColor.bb_inActiveBottomBarItemColor);
 
 
         //mWhiteColor = Color.parseColor("#000000");
@@ -1060,7 +1059,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private void updateSelectedTab(int newPosition) {
-        int newTabId = mItems.get(newPosition).id;
+        int newTabId = mItems.get(newPosition).getId();
 
         if (newPosition != mCurrentTabPosition && mListener != null) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
@@ -1108,7 +1107,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private boolean handleLongClick(View v) {
         if ((mIsShiftingMode || mIsTabletMode) && v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            Toast.makeText(mContext, mItems.get(findItemPosition(v)).title, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, mItems.get(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
         return true;
@@ -1141,7 +1140,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         View[] viewsToAdd = new View[bottomBarItems.size()];
-        AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
 
         for (BottomBarTab bottomBarItemBase : bottomBarItems) {
             int layoutResource;
@@ -1156,11 +1154,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             View bottomBarTab = View.inflate(mContext, layoutResource, null);
             AppCompatImageView icon = (AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
 
-            icon.setImageDrawable(drawableManager.getDrawable(mContext, bottomBarItemBase.iconResId));
-
             if (!mIsTabletMode) {
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
-                title.setText(bottomBarItemBase.title);
+                title.setText(bottomBarItemBase.getTitle());
 
                 if (mPendingTextAppearance != -1) {
                     MiscUtils.setTextAppearance(title, mPendingTextAppearance);
@@ -1175,7 +1171,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                 icon.setColorFilter(mWhiteColor);
             }
 
-            bottomBarTab.setId(bottomBarItemBase.id);
+            bottomBarTab.setId(bottomBarItemBase.getId());
 
             if (index == mCurrentTabPosition) {
                 selectTab(bottomBarTab, false);

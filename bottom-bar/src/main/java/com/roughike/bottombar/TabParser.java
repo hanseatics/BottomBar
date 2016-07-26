@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.support.annotation.XmlRes;
 import android.support.v4.content.ContextCompat;
 
-import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.view.BottomBarTab;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -58,7 +58,7 @@ public class TabParser {
 
     private void parseNewTab(XmlResourceParser parser) {
         if (workingTab == null) {
-            workingTab = new BottomBarTab();
+            workingTab = new BottomBarTab(context);
         }
 
         for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -66,16 +66,16 @@ public class TabParser {
 
             switch (attrName) {
                 case "id":
-                    workingTab.id = parser.getIdAttributeResourceValue(i);
+                    workingTab.setId(parser.getIdAttributeResourceValue(i));
                     break;
                 case "color":
-                    workingTab.color = getColorValue(i, parser);
+                    workingTab.setActiveIconColor(getColorValue(i, parser));
                     break;
                 case "title":
-                    workingTab.title = getTitleValue(i, parser);
+                    workingTab.setTitle(getTitleValue(i, parser));
                     break;
                 case "icon":
-                    workingTab.iconResId = parser.getAttributeResourceValue(i, 0);
+                    workingTab.setIconResId(parser.getAttributeResourceValue(i, 0));
                     break;
             }
         }

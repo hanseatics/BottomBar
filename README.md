@@ -39,7 +39,7 @@ You can add items by specifying an array of items or **by xml menu resources**.
 
 #### Creating the icons
 
-The icons must be fully opaque, solid color, 24dp and **with no padding**. For example, [with Android Asset Studio Generic Icon generator](https://romannurik.github.io/AndroidAssetStudio/icons-generic.html), select "TRIM" and make sure the padding is 0dp. Here's what your icons should look like:
+The icons must be fully opaque, solid activeIconColor, 24dp and **with no padding**. For example, [with Android Asset Studio Generic Icon generator](https://romannurik.github.io/AndroidAssetStudio/icons-generic.html), select "TRIM" and make sure the padding is 0dp. Here's what your icons should look like:
 
 ![Sample icons](https://raw.githubusercontent.com/roughike/BottomBar/master/icons-howto.png)
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         
         // Setting colors for different tabs when there's more than three of them.
         // You can set colors for tabs in three different ways as shown below.
-        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.activeIconColor.colorAccent));
         mBottomBar.mapColorForTab(1, 0xFF5D4037);
         mBottomBar.mapColorForTab(2, "#7B1FA2");
         mBottomBar.mapColorForTab(3, "#FF5252");
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 You can easily add badges for showing an unread message count or new items / whatever you like.
 
 ```java
-// Make a Badge for the first tab, with red background color and a value of "13".
+// Make a Badge for the first tab, with red background activeIconColor and a value of "13".
 BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(0, "#FF0000", 13);
 
 // Control the badge's visibility
@@ -143,7 +143,7 @@ mBottomBar.useFixedMode();
 // Use the dark theme.
 mBottomBar.useDarkTheme();
 
-// Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+// Set the activeIconColor for the active tab. Ignored on mobile when there are more than three tabs.
 mBottomBar.setActiveTabColor("#009688");
 
 // Use custom text appearance in tab titles.

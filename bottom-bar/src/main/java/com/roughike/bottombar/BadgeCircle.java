@@ -41,7 +41,7 @@ public class BadgeCircle {
      * Creates a new circle for the Badge background.
      *
      * @param size  the width and height for the circle
-     * @param color the color for the circle
+     * @param color the activeIconColor for the circle
      * @return a nice and adorable circle.
      */
     protected static ShapeDrawable make(int size, int color) {
