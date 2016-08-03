@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.scrollsweetness.BottomNavigationBehavior;
-import com.roughike.bottombar.view.BottomBarTab;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -61,8 +60,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
     private static final String STATE_BADGE_STATES_BUNDLE = "STATE_BADGE_STATES_BUNDLE";
-    private static final String TAG_BOTTOM_BAR_VIEW_INACTIVE = "BOTTOM_BAR_VIEW_INACTIVE";
-    private static final String TAG_BOTTOM_BAR_VIEW_ACTIVE = "BOTTOM_BAR_VIEW_ACTIVE";
     private static final String TAG_BADGE = "BOTTOMBAR_BADGE_";
 
     private Context mContext;
@@ -283,11 +280,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                     position + ". This BottomBar has no items at that position.");
         }
 
-        View oldTab = mTabContainer.findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
-        View newTab = mTabContainer.getChildAt(position);
+        BottomBarTab oldTab = (BottomBarTab) mTabContainer.findViewWithTag(BottomBarTab.TAG_ACTIVE);
+        BottomBarTab newTab = (BottomBarTab) mTabContainer.getChildAt(position);
 
-        unselectTab(oldTab, animate);
-        selectTab(newTab, animate);
+        oldTab.deselect(animate);
+        newTab.select(animate);
 
         updateSelectedTab(position);
         shiftingMagic(oldTab, newTab, animate);
@@ -430,14 +427,14 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             darkThemeMagic();
 
             for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-                View bottomBarTab = mTabContainer.getChildAt(i);
+                BottomBarTab bottomBarTab = (BottomBarTab) mTabContainer.getChildAt(i);
                 ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
                         .setColorFilter(mWhiteColor);
 
                 if (i == mCurrentTabPosition) {
-                    selectTab(bottomBarTab, false);
+                    bottomBarTab.select(false);
                 } else {
-                    unselectTab(bottomBarTab, false);
+                    bottomBarTab.deselect(false);
                 }
             }
         }
@@ -1025,11 +1022,11 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private void handleClick(View v) {
-        if (v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
-            View oldTab = findViewWithTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+        if (v.getTag().equals(BottomBarTab.TAG_INACTIVE)) {
+            BottomBarTab oldTab = (BottomBarTab) findViewWithTag(BottomBarTab.TAG_ACTIVE);
 
-            unselectTab(oldTab, !mIgnoreScalingResize);
-            selectTab(v, !mIgnoreScalingResize);
+            oldTab.deselect(!mIgnoreScalingResize);
+            ((BottomBarTab) v).select(!mIgnoreScalingResize);
 
             shiftingMagic(oldTab, v, true);
         }
@@ -1106,7 +1103,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private boolean handleLongClick(View v) {
-        if ((mIsShiftingMode || mIsTabletMode) && v.getTag().equals(TAG_BOTTOM_BAR_VIEW_INACTIVE)) {
+        if ((mIsShiftingMode || mIsTabletMode) && v.getTag().equals(BottomBarTab.TAG_INACTIVE)) {
             Toast.makeText(mContext, mItems.get(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
@@ -1155,8 +1152,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             bottomBarTab.setType(type);
             bottomBarTab.prepareLayout();
 
-            AppCompatImageView icon = (AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon);
-
             if (!mIsTabletMode) {
                 if (mPendingTextAppearance != -1) {
                     bottomBarTab.setTitleTextAppearance(mPendingTextAppearance);
@@ -1172,9 +1167,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             }
 
             if (index == mCurrentTabPosition) {
-                selectTab(bottomBarTab, false);
+                bottomBarTab.select(false);
             } else {
-                unselectTab(bottomBarTab, false);
+                bottomBarTab.deselect(false);
             }
 
             if (!mIsTabletMode) {
@@ -1206,7 +1201,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
                 LinearLayout.LayoutParams params;
 
                 if (mIsShiftingMode && !mIgnoreShiftingResize) {
-                    if (TAG_BOTTOM_BAR_VIEW_ACTIVE.equals(bottomBarView.getTag())) {
+                    if (BottomBarTab.TAG_ACTIVE.equals(bottomBarView.getTag())) {
                         params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth, height);
                     } else {
                         params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth, height);
@@ -1278,8 +1273,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
     }
 
-    private void selectTab(View tab, boolean animate) {
-        tab.setTag(TAG_BOTTOM_BAR_VIEW_ACTIVE);
+    private void _selectTab(View tab, boolean animate) {
+        tab.setTag(BottomBarTab.TAG_ACTIVE);
         AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
 
@@ -1346,8 +1341,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
     }
 
-    private void unselectTab(View tab, boolean animate) {
-        tab.setTag(TAG_BOTTOM_BAR_VIEW_INACTIVE);
+    private void _unselectTab(View tab, boolean animate) {
+        tab.setTag(BottomBarTab.TAG_INACTIVE);
 
         AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
         TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);

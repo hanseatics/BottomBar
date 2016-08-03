@@ -19,8 +19,6 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.roughike.bottombar.view.BottomBarTab;
-
 import java.util.List;
 
 /*

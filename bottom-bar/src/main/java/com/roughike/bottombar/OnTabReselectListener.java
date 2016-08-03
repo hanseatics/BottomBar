@@ -2,8 +2,6 @@ package com.roughike.bottombar;
 
 import android.support.annotation.IdRes;
 
-import com.roughike.bottombar.view.BottomBarTab;
-
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).

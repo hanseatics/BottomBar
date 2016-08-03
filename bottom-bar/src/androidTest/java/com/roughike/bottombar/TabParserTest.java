@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.test.InstrumentationTestCase;
 
-import com.roughike.bottombar.view.BottomBarTab;
-
 import java.util.List;
 
 public class TabParserTest extends InstrumentationTestCase {
@@ -41,16 +39,16 @@ public class TabParserTest extends InstrumentationTestCase {
     }
 
     public void testCorrectColors() {
-        assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveIconColor());
+        assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveColor());
 
         assertEquals(
                 ContextCompat.getColor(context, com.roughike.bottombar.test.R.color.test_random_color),
-                tabs.get(1).getActiveIconColor()
+                tabs.get(1).getActiveColor()
         );
 
-        assertEquals(Color.parseColor("#0000FF"), tabs.get(2).getActiveIconColor());
-        assertEquals(Color.parseColor("#DAD666"), tabs.get(3).getActiveIconColor());
-        assertEquals(Color.parseColor("#F00F00"), tabs.get(4).getActiveIconColor());
+        assertEquals(Color.parseColor("#0000FF"), tabs.get(2).getActiveColor());
+        assertEquals(Color.parseColor("#DAD666"), tabs.get(3).getActiveColor());
+        assertEquals(Color.parseColor("#F00F00"), tabs.get(4).getActiveColor());
     }
 
     public void testIconResourcesExist() {
