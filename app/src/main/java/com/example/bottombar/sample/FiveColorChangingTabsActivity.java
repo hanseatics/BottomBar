@@ -22,11 +22,11 @@ public class FiveColorChangingTabsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic);
+        setContentView(R.layout.activity_five_tabs_xml);
 
         mMessageView = (TextView) findViewById(R.id.messageView);
 
-        mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
         mBottomBar.setItems(R.xml.bottombar_tabs_five);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
