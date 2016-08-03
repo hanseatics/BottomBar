@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.AppCompatImageView;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.Gravity;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.roughike.bottombar.R;
@@ -26,7 +26,7 @@ import com.roughike.bottombar.R;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBarTab extends FrameLayout {
+public class BottomBarTab extends LinearLayout {
     private Type type = Type.FIXED;
     private int iconResId;
     private String title;
@@ -94,6 +94,8 @@ public class BottomBarTab extends FrameLayout {
         }
 
         inflate(getContext(), layoutResource, this);
+        setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER_HORIZONTAL);
 
         iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
         titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
