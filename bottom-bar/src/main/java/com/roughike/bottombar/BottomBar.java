@@ -23,7 +23,6 @@ import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -112,7 +111,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private int mFragmentContainer;
 
     private List<BottomBarTab> mItems;
-    private HashMap<Integer, Integer> mColorMap;
     private HashMap<Integer, Object> mBadgeMap;
     private HashMap<Integer, Boolean> mBadgeStateMap;
 
@@ -368,48 +366,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         mMaxFixedTabCount = -1;
-    }
-
-    /**
-     * Map a background activeIconColor for a Tab, that changes the whole BottomBar
-     * background activeIconColor when the Tab is selected.
-     *
-     * @param tabPosition zero-based index for the tab.
-     * @param color       a hex activeIconColor for the tab, such as 0xFF00FF00.
-     */
-    public void mapColorForTab(int tabPosition, int color) {
-        if (mItems == null || mItems.size() == 0) {
-            throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
-                    "Please set them first before calling the mapColorForTab method.");
-        } else if (tabPosition > mItems.size() - 1 || tabPosition < 0) {
-            throw new IndexOutOfBoundsException("Cant map activeIconColor for Tab " +
-                    "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
-        }
-
-        if (mIsDarkTheme || !mIsShiftingMode || mIsTabletMode) return;
-
-        if (mColorMap == null) {
-            mColorMap = new HashMap<>();
-        }
-
-        if (tabPosition == mCurrentTabPosition
-                && mCurrentBackgroundColor != color) {
-            mCurrentBackgroundColor = color;
-            mBackgroundView.setBackgroundColor(color);
-        }
-
-        mColorMap.put(tabPosition, color);
-    }
-
-    /**
-     * Map a background activeIconColor for a Tab, that changes the whole BottomBar
-     * background activeIconColor when the Tab is selected.
-     *
-     * @param tabPosition zero-based index for the tab.
-     * @param color       a hex activeIconColor for the tab, such as "#00FF000".
-     */
-    public void mapColorForTab(int tabPosition, String color) {
-        mapColorForTab(tabPosition, Color.parseColor(color));
     }
 
     /**
