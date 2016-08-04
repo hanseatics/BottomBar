@@ -24,7 +24,7 @@ public class BadgeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inflated_in_xml);
+        setContentView(R.layout.activity_basic);
 
         mMessageView = (TextView) findViewById(R.id.messageView);
 
