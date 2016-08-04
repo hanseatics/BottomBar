@@ -1277,15 +1277,15 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             ((ViewPropertyAnimatorCompat) animator).setListener(new ViewPropertyAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(View view) {
-                    onCancel();
+                    onEnd();
                 }
 
                 @Override
                 public void onAnimationCancel(View view) {
-                    onCancel();
+                    onEnd();
                 }
 
-                private void onCancel() {
+                private void onEnd() {
                     backgroundView.setBackgroundColor(newColor);
                     bgOverlay.setVisibility(View.INVISIBLE);
                     ViewCompat.setAlpha(bgOverlay, 1);
@@ -1295,15 +1295,15 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             ((Animator) animator).addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    onCancel();
+                    onEnd();
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
-                    onCancel();
+                    onEnd();
                 }
 
-                private void onCancel() {
+                private void onEnd() {
                     backgroundView.setBackgroundColor(newColor);
                     bgOverlay.setVisibility(View.INVISIBLE);
                     ViewCompat.setAlpha(bgOverlay, 1);
