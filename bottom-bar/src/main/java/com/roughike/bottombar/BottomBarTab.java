@@ -1,5 +1,6 @@
 package com.roughike.bottombar;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -88,6 +89,14 @@ public class BottomBarTab extends LinearLayout {
         this.title = title;
     }
 
+    public int getInActiveColor() {
+        return inActiveColor;
+    }
+
+    public void setInActiveColor(int inActiveColor) {
+        this.inActiveColor = inActiveColor;
+    }
+
     public int getActiveColor() {
         return activeColor;
     }
@@ -146,48 +155,25 @@ public class BottomBarTab extends LinearLayout {
         setTag(TAG_ACTIVE);
         isSelected = true;
 
-        if (type != Type.SHIFTING) {
-            iconView.setColorFilter(activeColor);
-            titleView.setTextColor(activeColor);
+        boolean isShifting = type == Type.SHIFTING;
+
+        if (!isShifting) {
+            setColors(activeColor);
         }
 
         if (animate) {
-            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(titleView)
-                    .setDuration(ANIMATION_DURATION)
-                    .scaleX(1)
-                    .scaleY(1);
-
-            if (type == Type.SHIFTING) {
-                titleAnimator.alpha(1.0f);
-            }
-
-            titleAnimator.start();
-
-            // We only want to animate the icon to avoid moving the title
-            // Shifting or fixed the padding above icon is always 6dp
-            MiscUtils.resizePaddingTop(iconView, iconView.getPaddingTop(), sixDps, ANIMATION_DURATION);
-
-            if (type == Type.SHIFTING) {
-                ViewCompat.animate(iconView)
-                        .setDuration(ANIMATION_DURATION)
-                        .alpha(1.0f)
-                        .start();
-            }
+            setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
+            animateIcon(1);
+            animateTitle(1, 1);
 
             // TODO: handleBackgroundColorChange(tabPosition, tab);
         } else {
-            ViewCompat.setScaleX(titleView, 1);
-            ViewCompat.setScaleY(titleView, 1);
-            iconView.setPadding(
-                    iconView.getPaddingLeft(),
-                    sixDps,
-                    iconView.getPaddingRight(),
-                    iconView.getPaddingBottom()
-            );
+            setTitleScale(1);
+            setTopPadding(sixDps);
 
-            if (type == Type.SHIFTING) {
-                ViewCompat.setAlpha(iconView, 1.0f);
-                ViewCompat.setAlpha(titleView, 1.0f);
+            if (isShifting) {
+                ViewCompat.setAlpha(iconView, 1);
+                ViewCompat.setAlpha(titleView, 1);
             }
         }
     }
@@ -196,52 +182,90 @@ public class BottomBarTab extends LinearLayout {
         isSelected = false;
         setTag(TAG_INACTIVE);
 
-        if (type != Type.SHIFTING) {
-            iconView.setColorFilter(inActiveColor);
+        boolean isShifting = type == Type.SHIFTING;
 
-            if (title != null) {
-                titleView.setTextColor(inActiveColor);
-            }
+        if (!isShifting) {
+            setColors(inActiveColor);
         }
 
-        float scale = type == Type.SHIFTING ? 0 : 0.86f;
-        int iconPaddingTop = type == Type.SHIFTING ? sixteenDps : eightDps;
+        float scale = isShifting ? 0 : 0.86f;
+        int iconPaddingTop = isShifting ? sixteenDps : eightDps;
 
         if (animate) {
-            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(titleView)
-                    .setDuration(ANIMATION_DURATION)
-                    .scaleX(scale)
-                    .scaleY(scale);
+            setTopPaddingAnimated(iconView.getPaddingTop(), iconPaddingTop);
+            animateTitle(scale, 0);
 
-            if (type == Type.SHIFTING) {
-                titleAnimator.alpha(0);
-            }
-
-            titleAnimator.start();
-
-            MiscUtils.resizePaddingTop(iconView, iconView.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
-
-            if (type == Type.SHIFTING) {
-                ViewCompat.animate(iconView)
-                        .setDuration(ANIMATION_DURATION)
-                        .alpha(INACTIVE_ALPHA)
-                        .start();
+            if (isShifting) {
+                animateIcon(INACTIVE_ALPHA);
             }
         } else {
-            ViewCompat.setScaleX(titleView, scale);
-            ViewCompat.setScaleY(titleView, scale);
+            setTitleScale(scale);
+            setTopPadding(iconPaddingTop);
 
-            iconView.setPadding(
-                    iconView.getPaddingLeft(),
-                    iconPaddingTop,
-                    iconView.getPaddingRight(),
-                    iconView.getPaddingBottom()
-            );
-
-            if (type == Type.SHIFTING) {
+            if (isShifting) {
                 ViewCompat.setAlpha(iconView, INACTIVE_ALPHA);
                 ViewCompat.setAlpha(titleView, 0);
             }
         }
+    }
+
+    private void setColors(int color) {
+        iconView.setColorFilter(color);
+
+        if (titleView != null) {
+            titleView.setTextColor(color);
+        }
+    }
+
+    private void setTopPaddingAnimated(int start, int end) {
+        ValueAnimator paddingAnimator = ValueAnimator.ofInt(start, end);
+        paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                iconView.setPadding(
+                        iconView.getPaddingLeft(),
+                        (Integer) animation.getAnimatedValue(),
+                        iconView.getPaddingRight(),
+                        iconView.getPaddingBottom()
+                );
+            }
+        });
+
+        paddingAnimator.setDuration(ANIMATION_DURATION);
+        paddingAnimator.start();
+    }
+
+    private void animateTitle(float finalScale, float finalAlpha) {
+        ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(titleView)
+                .setDuration(ANIMATION_DURATION)
+                .scaleX(finalScale)
+                .scaleY(finalScale);
+
+        if (type == Type.SHIFTING) {
+            titleAnimator.alpha(finalAlpha);
+        }
+
+        titleAnimator.start();
+    }
+
+    private void animateIcon(float finalAlpha) {
+        ViewCompat.animate(iconView)
+                .setDuration(ANIMATION_DURATION)
+                .alpha(finalAlpha)
+                .start();
+    }
+
+    private void setTopPadding(int topPadding) {
+        iconView.setPadding(
+                iconView.getPaddingLeft(),
+                topPadding,
+                iconView.getPaddingRight(),
+                iconView.getPaddingBottom()
+        );
+    }
+
+    private void setTitleScale(float scale) {
+        ViewCompat.setScaleX(titleView, scale);
+        ViewCompat.setScaleY(titleView, scale);
     }
 }

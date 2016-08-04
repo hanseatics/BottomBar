@@ -1318,7 +1318,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
             // We only want to animate the icon to avoid moving the title
             // Shifting or fixed the padding above icon is always 6dp
-            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), mSixDp, ANIMATION_DURATION);
+            //MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), mSixDp, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)
@@ -1383,7 +1383,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
             titleAnimator.start();
 
-            MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
+            //MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
 
             if (mIsShiftingMode) {
                 ViewCompat.animate(icon)

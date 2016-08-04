@@ -100,19 +100,6 @@ class MiscUtils {
         animator.start();
     }
 
-    protected static void resizePaddingTop(final View icon, int start, int end, long duration) {
-        ValueAnimator paddingAnimator = ValueAnimator.ofInt(start, end);
-        paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                icon.setPadding(icon.getPaddingLeft(), (Integer) animation.getAnimatedValue(),
-                    icon.getPaddingRight(), icon.getPaddingBottom());
-            }
-        });
-        paddingAnimator.setDuration(duration);
-        paddingAnimator.start();
-    }
-
     /**
      * Animate a background activeIconColor change. Uses Circular Reveal if supported,
      * otherwise crossfades the background activeIconColor in.

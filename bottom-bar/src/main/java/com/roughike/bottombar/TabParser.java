@@ -67,14 +67,17 @@ public class TabParser {
                 case "id":
                     workingTab.setId(parser.getIdAttributeResourceValue(i));
                     break;
-                case "color":
-                    workingTab.setActiveColor(getColorValue(i, parser));
-                    break;
                 case "title":
                     workingTab.setTitle(getTitleValue(i, parser));
                     break;
                 case "icon":
                     workingTab.setIconResId(parser.getAttributeResourceValue(i, 0));
+                    break;
+                case "inActiveColor":
+                    //workingTab.setInActiveColor(getColorValue(i, parser));
+                    break;
+                case "activeColor":
+                    workingTab.setActiveColor(getColorValue(i, parser));
                     break;
             }
         }
