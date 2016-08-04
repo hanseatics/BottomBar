@@ -27,7 +27,7 @@ public class FiveColorChangingTabsActivity extends AppCompatActivity {
         mMessageView = (TextView) findViewById(R.id.messageView);
 
         mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        mBottomBar.setItems(R.xml.bottombar_tabs_five);
+        mBottomBar.setItems(R.xml.bottombar_tabs_color_changing);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -41,13 +41,5 @@ public class FiveColorChangingTabsActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_LONG).show();
             }
         });
-
-        // Setting colors for different tabs when there's more than three of them.
-        // You can set colors for tabs in three different ways as shown below.
-        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
-        mBottomBar.mapColorForTab(1, 0xFF5D4037);
-        mBottomBar.mapColorForTab(2, "#7B1FA2");
-        mBottomBar.mapColorForTab(3, "#FF5252");
-        mBottomBar.mapColorForTab(4, "#FF9800");
     }
 }

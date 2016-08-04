@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -38,6 +39,7 @@ public class BottomBarTab extends LinearLayout {
     private final int sixDps;
     private final int eightDps;
     private final int sixteenDps;
+    private final int primaryColor;
 
     private Type type = Type.FIXED;
     private int iconResId;
@@ -45,6 +47,7 @@ public class BottomBarTab extends LinearLayout {
 
     private int inActiveColor;
     private int activeColor;
+    private Integer barColorWhenSelected;
 
     private AppCompatImageView iconView;
     private TextView titleView;
@@ -60,9 +63,10 @@ public class BottomBarTab extends LinearLayout {
         sixDps = MiscUtils.dpToPixel(context, 6);
         eightDps = MiscUtils.dpToPixel(context, 8);
         sixteenDps = MiscUtils.dpToPixel(context, 16);
+        primaryColor = MiscUtils.getColor(context, R.attr.colorPrimary);
 
         inActiveColor = ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor);
-        activeColor = MiscUtils.getColor(context, R.attr.colorPrimary);
+        activeColor = primaryColor;
     }
 
     public Type getType() {
@@ -103,6 +107,15 @@ public class BottomBarTab extends LinearLayout {
 
     public void setActiveColor(int activeIconColor) {
         this.activeColor = activeIconColor;
+    }
+
+    @Nullable
+    public Integer getBarColorWhenSelected() {
+        return barColorWhenSelected;
+    }
+
+    public void setBarColorWhenSelected(Integer barColorWhenSelected) {
+        this.barColorWhenSelected = barColorWhenSelected;
     }
 
     public void prepareLayout() {
@@ -165,8 +178,6 @@ public class BottomBarTab extends LinearLayout {
             setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
             animateIcon(1);
             animateTitle(1, 1);
-
-            // TODO: handleBackgroundColorChange(tabPosition, tab);
         } else {
             setTitleScale(1);
             setTopPadding(sixDps);

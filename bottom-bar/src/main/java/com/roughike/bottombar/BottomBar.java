@@ -1,5 +1,7 @@
 package com.roughike.bottombar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -17,12 +19,15 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -288,6 +293,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
         updateSelectedTab(position);
         shiftingMagic(oldTab, newTab, animate);
+        handleBackgroundColorChange(newTab);
     }
 
     /**
@@ -1029,6 +1035,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             ((BottomBarTab) v).select(!mIgnoreScalingResize);
 
             shiftingMagic(oldTab, v, true);
+            handleBackgroundColorChange((BottomBarTab) v);
         }
         updateSelectedTab(findItemPosition(v));
     }
@@ -1273,154 +1280,85 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
     }
 
-    private void _selectTab(View tab, boolean animate) {
-        tab.setTag(BottomBarTab.TAG_ACTIVE);
-        AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
-        TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+    private void handleBackgroundColorChange(BottomBarTab tab) {
+        Integer newColor = tab.getBarColorWhenSelected();
 
-        int tabPosition = findItemPosition(tab);
-
-        if (!mIsShiftingMode || mIsTabletMode) {
-            int activeColor = mCustomActiveTabColor != 0 ?
-                    mCustomActiveTabColor : mPrimaryColor;
-            icon.setColorFilter(activeColor);
-
-            if (title != null) {
-                title.setTextColor(activeColor);
-            }
-        } else {
-            title.setTextColor(mWhiteColor);
-        }
-
-        if (mIsDarkTheme) {
-            if (title != null) {
-                ViewCompat.setAlpha(title, 1.0f);
-            }
-
-            ViewCompat.setAlpha(icon, 1.0f);
-        }
-
-        if (title == null) {
+        if (newColor == null) {
             return;
         }
 
-        if (animate) {
-            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
-                    .setDuration(ANIMATION_DURATION)
-                    .scaleX(1)
-                    .scaleY(1);
-
-            if (mIsShiftingMode) {
-                titleAnimator.alpha(1.0f);
-            }
-
-            titleAnimator.start();
-
-            // We only want to animate the icon to avoid moving the title
-            // Shifting or fixed the padding above icon is always 6dp
-            //MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), mSixDp, ANIMATION_DURATION);
-
-            if (mIsShiftingMode) {
-                ViewCompat.animate(icon)
-                        .setDuration(ANIMATION_DURATION)
-                        .alpha(1.0f)
-                        .start();
-            }
-
-            handleBackgroundColorChange(tabPosition, tab);
-        } else {
-            ViewCompat.setScaleX(title, 1);
-            ViewCompat.setScaleY(title, 1);
-            icon.setPadding(icon.getPaddingLeft(), mSixDp, icon.getPaddingRight(),
-                icon.getPaddingBottom());
-
-            if (mIsShiftingMode) {
-                ViewCompat.setAlpha(icon, 1.0f);
-                ViewCompat.setAlpha(title, 1.0f);
-            }
-        }
-    }
-
-    private void _unselectTab(View tab, boolean animate) {
-        tab.setTag(BottomBarTab.TAG_INACTIVE);
-
-        AppCompatImageView icon = (AppCompatImageView) tab.findViewById(R.id.bb_bottom_bar_icon);
-        TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
-
-        if (!mIsShiftingMode || mIsTabletMode) {
-            int inActiveColor = mIsDarkTheme ? mWhiteColor : mInActiveColor;
-            icon.setColorFilter(inActiveColor);
-
-            if (title != null) {
-                title.setTextColor(inActiveColor);
-            }
-        }
-
-        if (mIsDarkTheme) {
-            if (title != null) {
-                ViewCompat.setAlpha(title, mTabAlpha);
-            }
-
-            ViewCompat.setAlpha(icon, mTabAlpha);
-        }
-
-        if (title == null) {
-            return;
-        }
-
-        float scale = mIsShiftingMode ? 0 : 0.86f;
-        int iconPaddingTop = mIsShiftingMode ? mSixteenDp : mEightDp;
-
-        if (animate) {
-            ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(title)
-                    .setDuration(ANIMATION_DURATION)
-                    .scaleX(scale)
-                    .scaleY(scale);
-
-            if (mIsShiftingMode) {
-                titleAnimator.alpha(0);
-            }
-
-            titleAnimator.start();
-
-            //MiscUtils.resizePaddingTop(icon, icon.getPaddingTop(), iconPaddingTop, ANIMATION_DURATION);
-
-            if (mIsShiftingMode) {
-                ViewCompat.animate(icon)
-                        .setDuration(ANIMATION_DURATION)
-                        .alpha(mTabAlpha)
-                        .start();
-            }
-        } else {
-            ViewCompat.setScaleX(title, scale);
-            ViewCompat.setScaleY(title, scale);
-            icon.setPadding(icon.getPaddingLeft(), iconPaddingTop, icon.getPaddingRight(),
-                icon.getPaddingBottom());
-
-            if (mIsShiftingMode) {
-                ViewCompat.setAlpha(icon, mTabAlpha);
-                ViewCompat.setAlpha(title, 0);
-            }
-        }
-    }
-
-    private void handleBackgroundColorChange(int tabPosition, View tab) {
-        if (mIsDarkTheme || !mIsShiftingMode || mIsTabletMode) return;
-
-        if (mColorMap != null && mColorMap.containsKey(tabPosition)) {
-            handleBackgroundColorChange(
-                    tab, mColorMap.get(tabPosition));
-        } else {
-            handleBackgroundColorChange(tab, mDefaultBackgroundColor);
-        }
-    }
-
-    private void handleBackgroundColorChange(View tab, int color) {
-        MiscUtils.animateBGColorChange(tab,
+        animateBGColorChange(tab,
                 mBackgroundView,
                 mBackgroundOverlay,
-                color);
-        mCurrentBackgroundColor = color;
+                newColor);
+        mCurrentBackgroundColor = newColor;
+    }
+
+    private void animateBGColorChange(View clickedView, final View backgroundView,
+                                final View bgOverlay, final int newColor) {
+        int centerX = (int) (ViewCompat.getX(clickedView) + (clickedView.getMeasuredWidth() / 2));
+        int centerY = clickedView.getMeasuredHeight() / 2;
+        int finalRadius = backgroundView.getWidth();
+
+        backgroundView.clearAnimation();
+        bgOverlay.clearAnimation();
+
+        Object animator;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!bgOverlay.isAttachedToWindow()) {
+                return;
+            }
+
+            animator = ViewAnimationUtils
+                    .createCircularReveal(bgOverlay, centerX, centerY, 0, finalRadius);
+        } else {
+            ViewCompat.setAlpha(bgOverlay, 0);
+            animator = ViewCompat.animate(bgOverlay).alpha(1);
+        }
+
+        if (animator instanceof ViewPropertyAnimatorCompat) {
+            ((ViewPropertyAnimatorCompat) animator).setListener(new ViewPropertyAnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(View view) {
+                    onCancel();
+                }
+
+                @Override
+                public void onAnimationCancel(View view) {
+                    onCancel();
+                }
+
+                private void onCancel() {
+                    backgroundView.setBackgroundColor(newColor);
+                    bgOverlay.setVisibility(View.INVISIBLE);
+                    ViewCompat.setAlpha(bgOverlay, 1);
+                }
+            }).start();
+        } else if (animator != null) {
+            ((Animator) animator).addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    onCancel();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    onCancel();
+                }
+
+                private void onCancel() {
+                    backgroundView.setBackgroundColor(newColor);
+                    bgOverlay.setVisibility(View.INVISIBLE);
+                    ViewCompat.setAlpha(bgOverlay, 1);
+                }
+            });
+
+            ((Animator) animator).start();
+        }
+
+        bgOverlay.setBackgroundColor(newColor);
+        bgOverlay.setVisibility(View.VISIBLE);
     }
 
     private int findItemPosition(View viewToFind) {

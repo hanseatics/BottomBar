@@ -74,10 +74,13 @@ public class TabParser {
                     workingTab.setIconResId(parser.getAttributeResourceValue(i, 0));
                     break;
                 case "inActiveColor":
-                    //workingTab.setInActiveColor(getColorValue(i, parser));
+                    workingTab.setInActiveColor(getColorValue(i, parser));
                     break;
                 case "activeColor":
                     workingTab.setActiveColor(getColorValue(i, parser));
+                    break;
+                case "barColorWhenSelected":
+                    workingTab.setBarColorWhenSelected(getColorValue(i, parser));
                     break;
             }
         }
@@ -93,14 +96,18 @@ public class TabParser {
         return parser.getAttributeValue(attrIndex);
     }
 
-    private int getColorValue(int attrIndex, XmlResourceParser parser) {
+    private Integer getColorValue(int attrIndex, XmlResourceParser parser) {
         int colorResource = parser.getAttributeResourceValue(attrIndex, 0);
 
         if (colorResource != 0) {
             return ContextCompat.getColor(context, colorResource);
         }
 
-        return Color.parseColor(parser.getAttributeValue(attrIndex));
+        try {
+            return Color.parseColor(parser.getAttributeValue(attrIndex));
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public List<BottomBarTab> getTabs() {
