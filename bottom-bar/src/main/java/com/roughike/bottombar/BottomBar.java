@@ -23,6 +23,7 @@ import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -59,7 +60,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBar extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener {
+public class BottomBar extends LinearLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final long ANIMATION_DURATION = 150;
 
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
@@ -79,11 +80,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private ViewGroup mOuterContainer;
     private ViewGroup mTabContainer;
 
-    private View mBackgroundView;
     private View mBackgroundOverlay;
     private View mShadowView;
     private View mTabletRightBorder;
-    private View mPendingUserContentView;
 
     private Integer mPrimaryColor;
     private Integer mInActiveColor;
@@ -132,103 +131,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     private Typeface mPendingTypeface;
 
     private int mMaxFixedTabCount = 3;
-
-    /**
-     * Bind the BottomBar to your Activity, and inflate your layout here.
-     *
-     * @param activity           an Activity to attach to.
-     * @param savedInstanceState a Bundle for restoring the state on configuration change.
-     * @return a BottomBar at the bottom of the screen.
-     */
-    public static BottomBar attach(Activity activity, Bundle savedInstanceState) {
-        BottomBar bottomBar = new BottomBar(activity);
-        bottomBar.restoreState(savedInstanceState);
-
-        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
-        View oldLayout = contentView.getChildAt(0);
-        contentView.removeView(oldLayout);
-
-        bottomBar.setPendingUserContentView(oldLayout);
-        contentView.addView(bottomBar, 0);
-
-        return bottomBar;
-    }
-
-    public static BottomBar attach(Activity activity, Bundle savedInstanceState, int backgroundColor, int activeIconColor, float alpha) {
-        BottomBar bottomBar = new BottomBar(activity, backgroundColor, activeIconColor, alpha);
-        bottomBar.restoreState(savedInstanceState);
-
-        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
-        View oldLayout = contentView.getChildAt(0);
-        contentView.removeView(oldLayout);
-
-        bottomBar.setPendingUserContentView(oldLayout);
-        contentView.addView(bottomBar, 0);
-
-        return bottomBar;
-    }
-
-    private void setPendingUserContentView(View oldLayout) {
-        mPendingUserContentView = oldLayout;
-    }
-
-    /**
-     * Bind the BottomBar to the specified View's parent, and inflate
-     * your layout there. Useful when the BottomBar overlaps some content
-     * that shouldn't be overlapped.
-     * 
-     * Remember to also call {@link #restoreState(Bundle)} inside
-     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
-     *
-     * @param view               a View, which parent we're going to attach to.
-     * @param savedInstanceState a Bundle for restoring the state on configuration change.
-     * @return a BottomBar at the bottom of the screen.
-     */
-    public static BottomBar attach(View view, Bundle savedInstanceState) {
-        BottomBar bottomBar = new BottomBar(view.getContext());
-        bottomBar.restoreState(savedInstanceState);
-
-        ViewGroup contentView = (ViewGroup) view.getParent();
-
-        if (contentView != null) {
-            View oldLayout = contentView.getChildAt(0);
-            contentView.removeView(oldLayout);
-
-            bottomBar.setPendingUserContentView(oldLayout);
-            contentView.addView(bottomBar, 0);
-        } else {
-            bottomBar.setPendingUserContentView(view);
-        }
-
-        return bottomBar;
-    }
-
-    /**
-     * Adds the BottomBar inside of your CoordinatorLayout and shows / hides
-     * it according to scroll state changes.
-     * 
-     * Remember to also call {@link #restoreState(Bundle)} inside
-     * of your {@link Activity#onSaveInstanceState(Bundle)} to restore the state.
-     *
-     * @param coordinatorLayout  a CoordinatorLayout for the BottomBar to add itself into
-     * @param userContentView    the view (usually a NestedScrollView) that has your scrolling content.
-     *                           Needed for tablet support.
-     * @param savedInstanceState a Bundle for restoring the state on configuration change.
-     * @return a BottomBar at the bottom of the screen.
-     */
-    public static BottomBar attachShy(CoordinatorLayout coordinatorLayout, View userContentView, Bundle savedInstanceState) {
-        final BottomBar bottomBar = new BottomBar(coordinatorLayout.getContext());
-        bottomBar.restoreState(savedInstanceState);
-        bottomBar.toughChildHood(ViewCompat.getFitsSystemWindows(coordinatorLayout));
-
-        if (userContentView != null && coordinatorLayout.getContext()
-                .getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode)) {
-            bottomBar.setPendingUserContentView(userContentView);
-        }
-
-        coordinatorLayout.addView(bottomBar);
-        return bottomBar;
-    }
 
     /**
      * Set items for this BottomBar from an XML menu resource file.
@@ -661,39 +563,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     /**
-     * Get this BottomBar's height (or width), depending if the BottomBar
-     * is on the bottom (phones) or the left (tablets) of the screen.
-     *
-     * @param listener {@link OnSizeDeterminedListener} to get the size when it's ready.
-     */
-    public void getBarSize(final OnSizeDeterminedListener listener) {
-        final int sizeCandidate = mIsTabletMode ?
-                mOuterContainer.getWidth() : mOuterContainer.getHeight();
-
-        if (sizeCandidate == 0) {
-            mOuterContainer.getViewTreeObserver().addOnGlobalLayoutListener(
-                    new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @SuppressWarnings("deprecation")
-                        @Override
-                        public void onGlobalLayout() {
-                            listener.onSizeReady(mIsTabletMode ?
-                                    mOuterContainer.getWidth() : mOuterContainer.getHeight());
-                            ViewTreeObserver obs = mOuterContainer.getViewTreeObserver();
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                obs.removeOnGlobalLayoutListener(this);
-                            } else {
-                                obs.removeGlobalOnLayoutListener(this);
-                            }
-                        }
-                    });
-            return;
-        }
-
-        listener.onSizeReady(sizeCandidate);
-    }
-
-    /**
      * Get the actual BottomBar that has the tabs inside it for whatever what you may want
      * to do with it.
      *
@@ -817,6 +686,8 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        setOrientation(VERTICAL);
+
         mContext = context;
 
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
@@ -862,28 +733,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         mOuterContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         mTabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
-        mBackgroundView = rootView.findViewById(R.id.bb_bottom_bar_background_view);
         mBackgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
-
-        if (mIsShy && mIgnoreTabletLayout) {
-            mPendingUserContentView = null;
-        }
-
-        if (mPendingUserContentView != null) {
-            ViewGroup.LayoutParams params = mPendingUserContentView.getLayoutParams();
-
-            if (params == null) {
-                params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-            }
-
-            if (mIsTabletMode && mIsShy) {
-                ((ViewGroup) mPendingUserContentView.getParent()).removeView(mPendingUserContentView);
-            }
-
-            mUserContentContainer.addView(mPendingUserContentView, 0, params);
-            mPendingUserContentView = null;
-        }
 
         if (mIsShy && !mIsTabletMode) {
             getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -955,10 +805,6 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
         if (mOuterContainer != null) {
             mOuterContainer.setVisibility(visibility);
-        }
-
-        if (mBackgroundView != null) {
-            mBackgroundView.setVisibility(visibility);
         }
 
         if (mBackgroundOverlay != null) {
@@ -1092,10 +938,9 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
             darkThemeMagic();
         } else if (!mIsTabletMode && mIsShiftingMode) {
             mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
-            mBackgroundView.setBackgroundColor(mDefaultBackgroundColor);
 
             if (mContext instanceof Activity) {
-                navBarMagic((Activity) mContext, this);
+                // navBarMagic((Activity) mContext, this);
             }
         }
 
@@ -1189,7 +1034,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
 
     private void darkThemeMagic() {
         if (!mIsTabletMode) {
-            mBackgroundView.setBackgroundColor(mDarkBackgroundColor);
+            mTabContainer.setBackgroundColor(mDarkBackgroundColor);
         } else {
             mTabContainer.setBackgroundColor(mDarkBackgroundColor);
             mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
@@ -1244,7 +1089,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
 
         animateBGColorChange(tab,
-                mBackgroundView,
+                mOuterContainer,
                 mBackgroundOverlay,
                 newColor);
         mCurrentBackgroundColor = newColor;
@@ -1350,7 +1195,7 @@ public class BottomBar extends RelativeLayout implements View.OnClickListener, V
         }
     }
 
-    private static void navBarMagic(Activity activity, final BottomBar bottomBar) {
+    private static void _navBarMagic(Activity activity, final BottomBar bottomBar) {
         Resources res = activity.getResources();
 
         int softMenuIdentifier = res
