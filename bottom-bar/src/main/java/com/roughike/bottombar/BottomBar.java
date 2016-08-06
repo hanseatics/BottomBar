@@ -66,7 +66,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean mShyHeightAlreadyCalculated;
     private boolean mUseExtraOffset;
 
-    private ViewGroup mOuterContainer;
     private ViewGroup mTabContainer;
 
     private View mBackgroundOverlay;
@@ -117,6 +116,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private Typeface mPendingTypeface;
 
     private int mMaxFixedTabCount = 3;
+    private ViewGroup mOuterContainer;
 
     /**
      * Set items for this BottomBar from an XML menu resource file.
@@ -618,8 +618,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             }
 
             for (Integer key : mBadgeMap.keySet()) {
-                BottomBarBadge badgeCandidate = (BottomBarBadge) mOuterContainer
-                        .findViewWithTag(mBadgeMap.get(key));
+                BottomBarBadge badgeCandidate = (BottomBarBadge) findViewWithTag(mBadgeMap.get(key));
 
                 if (badgeCandidate != null) {
                     mBadgeStateMap.put(key, badgeCandidate.isVisible());
@@ -666,7 +665,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         setOrientation(VERTICAL);
 
         mContext = context;
-
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
 
 
@@ -717,7 +715,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 public void onGlobalLayout() {
                     if (!mShyHeightAlreadyCalculated) {
                         ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                                .setBehavior(new BottomNavigationBehavior(getOuterContainer().getHeight(), 0, isShy(), mIsTabletMode));
+                                .setBehavior(new BottomNavigationBehavior(getHeight(), 0, isShy(), mIsTabletMode));
                     }
 
                     ViewTreeObserver obs = getViewTreeObserver();
@@ -752,10 +750,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return mUseExtraOffset;
     }
 
-    protected View getOuterContainer() {
-        return mOuterContainer;
-    }
-
     protected boolean drawBehindNavBar() {
         return mDrawBehindNavBar;
     }
@@ -772,10 +766,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         if (mIsShy) {
             toggleShyVisibility(visibility == VISIBLE);
             return;
-        }
-
-        if (mOuterContainer != null) {
-            mOuterContainer.setVisibility(visibility);
         }
 
         if (mBackgroundOverlay != null) {
@@ -848,8 +838,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         if (mBadgeMap.containsKey(oldPosition)) {
-            BottomBarBadge oldBadge = (BottomBarBadge) mOuterContainer
-                    .findViewWithTag(mBadgeMap.get(oldPosition));
+            BottomBarBadge oldBadge = (BottomBarBadge) findViewWithTag(mBadgeMap.get(oldPosition));
 
             if (oldBadge.getAutoShowAfterUnSelection()) {
                 oldBadge.show();
@@ -859,8 +848,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         if (mBadgeMap.containsKey(newPosition)) {
-            BottomBarBadge newBadge = (BottomBarBadge) mOuterContainer
-                    .findViewWithTag(mBadgeMap.get(newPosition));
+            BottomBarBadge newBadge = (BottomBarBadge) findViewWithTag(mBadgeMap.get(newPosition));
 
             if (newBadge.getAutoHideOnSelection()) {
                 newBadge.hide();
@@ -934,6 +922,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             if (index == mCurrentTabPosition) {
                 bottomBarTab.select(false);
+
+                Integer barBackgroundColor = bottomBarTab.getBarColorWhenSelected();
+
+                if (barBackgroundColor != null) {
+                    mOuterContainer.setBackgroundColor(barBackgroundColor);
+                }
             } else {
                 bottomBarTab.deselect(false);
             }
@@ -1052,18 +1046,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         animateBGColorChange(tab,
-                mOuterContainer,
                 mBackgroundOverlay,
                 newColor);
     }
 
-    private void animateBGColorChange(View clickedView, final View backgroundView,
-                                final View bgOverlay, final int newColor) {
+    private void animateBGColorChange(View clickedView, final View bgOverlay, final int newColor) {
         int centerX = (int) (ViewCompat.getX(clickedView) + (clickedView.getMeasuredWidth() / 2));
         int centerY = clickedView.getMeasuredHeight() / 2;
-        int finalRadius = backgroundView.getWidth();
+        int finalRadius = mOuterContainer.getWidth();
 
-        backgroundView.clearAnimation();
+        mOuterContainer.clearAnimation();
         bgOverlay.clearAnimation();
 
         Object animator;
@@ -1093,7 +1085,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 }
 
                 private void onEnd() {
-                    backgroundView.setBackgroundColor(newColor);
+                    mOuterContainer.setBackgroundColor(newColor);
                     bgOverlay.setVisibility(View.INVISIBLE);
                     ViewCompat.setAlpha(bgOverlay, 1);
                 }
@@ -1111,7 +1103,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 }
 
                 private void onEnd() {
-                    backgroundView.setBackgroundColor(newColor);
+                    mOuterContainer.setBackgroundColor(newColor);
                     bgOverlay.setVisibility(View.INVISIBLE);
                     ViewCompat.setAlpha(bgOverlay, 1);
                 }
