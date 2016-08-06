@@ -10,6 +10,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -226,6 +228,24 @@ public class BottomBarTab extends LinearLayout {
         if (titleView != null) {
             titleView.setTextColor(color);
         }
+    }
+
+    public void updateWidthAnimated(float endWidth) {
+        float start = getWidth();
+
+        ValueAnimator animator = ValueAnimator.ofFloat(start, endWidth);
+        animator.setDuration(150);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                ViewGroup.LayoutParams params = getLayoutParams();
+                if (params == null) return;
+
+                params.width = Math.round((float) animator.getAnimatedValue());
+                setLayoutParams(params);
+            }
+        });
+        animator.start();
     }
 
     private void setTopPaddingAnimated(int start, int end) {

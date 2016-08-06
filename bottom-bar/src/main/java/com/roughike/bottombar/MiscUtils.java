@@ -79,28 +79,6 @@ class MiscUtils {
     }
 
     /**
-     * A method for animating width for the tabs.
-     * @param tab tab to animate.
-     * @param start starting width.
-     * @param end final width after animation.
-     */
-    protected static void resizeTab(final View tab, float start, float end) {
-        ValueAnimator animator = ValueAnimator.ofFloat(start, end);
-        animator.setDuration(150);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                ViewGroup.LayoutParams params = tab.getLayoutParams();
-                if (params == null) return;
-
-                params.width = Math.round((float) animator.getAnimatedValue());
-                tab.setLayoutParams(params);
-            }
-        });
-        animator.start();
-    }
-
-    /**
      * A convenience method for setting text appearance.
      *
      * @param textView a TextView which textAppearance to modify.

@@ -3,10 +3,7 @@ package com.roughike.bottombar;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -22,19 +19,12 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -189,7 +179,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         updateSelectedTab(position);
         shiftingMagic(oldTab, newTab, animate);
-        handleBackgroundColorChange(newTab);
+        handleBackgroundColorChange(newTab, false);
     }
 
     /**
@@ -559,16 +549,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     /**
-     * Get the actual BottomBar that has the tabs inside it for whatever what you may want
-     * to do with it.
-     *
-     * @return the BottomBar.
-     */
-    public View getBar() {
-        return mOuterContainer;
-    }
-
-    /**
      * Super ugly hacks
      * ----------------------------/
      */
@@ -677,7 +657,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             mIsComingFromRestoredState = true;
             mIgnoreTabReselectionListener = true;
 
-            selectTabAtPosition(savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition), false);
+            int restoredPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, mCurrentTabPosition);
+            selectTabAtPosition(restoredPosition, false);
         }
     }
 
@@ -822,31 +803,22 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void handleClick(View v) {
         if (v.getTag().equals(BottomBarTab.TAG_INACTIVE)) {
             BottomBarTab oldTab = (BottomBarTab) findViewWithTag(BottomBarTab.TAG_ACTIVE);
+            BottomBarTab newTab = (BottomBarTab) v;
 
             oldTab.deselect(!mIgnoreScalingResize);
-            ((BottomBarTab) v).select(!mIgnoreScalingResize);
+            newTab.select(!mIgnoreScalingResize);
 
-            shiftingMagic(oldTab, v, true);
-            handleBackgroundColorChange((BottomBarTab) v);
+            shiftingMagic(oldTab, newTab, true);
+            handleBackgroundColorChange(newTab, true);
         }
         updateSelectedTab(findItemPosition(v));
     }
 
-    private void shiftingMagic(View oldTab, View newTab, boolean animate) {
+    private void shiftingMagic(BottomBarTab oldTab, BottomBarTab newTab, boolean animate) {
         if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
-            if (oldTab instanceof FrameLayout) {
-                // It's a badge, goddammit!
-                oldTab = ((FrameLayout) oldTab).getChildAt(0);
-            }
-
-            if (newTab instanceof FrameLayout) {
-                // It's a badge, goddammit!
-                newTab = ((FrameLayout) newTab).getChildAt(0);
-            }
-
             if (animate) {
-                MiscUtils.resizeTab(oldTab, oldTab.getWidth(), mInActiveShiftingItemWidth);
-                MiscUtils.resizeTab(newTab, newTab.getWidth(), mActiveShiftingItemWidth);
+                oldTab.updateWidthAnimated(mInActiveShiftingItemWidth);
+                newTab.updateWidthAnimated(mActiveShiftingItemWidth);
             } else {
                 oldTab.getLayoutParams().width = mInActiveShiftingItemWidth;
                 newTab.getLayoutParams().width = mActiveShiftingItemWidth;
@@ -1067,10 +1039,15 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    private void handleBackgroundColorChange(BottomBarTab tab) {
+    private void handleBackgroundColorChange(BottomBarTab tab, boolean animate) {
         Integer newColor = tab.getBarColorWhenSelected();
 
         if (newColor == null) {
+            return;
+        }
+
+        if (!animate) {
+            mOuterContainer.setBackgroundColor(newColor);
             return;
         }
 
@@ -1078,7 +1055,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 mOuterContainer,
                 mBackgroundOverlay,
                 newColor);
-        mCurrentBackgroundColor = newColor;
     }
 
     private void animateBGColorChange(View clickedView, final View backgroundView,
