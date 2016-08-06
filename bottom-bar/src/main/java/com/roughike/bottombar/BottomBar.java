@@ -76,7 +76,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean mShyHeightAlreadyCalculated;
     private boolean mUseExtraOffset;
 
-    private ViewGroup mUserContentContainer;
     private ViewGroup mOuterContainer;
     private ViewGroup mTabContainer;
 
@@ -105,9 +104,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
-
-    private Object mFragmentManager;
-    private int mFragmentContainer;
 
     private List<BottomBarTab> mItems;
     private HashMap<Integer, Object> mBadgeMap;
@@ -726,8 +722,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 this);
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
 
-        mUserContentContainer = (ViewGroup) rootView.findViewById(R.id.bb_user_content_container);
-
         mShadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
 
         mOuterContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
@@ -775,10 +769,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     protected boolean useExtraOffset() {
         return mUseExtraOffset;
-    }
-
-    protected ViewGroup getUserContainer() {
-        return mUserContentContainer;
     }
 
     protected View getOuterContainer() {
@@ -938,10 +928,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             darkThemeMagic();
         } else if (!mIsTabletMode && mIsShiftingMode) {
             mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
-
-            if (mContext instanceof Activity) {
-                // navBarMagic((Activity) mContext, this);
-            }
         }
 
         View[] viewsToAdd = new View[bottomBarItems.size()];
@@ -1180,14 +1166,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void clearItems() {
         if (mTabContainer != null) {
             mTabContainer.removeAllViews();
-        }
-
-        if (mFragmentManager != null) {
-            mFragmentManager = null;
-        }
-
-        if (mFragmentContainer != 0) {
-            mFragmentContainer = 0;
         }
 
         if (mItems != null) {
