@@ -56,10 +56,6 @@ public class BottomBarTab extends LinearLayout {
     private BottomBarBadge badge;
     private int indexInContainer;
 
-    public View getOuterView() {
-        return (View) getParent();
-    }
-
     enum Type {
         FIXED, SHIFTING, TABLET
     }
@@ -78,6 +74,14 @@ public class BottomBarTab extends LinearLayout {
 
     void setType(Type type) {
         this.type = type;
+    }
+
+    public View getOuterView() {
+        return (View) getParent();
+    }
+
+    AppCompatImageView getIconView() {
+        return iconView;
     }
 
     int getIconResId() {
@@ -273,6 +277,7 @@ public class BottomBarTab extends LinearLayout {
         }
 
         if (badge != null) {
+            badge.adjustPositionAndSize(this);
             badge.show();
         }
     }

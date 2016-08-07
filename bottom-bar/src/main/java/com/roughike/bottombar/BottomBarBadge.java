@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,24 +124,19 @@ class BottomBarBadge extends TextView {
         container.addView(this);
 
         parent.addView(container, tabToAddTo.getIndexInContainer());
-
         container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
                 container.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
                 adjustPositionAndSize(tabToAddTo);
             }
         });
     }
 
-    protected void adjustPosition(View tabToAddTo) {
-        setX((float) (tabToAddTo.getX() + (tabToAddTo.getWidth() / 1.75)));
-    }
-
-    private void adjustPositionAndSize(View tabToAddTo) {
-        adjustPosition(tabToAddTo);
+    void adjustPositionAndSize(BottomBarTab tab) {
+        AppCompatImageView iconView = tab.getIconView();
+        setX(tab.getX() + iconView.getX() + iconView.getWidth());
         setTranslationY(10);
 
         int size = Math.max(getWidth(), getHeight());
