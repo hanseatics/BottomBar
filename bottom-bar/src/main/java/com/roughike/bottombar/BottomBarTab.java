@@ -10,7 +10,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,8 +77,8 @@ public class BottomBarTab extends LinearLayout {
         this.type = type;
     }
 
-    public View getOuterView() {
-        return (View) getParent();
+    public ViewGroup getOuterView() {
+        return (ViewGroup) getParent();
     }
 
     AppCompatImageView getIconView() {
@@ -151,6 +150,15 @@ public class BottomBarTab extends LinearLayout {
     }
 
     public void setBadgeCount(int count) {
+        if (count <= 0) {
+            if (badge != null) {
+                badge.removeFromTab(this);
+                badge = null;
+            }
+
+            return;
+        }
+
         if (badge == null) {
             badge = new BottomBarBadge(getContext());
             badge.attachToTab(this, badgeBackgroundColor);

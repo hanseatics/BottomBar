@@ -136,6 +136,15 @@ class BottomBarBadge extends TextView {
         });
     }
 
+    void removeFromTab(BottomBarTab tab) {
+        FrameLayout badgeAndTabContainer = (FrameLayout) getParent();
+        ViewGroup originalTabContainer = (ViewGroup) badgeAndTabContainer.getParent();
+
+        badgeAndTabContainer.removeView(tab);
+        originalTabContainer.removeView(badgeAndTabContainer);
+        originalTabContainer.addView(tab, tab.getIndexInContainer());
+    }
+
     void adjustPositionAndSize(BottomBarTab tab) {
         AppCompatImageView iconView = tab.getIconView();
         setX(iconView.getX() + iconView.getWidth());
