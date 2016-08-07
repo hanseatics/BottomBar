@@ -73,6 +73,7 @@ class BottomBarBadge extends TextView {
         isVisible = true;
         ViewCompat.animate(this)
                 .setDuration(animationDuration)
+                .alpha(1)
                 .scaleX(1)
                 .scaleY(1)
                 .start();
@@ -85,6 +86,7 @@ class BottomBarBadge extends TextView {
         isVisible = false;
         ViewCompat.animate(this)
                 .setDuration(animationDuration)
+                .alpha(0)
                 .scaleX(0)
                 .scaleY(0)
                 .start();
@@ -136,7 +138,7 @@ class BottomBarBadge extends TextView {
 
     void adjustPositionAndSize(BottomBarTab tab) {
         AppCompatImageView iconView = tab.getIconView();
-        setX(tab.getX() + iconView.getX() + iconView.getWidth());
+        setX(iconView.getX() + iconView.getWidth());
         setTranslationY(10);
 
         int size = Math.max(getWidth(), getHeight());

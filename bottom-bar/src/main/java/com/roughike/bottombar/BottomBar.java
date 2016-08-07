@@ -112,11 +112,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Set items for this BottomBar from an XML menu resource file.
-     *
+     * <p/>
      * When setting more than 3 items, only the icons will show by
      * default, but the selected item will have the text visible.
      *
-     * @param xmlRes  the menu resource to inflate items from.
+     * @param xmlRes the menu resource to inflate items from.
      */
     public void setItems(@XmlRes int xmlRes) {
         TabParser.Config config = new TabParser.Config.Builder()
@@ -134,7 +134,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Set a listener that gets fired when the selected tab changes.
-     *
+     * <p/>
      * Note: If listener is set after items are added to the BottomBar, onTabSelected
      * will be immediately called for the currently selected tab
      *
@@ -467,13 +467,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private void shiftingMagic(BottomBarTab oldTab, BottomBarTab newTab, boolean animate) {
         if (!isTabletMode && isShiftingMode) {
-            if (animate) {
-                oldTab.updateWidthAnimated(inActiveShiftingItemWidth);
-                newTab.updateWidthAnimated(activeShiftingItemWidth);
-            } else {
-                oldTab.getLayoutParams().width = inActiveShiftingItemWidth;
-                newTab.getLayoutParams().width = activeShiftingItemWidth;
-            }
+            oldTab.updateWidth(inActiveShiftingItemWidth, animate);
+            newTab.updateWidth(activeShiftingItemWidth, animate);
         }
     }
 
@@ -590,7 +585,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 bottomBarTab.select(false);
 
                 int barBackgroundColor = bottomBarTab.getBarColorWhenSelected();
-                    outerContainer.setBackgroundColor(barBackgroundColor);
+                outerContainer.setBackgroundColor(barBackgroundColor);
             } else {
                 bottomBarTab.deselect(false);
             }
@@ -692,7 +687,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             if (missingPadding > 0) {
                 title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
-                    title.getPaddingRight(), missingPadding + title.getPaddingBottom());
+                        title.getPaddingRight(), missingPadding + title.getPaddingBottom());
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.roughike.bottombar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -276,8 +278,7 @@ public class BottomBarTab extends LinearLayout {
             }
         }
 
-        if (badge != null) {
-            badge.adjustPositionAndSize(this);
+        if (!isShifting && badge != null) {
             badge.show();
         }
     }
@@ -290,7 +291,17 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    void updateWidthAnimated(float endWidth) {
+    void updateWidth(float endWidth, boolean animated) {
+        if (!animated) {
+            getLayoutParams().width = (int) endWidth;
+
+            if (!isActive && badge != null) {
+                badge.adjustPositionAndSize(this);
+                badge.show();
+            }
+            return;
+        }
+
         float start = getWidth();
 
         ValueAnimator animator = ValueAnimator.ofFloat(start, endWidth);
@@ -305,7 +316,22 @@ public class BottomBarTab extends LinearLayout {
                 setLayoutParams(params);
             }
         });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!isActive && badge != null) {
+                    badge.adjustPositionAndSize(BottomBarTab.this);
+                    badge.show();
+                }
+            }
+        });
         animator.start();
+    }
+
+    private void updateBadgePosition() {
+        if (badge != null) {
+            badge.adjustPositionAndSize(this);
+        }
     }
 
     private void setTopPaddingAnimated(int start, int end) {
