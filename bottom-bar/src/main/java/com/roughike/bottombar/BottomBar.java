@@ -981,7 +981,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void handleBackgroundColorChange(BottomBarTab tab, boolean animate) {
         Integer newColor = tab.getBarColorWhenSelected();
 
-        if (newColor == null) {
+        if (newColor == null || mCurrentBackgroundColor == newColor) {
             return;
         }
 
@@ -990,9 +990,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             return;
         }
 
-        animateBGColorChange(tab,
-                mBackgroundOverlay,
-                newColor);
+        animateBGColorChange(tab, mBackgroundOverlay, newColor);
+        mCurrentBackgroundColor = newColor;
     }
 
     private void animateBGColorChange(View clickedView, final View bgOverlay, final int newColor) {
