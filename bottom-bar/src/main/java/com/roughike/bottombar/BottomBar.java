@@ -97,7 +97,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int mCurrentTabPosition;
     private boolean mIsShiftingMode;
 
-    private List<BottomBarTab> mItems;
     private HashMap<Integer, Object> mBadgeMap;
     private HashMap<Integer, Boolean> mBadgeStateMap;
 
@@ -145,8 +144,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .build();
 
         TabParser parser = new TabParser(getContext(), config, xmlRes);
-        mItems = parser.getTabs();
-        updateItems(mItems);
+        updateItems(parser.getTabs());
     }
 
     /**
@@ -160,8 +158,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setOnTabSelectListener(@Nullable OnTabSelectListener listener) {
         mListener = listener;
 
-        if (mListener != null && mItems != null && mItems.size() > 0) {
-            listener.onTabSelected(mItems.get(mCurrentTabPosition).getId());
+        if (mListener != null && mTabContainer.getChildCount() > 0) {
+            listener.onTabSelected(getTabAtPosition(mCurrentTabPosition).getId());
         }
     }
 
@@ -180,10 +178,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param position the position to select.
      */
     public void selectTabAtPosition(int position, boolean animate) {
-        if (mItems == null || mItems.size() == 0) {
-            throw new UnsupportedOperationException("Can't select tab at " +
-                    "position " + position + ". This BottomBar has no items set yet.");
-        } else if (position > mItems.size() - 1 || position < 0) {
+        if (position > mTabContainer.getChildCount() - 1 || position < 0) {
             throw new IndexOutOfBoundsException("Can't select tab at position " +
                     position + ". This BottomBar has no items at that position.");
         }
@@ -208,11 +203,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setDefaultTabPosition(int defaultTabPosition) {
         if (mIsComingFromRestoredState) return;
 
-        if (mItems == null) {
-            mCurrentTabPosition = defaultTabPosition;
-            return;
-        } else if (mItems.size() == 0 || defaultTabPosition > mItems.size() - 1
-                || defaultTabPosition < 0) {
+        int tabCount = mTabContainer.getChildCount();
+
+        if (tabCount == 0 || defaultTabPosition > tabCount - 1 || defaultTabPosition < 0) {
             throw new IndexOutOfBoundsException("Can't set default tab at position " +
                     defaultTabPosition + ". This BottomBar has no items at that position.");
         }
@@ -237,7 +230,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * not have enough contrast for the dark background.
      */
     public void useDarkTheme() {
-        if (!mIsDarkTheme && mItems != null && mItems.size() > 0) {
+        if (!mIsDarkTheme && mTabContainer.getChildCount() > 0) {
             darkThemeMagic();
 
             for (int i = 0; i < mTabContainer.getChildCount(); i++) {
@@ -261,7 +254,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * even if the Night Mode is on.
      */
     public void ignoreNightMode() {
-        if (mItems != null && mItems.size() > 0) {
+        if (mTabContainer.getChildCount() > 0) {
             throw new UnsupportedOperationException("This BottomBar " +
                     "already has items! You must call ignoreNightMode() " +
                     "before setting any items.");
@@ -294,42 +287,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setActiveTabColor(int activeTabColor) {
         mCustomActiveTabColor = activeTabColor;
 
-        if (mItems != null && mItems.size() > 0) {
+        if (mTabContainer.getChildCount() > 0) {
             selectTabAtPosition(mCurrentTabPosition, false);
-        }
-    }
-
-    /**
-     * Set a custom activeIconColor for inactive icons in fixed mode.
-     * 
-     * NOTE: This value is ignored if not in fixed mode.
-     *
-     * @param iconColor a hex activeIconColor used for icons, such as 0xFF00FF00.
-     */
-    public void setFixedInactiveIconColor(int iconColor) {
-        mInActiveColor = iconColor;
-
-        if (mItems != null && mItems.size() > 0) {
-            throw new UnsupportedOperationException("This BottomBar " +
-                    "already has items! You must call setFixedInactiveIconColor() " +
-                    "before setting any items.");
-        }
-    }
-
-    /**
-     * Set a custom activeIconColor for icons in shifting mode.
-     * 
-     * NOTE: This value is ignored in fixed mode.
-     *
-     * @param iconColor a hex activeIconColor used for icons, such as 0xFF00FF00.
-     */
-    public void setShiftingIconColor(int iconColor) {
-        mWhiteColor = iconColor;
-
-        if (mItems != null && mItems.size() > 0) {
-            throw new UnsupportedOperationException("This BottomBar " +
-                    "already has items! You must call setShiftingIconColor() " +
-                    "before setting any items.");
         }
     }
 
@@ -356,10 +315,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @return a {@link BottomBarBadge} object.
      */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
-        if (mItems == null || mItems.size() == 0) {
-            throw new UnsupportedOperationException("You have no BottomBar Tabs set yet. " +
-                    "Please set them first before calling the makeBadgeForTabAt() method.");
-        } else if (tabPosition > mItems.size() - 1 || tabPosition < 0) {
+        if (tabPosition > mTabContainer.getChildCount() - 1 || tabPosition < 0) {
             throw new IndexOutOfBoundsException("Cant make a Badge for Tab " +
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
@@ -453,63 +409,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         if (mShadowView != null) {
             mShadowView.setVisibility(GONE);
         }
-    }
-
-    /**
-     * Prevent the BottomBar drawing behind the Navigation Bar and making
-     * it transparent. Must be called before setting items.
-     */
-    public void noNavBarGoodness() {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call noNavBarGoodness() before setting the items, preferably " +
-                    "right after attaching it to your layout.");
-        }
-
-        mDrawBehindNavBar = false;
-    }
-
-    /**
-     * Force the BottomBar to behave exactly same on tablets and phones,
-     * instead of showing a left menu on tablets.
-     */
-    public void noTabletGoodness() {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call noTabletGoodness() before setting the items, preferably " +
-                    "right after attaching it to your layout.");
-        }
-
-        mIgnoreTabletLayout = true;
-    }
-
-    /**
-     * Don't resize the tabs when selecting a new one, so every tab is the same if you have more than three
-     * tabs. The text still displays the scale animation and the icon moves up, but the badass width animation
-     * is ignored.
-     */
-    public void noResizeGoodness() {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call noResizeGoodness() before setting the items, preferably " +
-                    "right after attaching it to your layout.");
-        }
-
-        mIgnoreShiftingResize = true;
-    }
-
-    /**
-     * Don't animate the scaling of the text when selecting a new tab. The text still displays the badass width animation,
-     * but the scale animation is ignored.
-     */
-    public void noScalingGoodness() {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call noScalingGoodness() before setting the items, preferably " +
-                    "right after attaching it to your layout.");
-        }
-
-        mIgnoreScalingResize = true;
     }
 
     /**
@@ -785,7 +684,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void updateSelectedTab(int newPosition) {
-        int newTabId = mItems.get(newPosition).getId();
+        int newTabId = mTabContainer.getChildAt(newPosition).getId();
 
         if (newPosition != mCurrentTabPosition && mListener != null) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
@@ -831,10 +730,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private boolean handleLongClick(View v) {
         if ((mIsShiftingMode || mIsTabletMode) && !((BottomBarTab) v).isActive()) {
-            Toast.makeText(mContext, mItems.get(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getTabAtPosition(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
         return true;
+    }
+
+    private BottomBarTab getTabAtPosition(int position) {
+        return (BottomBarTab) mTabContainer.getChildAt(position);
     }
 
     private void updateItems(final List<BottomBarTab> bottomBarItems) {
@@ -1098,10 +1001,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void clearItems() {
         if (mTabContainer != null) {
             mTabContainer.removeAllViews();
-        }
-
-        if (mItems != null) {
-            mItems = null;
         }
     }
 }
