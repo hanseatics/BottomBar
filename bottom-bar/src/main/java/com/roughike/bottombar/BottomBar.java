@@ -21,6 +21,7 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -735,16 +736,17 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         for (int i = 0; i < childCount; i++) {
             View tab = tabContainer.getChildAt(i);
             TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+
             if (title == null) {
                 continue;
             }
+
             int baseline = title.getBaseline();
-            // Height already includes any possible top/bottom padding
             int height = title.getHeight();
             int paddingInsideTitle = height - baseline;
             int missingPadding = tenDp - paddingInsideTitle;
+
             if (missingPadding > 0) {
-                // Only update the padding if really needed
                 title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
                     title.getPaddingRight(), missingPadding + title.getPaddingBottom());
             }
