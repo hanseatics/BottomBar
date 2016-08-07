@@ -32,9 +32,6 @@ import android.widget.TextView;
  * limitations under the License.
  */
 public class BottomBarTab extends LinearLayout {
-    public static final String TAG_ACTIVE = "TAB_ACTIVE";
-    public static final String TAG_INACTIVE = "TAB_INACTIVE";
-
     private static final long ANIMATION_DURATION = 150;
     private static final float ACTIVE_TITLE_SCALE = 1;
     private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
@@ -56,6 +53,10 @@ public class BottomBarTab extends LinearLayout {
     private AppCompatImageView iconView;
     private TextView titleView;
     private boolean isSelected;
+
+    public boolean isActive() {
+        return isSelected;
+    }
 
     public enum Type {
         FIXED, SHIFTING, TABLET
@@ -180,7 +181,6 @@ public class BottomBarTab extends LinearLayout {
     }
 
     public void select(boolean animate) {
-        setTag(TAG_ACTIVE);
         isSelected = true;
 
         boolean isShifting = type == Type.SHIFTING;
@@ -206,7 +206,6 @@ public class BottomBarTab extends LinearLayout {
 
     public void deselect(boolean animate) {
         isSelected = false;
-        setTag(TAG_INACTIVE);
 
         boolean isShifting = type == Type.SHIFTING;
 

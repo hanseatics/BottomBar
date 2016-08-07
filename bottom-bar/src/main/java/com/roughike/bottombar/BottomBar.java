@@ -188,7 +188,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                     position + ". This BottomBar has no items at that position.");
         }
 
-        BottomBarTab oldTab = (BottomBarTab) mTabContainer.findViewWithTag(BottomBarTab.TAG_ACTIVE);
+        BottomBarTab oldTab = (BottomBarTab) mTabContainer.getChildAt(mCurrentTabPosition);
         BottomBarTab newTab = (BottomBarTab) mTabContainer.getChildAt(position);
 
         oldTab.deselect(animate);
@@ -761,16 +761,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void handleClick(View v) {
-        if (v.getTag().equals(BottomBarTab.TAG_INACTIVE)) {
-            BottomBarTab oldTab = (BottomBarTab) findViewWithTag(BottomBarTab.TAG_ACTIVE);
-            BottomBarTab newTab = (BottomBarTab) v;
+        BottomBarTab oldTab = (BottomBarTab) mTabContainer.getChildAt(mCurrentTabPosition);
+        BottomBarTab newTab = (BottomBarTab) v;
 
-            oldTab.deselect(!mIgnoreScalingResize);
-            newTab.select(!mIgnoreScalingResize);
+        oldTab.deselect(!mIgnoreScalingResize);
+        newTab.select(!mIgnoreScalingResize);
 
-            shiftingMagic(oldTab, newTab, true);
-            handleBackgroundColorChange(newTab, true);
-        }
+        shiftingMagic(oldTab, newTab, true);
+        handleBackgroundColorChange(newTab, true);
         updateSelectedTab(findItemPosition(v));
     }
 
@@ -832,7 +830,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private boolean handleLongClick(View v) {
-        if ((mIsShiftingMode || mIsTabletMode) && v.getTag().equals(BottomBarTab.TAG_INACTIVE)) {
+        if ((mIsShiftingMode || mIsTabletMode) && !((BottomBarTab) v).isActive()) {
             Toast.makeText(mContext, mItems.get(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
@@ -860,7 +858,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             mDefaultBackgroundColor = mCurrentBackgroundColor = mPrimaryColor;
         }
 
-        View[] viewsToAdd = new View[bottomBarItems.size()];
+        BottomBarTab[] viewsToAdd = new BottomBarTab[bottomBarItems.size()];
 
         for (BottomBarTab bottomBarTab : bottomBarItems) {
             BottomBarTab.Type type;
@@ -924,11 +922,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             mActiveShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.size() * 0.1)));
 
             int height = Math.round(mContext.getResources().getDimension(R.dimen.bb_height));
-            for (View bottomBarView : viewsToAdd) {
+            for (BottomBarTab bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
                 if (mIsShiftingMode && !mIgnoreShiftingResize) {
-                    if (BottomBarTab.TAG_ACTIVE.equals(bottomBarView.getTag())) {
+                    if (bottomBarView.isActive()) {
                         params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth, height);
                     } else {
                         params = new LinearLayout.LayoutParams(mInActiveShiftingItemWidth, height);
