@@ -74,10 +74,18 @@ public class TabParser {
                     workingTab.setIconResId(parser.getAttributeResourceValue(i, 0));
                     break;
                 case "inActiveColor":
-                    workingTab.setInActiveColor(getColorValue(i, parser));
+                    Integer inActiveColor = getColorValue(i, parser);
+
+                    if (inActiveColor != null) {
+                        workingTab.setInActiveColor(inActiveColor);
+                    }
                     break;
                 case "activeColor":
-                    workingTab.setActiveColor(getColorValue(i, parser));
+                    Integer activeColor = getColorValue(i, parser);
+
+                    if (activeColor != null) {
+                        workingTab.setActiveColor(activeColor);
+                    }
                     break;
                 case "barColorWhenSelected":
                     workingTab.setBarColorWhenSelected(getColorValue(i, parser));
