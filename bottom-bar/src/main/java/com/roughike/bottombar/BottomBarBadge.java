@@ -43,7 +43,7 @@ class BottomBarBadge extends TextView {
      *
      * @param count the value this Badge should show.
      */
-    public void setCount(int count) {
+    void setCount(int count) {
         this.count = count;
         setText(String.valueOf(count));
     }
@@ -53,7 +53,7 @@ class BottomBarBadge extends TextView {
      *
      * @return current count for the Badge.
      */
-    public int getCount() {
+    int getCount() {
         return count;
     }
 
@@ -62,14 +62,14 @@ class BottomBarBadge extends TextView {
      *
      * @param duration animation duration in milliseconds.
      */
-    public void setAnimationDuration(long duration) {
+    void setAnimationDuration(long duration) {
         this.animationDuration = duration;
     }
 
     /**
      * Shows the badge with a neat little scale animation.
      */
-    public void show() {
+    void show() {
         isVisible = true;
         ViewCompat.animate(this)
                 .setDuration(animationDuration)
@@ -82,7 +82,7 @@ class BottomBarBadge extends TextView {
     /**
      * Hides the badge with a neat little scale animation.
      */
-    public void hide() {
+    void hide() {
         isVisible = false;
         ViewCompat.animate(this)
                 .setDuration(animationDuration)
@@ -97,7 +97,7 @@ class BottomBarBadge extends TextView {
      *
      * @return true is this badge is visible, otherwise false.
      */
-    public boolean isVisible() {
+    boolean isVisible() {
         return isVisible;
     }
 
