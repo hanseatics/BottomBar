@@ -474,15 +474,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
 
-        //mWhiteColor = ContextCompat.getColor(getContext(), R.activeIconColor.white);
-        //mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-        //mInActiveColor = ContextCompat.getColor(getContext(), R.activeIconColor.bb_inActiveBottomBarItemColor);
-
-
-        //mWhiteColor = Color.parseColor("#000000");
-        //mPrimaryColor = Color.parseColor("#555555");
-        //mInActiveColor = Color.parseColor("#ffffff");
-
         mScreenWidth = MiscUtils.getScreenWidth(getContext());
         mTenDp = MiscUtils.dpToPixel(getContext(), 10);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
