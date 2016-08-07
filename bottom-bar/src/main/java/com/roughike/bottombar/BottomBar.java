@@ -86,9 +86,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int currentTabPosition;
     private boolean isShiftingMode;
 
-    private HashMap<Integer, Object> badgeMap;
-    private HashMap<Integer, Boolean> badgeStateMap;
-
     private int currentBackgroundColor;
     private int defaultBackgroundColor;
 
@@ -250,23 +247,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * the specified position.
      *
      * @param tabPosition     zero-based index for the tab.
-     * @param backgroundColor a activeIconColor for this badge, such as "#FF0000".
-     * @param initialCount    text displayed initially for this Badge.
-     * @return a {@link BottomBarBadge} object.
-     */
-    public BottomBarBadge makeBadgeForTabAt(int tabPosition, String backgroundColor, int initialCount) {
-        return makeBadgeForTabAt(tabPosition, Color.parseColor(backgroundColor), initialCount);
-    }
-
-    /**
-     * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
-     * the specified position.
-     *
-     * @param tabPosition     zero-based index for the tab.
      * @param backgroundColor a activeIconColor for this badge, such as 0xFFFF0000.
      * @param initialCount    text displayed initially for this Badge.
      * @return a {@link BottomBarBadge} object.
-     */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
         if (tabPosition > getTabCount() - 1 || tabPosition < 0) {
             throw new IndexOutOfBoundsException("Cant make a Badge for Tab " +
@@ -314,7 +297,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         return badge;
-    }
+    }*/
 
     /**
      * Set a custom TypeFace for the tab titles.
@@ -419,22 +402,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         Bundle outState = new Bundle();
         outState.putInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
 
-        if (badgeMap != null && badgeMap.size() > 0) {
-            if (badgeStateMap == null) {
-                badgeStateMap = new HashMap<>();
-            }
-
-            for (Integer key : badgeMap.keySet()) {
-                BottomBarBadge badgeCandidate = (BottomBarBadge) findViewWithTag(badgeMap.get(key));
-
-                if (badgeCandidate != null) {
-                    badgeStateMap.put(key, badgeCandidate.isVisible());
-                }
-            }
-
-            outState.putSerializable(STATE_BADGE_STATES_BUNDLE, badgeStateMap);
-        }
-
         return outState;
     }
 
@@ -451,15 +418,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private void restoreState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            Serializable restoredBadgeStateMap = savedInstanceState.getSerializable(STATE_BADGE_STATES_BUNDLE);
-
-            if (restoredBadgeStateMap instanceof HashMap) {
-                try {
-                    //noinspection unchecked
-                    badgeStateMap = (HashMap<Integer, Boolean>) restoredBadgeStateMap;
-                } catch (ClassCastException ignored) {}
-            }
-
             isComingFromRestoredState = true;
             ignoreTabReselectionListener = true;
 
@@ -578,7 +536,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         int newTabId = getTabAtPosition(newPosition).getId();
 
         if (newPosition != currentTabPosition && onTabSelectListener != null) {
-            handleBadgeVisibility(currentTabPosition, newPosition);
             currentTabPosition = newPosition;
             onTabSelectListener.onTabSelected(newTabId);
         } else if (onTabReselectListener != null && !ignoreTabReselectionListener) {
@@ -587,30 +544,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (ignoreTabReselectionListener) {
             ignoreTabReselectionListener = false;
-        }
-    }
-
-    private void handleBadgeVisibility(int oldPosition, int newPosition) {
-        if (badgeMap == null) {
-            return;
-        }
-
-        if (badgeMap.containsKey(oldPosition)) {
-            BottomBarBadge oldBadge = (BottomBarBadge) findViewWithTag(badgeMap.get(oldPosition));
-
-            if (oldBadge.getAutoShowAfterUnSelection()) {
-                oldBadge.show();
-            } else {
-                oldBadge.hide();
-            }
-        }
-
-        if (badgeMap.containsKey(newPosition)) {
-            BottomBarBadge newBadge = (BottomBarBadge) findViewWithTag(badgeMap.get(newPosition));
-
-            if (newBadge.getAutoHideOnSelection()) {
-                newBadge.hide();
-            }
         }
     }
 

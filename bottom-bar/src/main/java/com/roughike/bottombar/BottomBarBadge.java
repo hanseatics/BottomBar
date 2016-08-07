@@ -33,8 +33,6 @@ public class BottomBarBadge extends TextView {
     private int count;
     private boolean isVisible = false;
     private long animationDuration = 150;
-    private boolean autoShowAfterUnSelection = false;
-    private boolean autoHideOnSelection = true;
 
     public BottomBarBadge(Context context) {
         super(context);
@@ -57,48 +55,6 @@ public class BottomBarBadge extends TextView {
      */
     public int getCount() {
         return count;
-    }
-
-    /**
-     * Controls whether you want this Badge to be hidden automatically when the
-     * BottomBar tab containing it is selected.
-     *
-     * @param autoHideOnSelection false if you don't want this Badge to hide every time
-     *                              the BottomBar tab containing it is selected
-     */
-    public void setAutoHideOnSelection(boolean autoHideOnSelection) {
-        this.autoHideOnSelection = autoHideOnSelection;
-    }
-
-    /**
-     * Is this Badge automatically hidden after selecting the BottomBar tab that
-     * contains it?
-     *
-     * @return true if this Badge is automatically hidden after selection, otherwise false. Default is true.
-     */
-    public boolean getAutoHideOnSelection() {
-        return autoHideOnSelection;
-    }
-
-    /**
-     * Controls whether you want this Badge to be shown automatically when the
-     * BottomBar tab containing it is unselected.
-     *
-     * @param autoShowAfterUnSelection false if you don't want to this Badge reappear every time
-     *                                 the BottomBar tab containing it is unselected.
-     */
-    public void setAutoShowAfterUnSelection(boolean autoShowAfterUnSelection) {
-        this.autoShowAfterUnSelection = autoShowAfterUnSelection;
-    }
-
-    /**
-     * Is this Badge automatically shown after unselecting the BottomBar tab that
-     * contains it?
-     *
-     * @return true if this Badge is automatically shown after unselection, otherwise false.
-     */
-    public boolean getAutoShowAfterUnSelection() {
-        return autoShowAfterUnSelection;
     }
 
     /**

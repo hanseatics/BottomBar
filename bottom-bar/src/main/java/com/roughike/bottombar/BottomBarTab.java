@@ -228,6 +228,10 @@ public class BottomBarTab extends LinearLayout {
                 ViewCompat.setAlpha(titleView, activeAlpha);
             }
         }
+
+        if (badge != null) {
+            badge.hide();
+        }
     }
 
     void deselect(boolean animate) {
@@ -257,6 +261,10 @@ public class BottomBarTab extends LinearLayout {
                 ViewCompat.setAlpha(iconView, inActiveAlpha);
                 ViewCompat.setAlpha(titleView, 0);
             }
+        }
+
+        if (badge != null) {
+            badge.show();
         }
     }
 
