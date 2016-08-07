@@ -51,8 +51,6 @@ import java.util.List;
  * limitations under the License.
  */
 public class BottomBar extends LinearLayout implements View.OnClickListener, View.OnLongClickListener {
-    private static final long ANIMATION_DURATION = 150;
-
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
     private static final String STATE_BADGE_STATES_BUNDLE = "STATE_BADGE_STATES_BUNDLE";
     private static final String TAG_BADGE = "BOTTOMBAR_BADGE_";
@@ -63,7 +61,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private Context mContext;
     private boolean mIsComingFromRestoredState;
     private boolean mIgnoreTabReselectionListener;
-    private boolean mIgnoreTabletLayout;
     private boolean mIsTabletMode;
     private boolean mIsShy;
     private boolean mShyHeightAlreadyCalculated;
@@ -76,18 +73,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private View mTabletRightBorder;
 
     private Integer mPrimaryColor;
-    private Integer mInActiveColor;
     private Integer mDarkBackgroundColor;
-    private Integer mWhiteColor;
-    private float mTabAlpha = 0.6f;
 
     private int mScreenWidth;
     private int mTenDp;
-    private int mSixDp;
-    private int mSixteenDp;
-    private int mEightDp;
     private int mMaxFixedItemWidth;
-    private int mMaxInActiveShiftingItemWidth;
     private int mInActiveShiftingItemWidth;
     private int mActiveShiftingItemWidth;
 
@@ -105,10 +95,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private boolean mIsDarkTheme;
     private boolean mIgnoreNightMode;
-    private boolean mIgnoreShiftingResize;
-    private boolean mIgnoreScalingResize;
-
-    private int mCustomActiveTabColor;
 
     private boolean mDrawBehindNavBar = true;
     private boolean mUseTopOffset = true;
@@ -224,10 +210,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Use dark theme instead of the light one.
-     * 
-     * NOTE: You might want to change your active tab activeIconColor to something else
-     * using {@link #setActiveTabColor(int)}, as the default primary activeIconColor might
-     * not have enough contrast for the dark background.
      */
     public void useDarkTheme() {
         if (!mIsDarkTheme && getTabCount() > 0) {
@@ -236,7 +218,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             for (int i = 0; i < getTabCount(); i++) {
                 BottomBarTab bottomBarTab = (BottomBarTab) getTabAtPosition(i);
                 ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
-                        .setColorFilter(mWhiteColor);
+                        .setColorFilter(Color.WHITE);
 
                 if (i == mCurrentTabPosition) {
                     bottomBarTab.select(false);
@@ -261,35 +243,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         mIgnoreNightMode = true;
-    }
-
-    /**
-     * Set a custom activeIconColor for an active tab when there's three
-     * or less items.
-     * 
-     * NOTE: This value is ignored on mobile devices if you have more than
-     * three items.
-     *
-     * @param activeTabColor a hex activeIconColor used for active tabs, such as "#00FF000".
-     */
-    public void setActiveTabColor(String activeTabColor) {
-        setActiveTabColor(Color.parseColor(activeTabColor));
-    }
-
-    /**
-     * Set a custom activeIconColor for an active tab when there's three
-     * or less items.
-     * 
-     * NOTE: This value is ignored if you have more than three items.
-     *
-     * @param activeTabColor a hex activeIconColor used for active tabs, such as 0xFF00FF00.
-     */
-    public void setActiveTabColor(int activeTabColor) {
-        mCustomActiveTabColor = activeTabColor;
-
-        if (getTabCount() > 0) {
-            selectTabAtPosition(mCurrentTabPosition, false);
-        }
     }
 
     /**
@@ -521,13 +474,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         mContext = context;
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
-
-
-        if (mWhiteColor == null) {
-            mWhiteColor = ContextCompat.getColor(getContext(), R.color.white);
-            mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-            mInActiveColor = ContextCompat.getColor(getContext(), R.color.bb_inActiveBottomBarItemColor);
-        }
+        mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
 
         //mWhiteColor = ContextCompat.getColor(getContext(), R.activeIconColor.white);
         //mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
@@ -540,11 +487,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         mScreenWidth = MiscUtils.getScreenWidth(mContext);
         mTenDp = MiscUtils.dpToPixel(mContext, 10);
-        mSixteenDp = MiscUtils.dpToPixel(mContext, 16);
-        mSixDp = MiscUtils.dpToPixel(mContext, 6);
-        mEightDp = MiscUtils.dpToPixel(mContext, 8);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
-        mMaxInActiveShiftingItemWidth = MiscUtils.dpToPixel(mContext, 96);
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
@@ -562,8 +505,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void initializeViews() {
-        mIsTabletMode = !mIgnoreTabletLayout &&
-                mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
+        mIsTabletMode = mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         ViewCompat.setElevation(this, MiscUtils.dpToPixel(mContext, 8));
         View rootView = inflate(mContext, mIsTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
@@ -619,10 +561,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return mUseExtraOffset;
     }
 
-    protected boolean drawBehindNavBar() {
-        return mDrawBehindNavBar;
-    }
-
     protected boolean useTopOffset() {
         return mUseTopOffset;
     }
@@ -663,8 +601,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         BottomBarTab oldTab = getSelectedTab();
         BottomBarTab newTab = (BottomBarTab) v;
 
-        oldTab.deselect(!mIgnoreScalingResize);
-        newTab.select(!mIgnoreScalingResize);
+        oldTab.deselect(true);
+        newTab.select(true);
 
         shiftingMagic(oldTab, newTab, true);
         handleBackgroundColorChange(newTab, true);
@@ -672,7 +610,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void shiftingMagic(BottomBarTab oldTab, BottomBarTab newTab, boolean animate) {
-        if (!mIsTabletMode && mIsShiftingMode && !mIgnoreShiftingResize) {
+        if (!mIsTabletMode && mIsShiftingMode) {
             if (animate) {
                 oldTab.updateWidthAnimated(mInActiveShiftingItemWidth);
                 newTab.updateWidthAnimated(mActiveShiftingItemWidth);
@@ -796,7 +734,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             }
 
             if (mIsDarkTheme || (!mIsTabletMode && mIsShiftingMode)) {
-                bottomBarTab.setIconTint(mWhiteColor);
+                bottomBarTab.setIconTint(Color.WHITE);
             }
 
             if (index == mCurrentTabPosition) {
@@ -836,7 +774,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             for (BottomBarTab bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
-                if (mIsShiftingMode && !mIgnoreShiftingResize) {
+                if (mIsShiftingMode) {
                     if (bottomBarView.isActive()) {
                         params = new LinearLayout.LayoutParams(mActiveShiftingItemWidth, height);
                     } else {
