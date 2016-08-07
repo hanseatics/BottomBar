@@ -158,8 +158,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setOnTabSelectListener(@Nullable OnTabSelectListener listener) {
         mListener = listener;
 
-        if (mListener != null && mTabContainer.getChildCount() > 0) {
-            listener.onTabSelected(getTabAtPosition(mCurrentTabPosition).getId());
+        if (mListener != null && getTabCount() > 0) {
+            listener.onTabSelected(getSelectedTab().getId());
         }
     }
 
@@ -178,13 +178,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param position the position to select.
      */
     public void selectTabAtPosition(int position, boolean animate) {
-        if (position > mTabContainer.getChildCount() - 1 || position < 0) {
+        if (position > getTabCount() - 1 || position < 0) {
             throw new IndexOutOfBoundsException("Can't select tab at position " +
                     position + ". This BottomBar has no items at that position.");
         }
 
-        BottomBarTab oldTab = (BottomBarTab) mTabContainer.getChildAt(mCurrentTabPosition);
-        BottomBarTab newTab = (BottomBarTab) mTabContainer.getChildAt(position);
+        BottomBarTab oldTab = getSelectedTab();
+        BottomBarTab newTab = getTabAtPosition(position);
 
         oldTab.deselect(animate);
         newTab.select(animate);
@@ -203,7 +203,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setDefaultTabPosition(int defaultTabPosition) {
         if (mIsComingFromRestoredState) return;
 
-        int tabCount = mTabContainer.getChildCount();
+        int tabCount = getTabCount();
 
         if (tabCount == 0 || defaultTabPosition > tabCount - 1 || defaultTabPosition < 0) {
             throw new IndexOutOfBoundsException("Can't set default tab at position " +
@@ -230,11 +230,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * not have enough contrast for the dark background.
      */
     public void useDarkTheme() {
-        if (!mIsDarkTheme && mTabContainer.getChildCount() > 0) {
+        if (!mIsDarkTheme && getTabCount() > 0) {
             darkThemeMagic();
 
-            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-                BottomBarTab bottomBarTab = (BottomBarTab) mTabContainer.getChildAt(i);
+            for (int i = 0; i < getTabCount(); i++) {
+                BottomBarTab bottomBarTab = (BottomBarTab) getTabAtPosition(i);
                 ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
                         .setColorFilter(mWhiteColor);
 
@@ -254,7 +254,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * even if the Night Mode is on.
      */
     public void ignoreNightMode() {
-        if (mTabContainer.getChildCount() > 0) {
+        if (getTabCount() > 0) {
             throw new UnsupportedOperationException("This BottomBar " +
                     "already has items! You must call ignoreNightMode() " +
                     "before setting any items.");
@@ -287,7 +287,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setActiveTabColor(int activeTabColor) {
         mCustomActiveTabColor = activeTabColor;
 
-        if (mTabContainer.getChildCount() > 0) {
+        if (getTabCount() > 0) {
             selectTabAtPosition(mCurrentTabPosition, false);
         }
     }
@@ -315,12 +315,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @return a {@link BottomBarBadge} object.
      */
     public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
-        if (tabPosition > mTabContainer.getChildCount() - 1 || tabPosition < 0) {
+        if (tabPosition > getTabCount() - 1 || tabPosition < 0) {
             throw new IndexOutOfBoundsException("Cant make a Badge for Tab " +
                     "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
         }
 
-        final View tab = mTabContainer.getChildAt(tabPosition);
+        final View tab = getTabAtPosition(tabPosition);
 
         BottomBarBadge badge = new BottomBarBadge(mContext, tabPosition,
                 tab, backgroundColor);
@@ -374,9 +374,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),
                 typeFacePath);
 
-        if (mTabContainer != null && mTabContainer.getChildCount() > 0) {
-            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-                View bottomBarTab = mTabContainer.getChildAt(i);
+        if (mTabContainer != null && getTabCount() > 0) {
+            for (int i = 0; i < getTabCount(); i++) {
+                View bottomBarTab = getTabAtPosition(i);
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 title.setTypeface(typeface);
             }
@@ -391,9 +391,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param resId path to the custom text appearance.
      */
     public void setTextAppearance(@StyleRes int resId) {
-        if (mTabContainer != null && mTabContainer.getChildCount() > 0) {
-            for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-                View bottomBarTab = mTabContainer.getChildAt(i);
+        if (mTabContainer != null && getTabCount() > 0) {
+            for (int i = 0; i < getTabCount(); i++) {
+                View bottomBarTab = getTabAtPosition(i);
                 TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
                 MiscUtils.setTextAppearance(title, resId);
             }
@@ -660,7 +660,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void handleClick(View v) {
-        BottomBarTab oldTab = (BottomBarTab) mTabContainer.getChildAt(mCurrentTabPosition);
+        BottomBarTab oldTab = getSelectedTab();
         BottomBarTab newTab = (BottomBarTab) v;
 
         oldTab.deselect(!mIgnoreScalingResize);
@@ -684,7 +684,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void updateSelectedTab(int newPosition) {
-        int newTabId = mTabContainer.getChildAt(newPosition).getId();
+        int newTabId = getTabAtPosition(newPosition).getId();
 
         if (newPosition != mCurrentTabPosition && mListener != null) {
             handleBadgeVisibility(mCurrentTabPosition, newPosition);
@@ -736,8 +736,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return true;
     }
 
+    private BottomBarTab getSelectedTab() {
+        return getTabAtPosition(mCurrentTabPosition);
+    }
+
     private BottomBarTab getTabAtPosition(int position) {
         return (BottomBarTab) mTabContainer.getChildAt(position);
+    }
+
+    private int getTabCount() {
+        return mTabContainer.getChildCount();
     }
 
     private void updateItems(final List<BottomBarTab> bottomBarItems) {
@@ -880,7 +888,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             return;
         }
 
-        int childCount = mTabContainer.getChildCount();
+        int childCount = getTabCount();
 
         for (int i = 0; i < childCount; i++) {
             View tab = mTabContainer.getChildAt(i);
@@ -986,8 +994,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int findItemPosition(View viewToFind) {
         int position = 0;
 
-        for (int i = 0; i < mTabContainer.getChildCount(); i++) {
-            View candidate = mTabContainer.getChildAt(i);
+        for (int i = 0; i < getTabCount(); i++) {
+            View candidate = getTabAtPosition(i);
 
             if (candidate.equals(viewToFind)) {
                 position = i;
