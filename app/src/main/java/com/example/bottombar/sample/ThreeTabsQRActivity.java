@@ -19,8 +19,7 @@ public class ThreeTabsQRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_three_tabs_quick_return);
 
-        //bottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator),
-            //    findViewById(R.id.myScrollingContent), savedInstanceState);
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setItems(R.xml.bottombar_tabs_three);
 
         // We're doing nothing with this listener here this time. Check example usage

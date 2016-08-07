@@ -20,6 +20,7 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -499,6 +500,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         View rootView = inflate(getContext(), isTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
                 this);
+
+        isShy = getParent() instanceof CoordinatorLayout;
+
         tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
 
         shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
