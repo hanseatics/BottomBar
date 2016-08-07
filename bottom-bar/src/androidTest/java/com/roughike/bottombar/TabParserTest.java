@@ -14,7 +14,7 @@ public class TabParserTest extends InstrumentationTestCase {
     @Override
     public void setUp() throws Exception {
         context = getInstrumentation().getContext();
-        tabs = new TabParser(context, com.roughike.bottombar.test.R.xml.dummy_tab_xml)
+        tabs = new TabParser(context, new TabParser.Config.Builder().build(), com.roughike.bottombar.test.R.xml.dummy_tab_xml)
                 .getTabs();
     }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomBar">
+        <attr name="bb_inActiveTabAlpha" format="float" />
+        <attr name="bb_activeTabAlpha" format="float" />
+        <attr name="bb_inActiveTabColor" format="color" />
+        <attr name="bb_activeTabColor" format="color" />
+    </declare-styleable>
+</resources>

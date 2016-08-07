@@ -3,9 +3,9 @@ package com.roughike.bottombar;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.XmlRes;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -18,13 +18,16 @@ import java.util.List;
  */
 public class TabParser {
     private final Context context;
+    private final Config config;
     private final XmlResourceParser parser;
 
     private ArrayList<BottomBarTab> tabs;
     private BottomBarTab workingTab;
 
-    public TabParser(Context context, @XmlRes int tabsXmlResId) {
+    public TabParser(Context context, Config config, @XmlRes int tabsXmlResId) {
         this.context = context;
+        this.config = config;
+
         parser = context.getResources().getXml(tabsXmlResId);
         tabs = new ArrayList<>();
 
@@ -57,7 +60,7 @@ public class TabParser {
 
     private void parseNewTab(XmlResourceParser parser) {
         if (workingTab == null) {
-            workingTab = new BottomBarTab(context);
+            workingTab = tabWithDefaults();
         }
 
         for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -94,6 +97,17 @@ public class TabParser {
         }
     }
 
+    private BottomBarTab tabWithDefaults() {
+        BottomBarTab tab = new BottomBarTab(context);
+        tab.setInActiveAlpha(config.inActiveTabAlpha);
+        tab.setActiveAlpha(config.activeTabAlpha);
+        tab.setInActiveColor(config.inActiveTabColor);
+        tab.setActiveColor(config.activeTabColor);
+        tab.setBarColorWhenSelected(config.barColorWhenSelected);
+
+        return tab;
+    }
+
     private String getTitleValue(int attrIndex, XmlResourceParser parser) {
         int titleResource = parser.getAttributeResourceValue(attrIndex, 0);
 
@@ -120,5 +134,58 @@ public class TabParser {
 
     public List<BottomBarTab> getTabs() {
         return tabs;
+    }
+
+    public static class Config {
+        private final float inActiveTabAlpha;
+        private final float activeTabAlpha;
+        private final int inActiveTabColor;
+        private final int activeTabColor;
+        private final int barColorWhenSelected;
+
+        private Config(Builder builder) {
+            this.inActiveTabAlpha = builder.inActiveTabAlpha;
+            this.activeTabAlpha = builder.activeTabAlpha;
+            this.inActiveTabColor = builder.inActiveTabColor;
+            this.activeTabColor = builder.activeTabColor;
+            this.barColorWhenSelected = builder.barColorWhenSelected;
+        }
+
+        public static class Builder {
+            private float inActiveTabAlpha;
+            private float activeTabAlpha;
+            private int inActiveTabColor;
+            private int activeTabColor;
+            private int barColorWhenSelected;
+
+            public Builder inActiveTabAlpha(float alpha) {
+                this.inActiveTabAlpha = alpha;
+                return this;
+            }
+
+            public Builder activeTabAlpha(float alpha) {
+                this.activeTabAlpha = alpha;
+                return this;
+            }
+
+            public Builder inActiveTabColor(@ColorInt int color) {
+                this.inActiveTabColor = color;
+                return this;
+            }
+
+            public Builder activeTabColor(@ColorInt int color) {
+                this.activeTabColor = color;
+                return this;
+            }
+
+            public Builder barColorWhenSelected(@ColorInt int color) {
+                this.barColorWhenSelected = color;
+                return this;
+            }
+
+            public Config build() {
+                return new Config(this);
+            }
+        }
     }
 }

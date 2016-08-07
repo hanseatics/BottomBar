@@ -36,20 +36,22 @@ public class BottomBarTab extends LinearLayout {
     public static final String TAG_INACTIVE = "TAB_INACTIVE";
 
     private static final long ANIMATION_DURATION = 150;
-    private static final float INACTIVE_ALPHA = 0.6f;
+    private static final float ACTIVE_TITLE_SCALE = 1;
+    private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
 
     private final int sixDps;
     private final int eightDps;
     private final int sixteenDps;
-    private final int primaryColor;
 
     private Type type = Type.FIXED;
     private int iconResId;
     private String title;
 
+    private float inActiveAlpha;
+    private float activeAlpha;
     private int inActiveColor;
     private int activeColor;
-    private Integer barColorWhenSelected;
+    private int barColorWhenSelected;
 
     private AppCompatImageView iconView;
     private TextView titleView;
@@ -65,10 +67,6 @@ public class BottomBarTab extends LinearLayout {
         sixDps = MiscUtils.dpToPixel(context, 6);
         eightDps = MiscUtils.dpToPixel(context, 8);
         sixteenDps = MiscUtils.dpToPixel(context, 16);
-        primaryColor = MiscUtils.getColor(context, R.attr.colorPrimary);
-
-        inActiveColor = ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor);
-        activeColor = primaryColor;
     }
 
     public Type getType() {
@@ -95,6 +93,22 @@ public class BottomBarTab extends LinearLayout {
         this.title = title;
     }
 
+    public float getInActiveAlpha() {
+        return inActiveAlpha;
+    }
+
+    public void setInActiveAlpha(float inActiveAlpha) {
+        this.inActiveAlpha = inActiveAlpha;
+    }
+
+    public float getActiveAlpha() {
+        return activeAlpha;
+    }
+
+    public void setActiveAlpha(float activeAlpha) {
+        this.activeAlpha = activeAlpha;
+    }
+
     public int getInActiveColor() {
         return inActiveColor;
     }
@@ -111,8 +125,7 @@ public class BottomBarTab extends LinearLayout {
         this.activeColor = activeIconColor;
     }
 
-    @Nullable
-    public Integer getBarColorWhenSelected() {
+    public int getBarColorWhenSelected() {
         return barColorWhenSelected;
     }
 
@@ -178,15 +191,15 @@ public class BottomBarTab extends LinearLayout {
 
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
-            animateIcon(1);
-            animateTitle(1, 1);
+            animateIcon(activeAlpha);
+            animateTitle(ACTIVE_TITLE_SCALE, activeAlpha);
         } else {
-            setTitleScale(1);
+            setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
 
             if (isShifting) {
-                ViewCompat.setAlpha(iconView, 1);
-                ViewCompat.setAlpha(titleView, 1);
+                ViewCompat.setAlpha(iconView, activeAlpha);
+                ViewCompat.setAlpha(titleView, activeAlpha);
             }
         }
     }
@@ -201,7 +214,7 @@ public class BottomBarTab extends LinearLayout {
             setColors(inActiveColor);
         }
 
-        float scale = isShifting ? 0 : 0.86f;
+        float scale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
         int iconPaddingTop = isShifting ? sixteenDps : eightDps;
 
         if (animate) {
@@ -209,14 +222,14 @@ public class BottomBarTab extends LinearLayout {
             animateTitle(scale, 0);
 
             if (isShifting) {
-                animateIcon(INACTIVE_ALPHA);
+                animateIcon(inActiveAlpha);
             }
         } else {
             setTitleScale(scale);
             setTopPadding(iconPaddingTop);
 
             if (isShifting) {
-                ViewCompat.setAlpha(iconView, INACTIVE_ALPHA);
+                ViewCompat.setAlpha(iconView, inActiveAlpha);
                 ViewCompat.setAlpha(titleView, 0);
             }
         }

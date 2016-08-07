@@ -73,11 +73,6 @@ class MiscUtils {
         return (int) (displayMetrics.widthPixels / displayMetrics.density);
     }
 
-    protected static List<BottomBarTab> inflateFromXMLResource(Context context, @XmlRes int xmlRes) {
-        TabParser parser = new TabParser(context, xmlRes);
-        return parser.getTabs();
-    }
-
     /**
      * A convenience method for setting text appearance.
      *

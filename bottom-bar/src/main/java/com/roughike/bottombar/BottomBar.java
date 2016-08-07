@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -55,6 +56,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
     private static final String STATE_BADGE_STATES_BUNDLE = "STATE_BADGE_STATES_BUNDLE";
     private static final String TAG_BADGE = "BOTTOMBAR_BADGE_";
+
+    private static final float DEFAULT_INACTIVE_TAB_ALPHA = 0.6f;
+    private static final float DEFAULT_ACTIVE_TAB_ALPHA = 1;
 
     private Context mContext;
     private boolean mIsComingFromRestoredState;
@@ -117,6 +121,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int mMaxFixedTabCount = 3;
     private ViewGroup mOuterContainer;
 
+    // XML Attributes
+    private float inActiveTabAlpha;
+    private float activeTabAlpha;
+    private int inActiveTabColor;
+    private int activeTabColor;
+
     /**
      * Set items for this BottomBar from an XML menu resource file.
      *
@@ -126,7 +136,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param xmlRes  the menu resource to inflate items from.
      */
     public void setItems(@XmlRes int xmlRes) {
-        mItems = MiscUtils.inflateFromXMLResource(getContext(), xmlRes);
+        TabParser.Config config = new TabParser.Config.Builder()
+                .inActiveTabAlpha(inActiveTabAlpha)
+                .activeTabAlpha(activeTabAlpha)
+                .inActiveTabColor(inActiveTabColor)
+                .activeTabColor(activeTabColor)
+                .barColorWhenSelected(Color.WHITE)
+                .build();
+
+        TabParser parser = new TabParser(getContext(), config, xmlRes);
+        mItems = parser.getTabs();
         updateItems(mItems);
     }
 
@@ -522,14 +541,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         init(context, null, 0, 0);
     }
 
-    public BottomBar(Context context, int backgroundColor, int activeColor, float alpha) {
-        super(context);
-        mTabAlpha = alpha;
-        mWhiteColor = activeColor;
-        mPrimaryColor = backgroundColor;
-        init(context, null, 0, 0);
-    }
-
     public BottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0, 0);
@@ -635,6 +646,20 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         mEightDp = MiscUtils.dpToPixel(mContext, 8);
         mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
         mMaxInActiveShiftingItemWidth = MiscUtils.dpToPixel(mContext, 96);
+
+        TypedArray ta = context.getTheme().obtainStyledAttributes(
+                attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
+
+        try {
+            inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha, DEFAULT_INACTIVE_TAB_ALPHA);
+            activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, DEFAULT_ACTIVE_TAB_ALPHA);
+            inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor,
+                    ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor));
+            activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor,
+                    MiscUtils.getColor(context, R.attr.colorPrimary));
+        } finally {
+            ta.recycle();
+        }
     }
 
     private void initializeViews() {
@@ -868,11 +893,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             if (index == mCurrentTabPosition) {
                 bottomBarTab.select(false);
 
-                Integer barBackgroundColor = bottomBarTab.getBarColorWhenSelected();
-
-                if (barBackgroundColor != null) {
+                int barBackgroundColor = bottomBarTab.getBarColorWhenSelected();
                     mOuterContainer.setBackgroundColor(barBackgroundColor);
-                }
             } else {
                 bottomBarTab.deselect(false);
             }
@@ -979,9 +1001,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void handleBackgroundColorChange(BottomBarTab tab, boolean animate) {
-        Integer newColor = tab.getBarColorWhenSelected();
+        int newColor = tab.getBarColorWhenSelected();
 
-        if (newColor == null || mCurrentBackgroundColor == newColor) {
+        if (mCurrentBackgroundColor == newColor) {
             return;
         }
 
