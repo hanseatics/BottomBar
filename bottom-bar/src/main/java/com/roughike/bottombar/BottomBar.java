@@ -509,64 +509,29 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         tabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
 
         if (isShy && !isTabletMode) {
-            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @SuppressWarnings("deprecation")
-                @Override
-                public void onGlobalLayout() {
-                    if (!shyHeightAlreadyCalculated) {
-                        ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                                .setBehavior(new BottomNavigationBehavior(getHeight(), 0, isShy(), isTabletMode));
-                    }
+            initializeShyBehavior();
+        }
+    }
 
-                    ViewTreeObserver obs = getViewTreeObserver();
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        obs.removeOnGlobalLayoutListener(this);
-                    } else {
-                        obs.removeGlobalOnLayoutListener(this);
-                    }
+    private void initializeShyBehavior() {
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                if (!shyHeightAlreadyCalculated) {
+                    ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                            .setBehavior(new BottomNavigationBehavior(getHeight(), 0, isShy, isTabletMode));
                 }
-            });
-        }
-    }
 
-    /**
-     * Makes this BottomBar "shy". In other words, it hides on scroll.
-     */
-    private void toughChildHood(boolean useExtraOffset) {
-        isShy = true;
-        this.useExtraOffset = useExtraOffset;
-    }
+                ViewTreeObserver obs = getViewTreeObserver();
 
-    protected boolean isShy() {
-        return isShy;
-    }
-
-    protected void shyHeightAlreadyCalculated() {
-        shyHeightAlreadyCalculated = true;
-    }
-
-    protected boolean useExtraOffset() {
-        return useExtraOffset;
-    }
-
-    protected boolean useTopOffset() {
-        return useTopOffset;
-    }
-
-    protected boolean useOnlyStatusbarOffset() {
-        return useOnlyStatusBarOffset;
-    }
-
-    protected void setBarVisibility(int visibility) {
-        if (isShy) {
-            toggleShyVisibility(visibility == VISIBLE);
-            return;
-        }
-
-        if (backgroundOverlay != null) {
-            backgroundOverlay.setVisibility(visibility);
-        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    obs.removeOnGlobalLayoutListener(this);
+                } else {
+                    obs.removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
     }
 
     /**
