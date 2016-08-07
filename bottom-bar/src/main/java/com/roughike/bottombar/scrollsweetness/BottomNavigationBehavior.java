@@ -19,8 +19,8 @@ import android.view.animation.Interpolator;
  */
 public class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
-    private final int mBottomNavHeight;
-    private final int mDefaultOffset;
+    private final int bottomNavHeight;
+    private final int defaultOffset;
     private boolean isShy = false;
     private boolean isTablet = false;
 
@@ -31,8 +31,8 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
     private boolean mScrollingEnabled = true;
 
     public BottomNavigationBehavior(int bottomNavHeight, int defaultOffset, boolean shy, boolean tablet) {
-        mBottomNavHeight = bottomNavHeight;
-        mDefaultOffset = defaultOffset;
+        this.bottomNavHeight = bottomNavHeight;
+        this.defaultOffset = defaultOffset;
         isShy = shy;
         isTablet = tablet;
     }
@@ -74,10 +74,10 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
         if (!mScrollingEnabled) return;
         if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
             hidden = false;
-            animateOffset(child, mDefaultOffset);
+            animateOffset(child, defaultOffset);
         } else if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_UP && !hidden) {
             hidden = true;
-            animateOffset(child, mBottomNavHeight + mDefaultOffset);
+            animateOffset(child, bottomNavHeight + defaultOffset);
         }
     }
 
@@ -105,9 +105,9 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
 
     public void setHidden(@NonNull  V view, boolean bottomLayoutHidden) {
         if (!bottomLayoutHidden && hidden) {
-            animateOffset(view, mDefaultOffset);
+            animateOffset(view, defaultOffset);
         } else if (bottomLayoutHidden && !hidden) {
-            animateOffset(view,  mBottomNavHeight + mDefaultOffset);
+            animateOffset(view,  bottomNavHeight + defaultOffset);
         }
         hidden = bottomLayoutHidden;
     }
@@ -141,7 +141,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                     mSnackbarHeight = dependency.getHeight();
                 }
                 if (ViewCompat.getTranslationY(child) != 0) return;
-                int targetPadding = mBottomNavHeight + mSnackbarHeight - mDefaultOffset;
+                int targetPadding = bottomNavHeight + mSnackbarHeight - defaultOffset;
 
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
                 layoutParams.bottomMargin = targetPadding;
@@ -164,7 +164,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
                     mSnackbarHeight = dependency.getHeight();
                 }
                 if (ViewCompat.getTranslationY(child) != 0) return;
-                int targetPadding = (mSnackbarHeight + mBottomNavHeight - mDefaultOffset);
+                int targetPadding = (mSnackbarHeight + bottomNavHeight - defaultOffset);
                 dependency.setPadding(dependency.getPaddingLeft(),
                         dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
                 );

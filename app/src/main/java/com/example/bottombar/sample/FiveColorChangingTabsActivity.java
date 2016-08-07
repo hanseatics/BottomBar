@@ -15,26 +15,25 @@ import com.roughike.bottombar.OnTabSelectListener;
  * Created by iiro on 7.6.2016.
  */
 public class FiveColorChangingTabsActivity extends AppCompatActivity {
-    private BottomBar mBottomBar;
-    private TextView mMessageView;
+    private TextView messageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic);
 
-        mMessageView = (TextView) findViewById(R.id.messageView);
+        messageView = (TextView) findViewById(R.id.messageView);
 
-        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        mBottomBar.setItems(R.xml.bottombar_tabs_color_changing);
-        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setItems(R.xml.bottombar_tabs_color_changing);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                mMessageView.setText(TabMessage.get(tabId, false));
+                messageView.setText(TabMessage.get(tabId, false));
             }
         });
 
-        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+        bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
             @Override
             public void onTabReSelected(@IdRes int tabId) {
                 Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_LONG).show();
