@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -242,63 +243,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         ignoreNightMode = true;
     }
-
-    /**
-     * Creates a new Badge (for example, an indicator for unread messages) for a Tab at
-     * the specified position.
-     *
-     * @param tabPosition     zero-based index for the tab.
-     * @param backgroundColor a activeIconColor for this badge, such as 0xFFFF0000.
-     * @param initialCount    text displayed initially for this Badge.
-     * @return a {@link BottomBarBadge} object.
-    public BottomBarBadge makeBadgeForTabAt(int tabPosition, int backgroundColor, int initialCount) {
-        if (tabPosition > getTabCount() - 1 || tabPosition < 0) {
-            throw new IndexOutOfBoundsException("Cant make a Badge for Tab " +
-                    "index " + tabPosition + ". You have no BottomBar Tabs at that position.");
-        }
-
-        final View tab = getTabAtPosition(tabPosition);
-
-        BottomBarBadge badge = new BottomBarBadge(getContext());
-        badge.setTag(TAG_BADGE + tabPosition);
-        badge.setCount(initialCount);
-
-        tab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleClick((View) tab.getParent());
-            }
-        });
-
-        tab.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return handleLongClick((View) tab.getParent());
-            }
-        });
-
-        if (badgeMap == null) {
-            badgeMap = new HashMap<>();
-        }
-
-        badgeMap.put(tabPosition, badge.getTag());
-
-        boolean canShow = true;
-
-        if (isComingFromRestoredState && badgeStateMap != null
-                && badgeStateMap.containsKey(tabPosition)) {
-            canShow = badgeStateMap.get(tabPosition);
-        }
-
-        if (canShow && currentTabPosition != tabPosition
-                && initialCount != 0) {
-            badge.show();
-        } else {
-            badge.hide();
-        }
-
-        return badge;
-    }*/
 
     /**
      * Set a custom TypeFace for the tab titles.
@@ -765,7 +709,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             return;
         }
 
-        animateBGColorChange(tab, backgroundOverlay, newColor);
+        View clickedView = tab;
+
+        if (tab.hasActiveBadge()) {
+            clickedView = tab.getOuterView();
+        }
+
+        animateBGColorChange(clickedView, backgroundOverlay, newColor);
         currentBackgroundColor = newColor;
     }
 
@@ -784,8 +734,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 return;
             }
 
-            animator = ViewAnimationUtils
-                    .createCircularReveal(bgOverlay, centerX, centerY, 0, finalRadius);
+            animator = ViewAnimationUtils.createCircularReveal(
+                    bgOverlay,
+                    centerX,
+                    centerY,
+                    0, // startRadius
+                    finalRadius
+            );
         } else {
             ViewCompat.setAlpha(bgOverlay, 0);
             animator = ViewCompat.animate(bgOverlay).alpha(1);

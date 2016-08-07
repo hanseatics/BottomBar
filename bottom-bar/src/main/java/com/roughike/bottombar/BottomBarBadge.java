@@ -28,12 +28,12 @@ import android.widget.TextView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBarBadge extends TextView {
+class BottomBarBadge extends TextView {
     private int count;
     private boolean isVisible = false;
     private long animationDuration = 150;
 
-    public BottomBarBadge(Context context) {
+    BottomBarBadge(Context context) {
         super(context);
     }
 

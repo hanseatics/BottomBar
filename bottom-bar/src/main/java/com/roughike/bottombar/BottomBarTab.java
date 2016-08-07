@@ -8,6 +8,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,13 +51,13 @@ public class BottomBarTab extends LinearLayout {
 
     private AppCompatImageView iconView;
     private TextView titleView;
-    private boolean isSelected;
+    private boolean isActive;
 
     private BottomBarBadge badge;
     private int indexInContainer;
 
-    boolean isActive() {
-        return isSelected;
+    public View getOuterView() {
+        return (View) getParent();
     }
 
     enum Type {
@@ -152,6 +153,14 @@ public class BottomBarTab extends LinearLayout {
         badge.setCount(count);
     }
 
+    boolean isActive() {
+        return isActive;
+    }
+
+    boolean hasActiveBadge() {
+        return badge != null;
+    }
+
     int getIndexInContainer() {
         return indexInContainer;
     }
@@ -207,7 +216,7 @@ public class BottomBarTab extends LinearLayout {
     }
 
     void select(boolean animate) {
-        isSelected = true;
+        isActive = true;
 
         boolean isShifting = type == Type.SHIFTING;
 
@@ -235,7 +244,7 @@ public class BottomBarTab extends LinearLayout {
     }
 
     void deselect(boolean animate) {
-        isSelected = false;
+        isActive = false;
 
         boolean isShifting = type == Type.SHIFTING;
 
