@@ -38,7 +38,7 @@ public class TabParserTest extends InstrumentationTestCase {
         assertEquals("Food", tabs.get(4).getTitle());
     }
 
-    public void testCorrectColors() {
+    public void testCorrectActiveColors() {
         assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveColor());
 
         assertEquals(
