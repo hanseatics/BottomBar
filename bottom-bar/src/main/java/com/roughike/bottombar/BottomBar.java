@@ -471,7 +471,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setOrientation(VERTICAL);
+        ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
 
+        isTabletMode = getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         darkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         primaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
 
@@ -495,22 +497,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void initializeViews() {
-        isTabletMode = getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
-        ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
         View rootView = inflate(getContext(), isTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
                 this);
 
         isShy = getParent() instanceof CoordinatorLayout;
-
         tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
-
         shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
-
+        backgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
         outerContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         tabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
-
-        backgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
 
         if (isShy && !isTabletMode) {
             getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
