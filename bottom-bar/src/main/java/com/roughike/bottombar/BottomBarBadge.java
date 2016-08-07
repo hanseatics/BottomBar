@@ -1,6 +1,7 @@
 package com.roughike.bottombar;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
@@ -34,6 +35,10 @@ public class BottomBarBadge extends TextView {
     private long animationDuration = 150;
     private boolean autoShowAfterUnSelection = false;
     private boolean autoHideOnSelection = true;
+
+    public BottomBarBadge(Context context) {
+        super(context);
+    }
 
     /**
      * Set the unread / new item / whatever count for this Badge.
@@ -138,24 +143,20 @@ public class BottomBarBadge extends TextView {
         return isVisible;
     }
 
-    protected BottomBarBadge(Context context, int position, final View tabToAddTo, // Rhyming accidentally! That's a Smoove Move!
-                             int backgroundColor) {
-        super(context);
-
+    void attachToTab(final BottomBarTab tabToAddTo, int backgroundColor) {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         setLayoutParams(params);
         setGravity(Gravity.CENTER);
-        MiscUtils.setTextAppearance(this,
-                R.style.BB_BottomBarBadge_Text);
+        MiscUtils.setTextAppearance(this, R.style.BB_BottomBarBadge_Text);
 
-        int three = MiscUtils.dpToPixel(context, 3);
+        int three = MiscUtils.dpToPixel(getContext(), 3);
         ShapeDrawable backgroundCircle = BadgeCircle.make(three * 3, backgroundColor);
         setPadding(three, three, three, three);
         setBackgroundCompat(backgroundCircle);
 
-        final FrameLayout container = new FrameLayout(context);
+        final FrameLayout container = new FrameLayout(getContext());
         container.setLayoutParams(params);
 
         ViewGroup parent = (ViewGroup) tabToAddTo.getParent();
@@ -166,7 +167,7 @@ public class BottomBarBadge extends TextView {
         container.addView(tabToAddTo);
         container.addView(this);
 
-        parent.addView(container, position);
+        parent.addView(container, tabToAddTo.getIndexInContainer());
 
         container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")

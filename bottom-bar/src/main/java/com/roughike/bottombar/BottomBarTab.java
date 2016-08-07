@@ -28,7 +28,7 @@ import android.widget.TextView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BottomBarTab extends LinearLayout {
+public class BottomBarTab extends LinearLayout {
     private static final long ANIMATION_DURATION = 150;
     private static final float ACTIVE_TITLE_SCALE = 1;
     private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
@@ -46,10 +46,14 @@ class BottomBarTab extends LinearLayout {
     private int inActiveColor;
     private int activeColor;
     private int barColorWhenSelected;
+    private int badgeBackgroundColor;
 
     private AppCompatImageView iconView;
     private TextView titleView;
     private boolean isSelected;
+
+    private BottomBarBadge badge;
+    private int indexInContainer;
 
     boolean isActive() {
         return isSelected;
@@ -127,8 +131,33 @@ class BottomBarTab extends LinearLayout {
         return barColorWhenSelected;
     }
 
-    void setBarColorWhenSelected(Integer barColorWhenSelected) {
+    void setBarColorWhenSelected(int barColorWhenSelected) {
         this.barColorWhenSelected = barColorWhenSelected;
+    }
+
+    int getBadgeBackgroundColor() {
+        return badgeBackgroundColor;
+    }
+
+    void setBadgeBackgroundColor(int badgeBackgroundColor) {
+        this.badgeBackgroundColor = badgeBackgroundColor;
+    }
+
+    public void setBadgeCount(int count) {
+        if (badge == null) {
+            badge = new BottomBarBadge(getContext());
+            badge.attachToTab(this, badgeBackgroundColor);
+        }
+
+        badge.setCount(count);
+    }
+
+    int getIndexInContainer() {
+        return indexInContainer;
+    }
+
+    void setIndexInContainer(int indexInContainer) {
+        this.indexInContainer = indexInContainer;
     }
 
     void prepareLayout() {

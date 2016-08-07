@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.XmlRes;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,6 +126,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .inActiveTabColor(inActiveTabColor)
                 .activeTabColor(activeTabColor)
                 .barColorWhenSelected(Color.WHITE)
+                .badgeBackgroundColor(Color.RED)
                 .build();
 
         TabParser parser = new TabParser(getContext(), config, xmlRes);
@@ -272,8 +275,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         final View tab = getTabAtPosition(tabPosition);
 
-        BottomBarBadge badge = new BottomBarBadge(getContext(), tabPosition,
-                tab, backgroundColor);
+        BottomBarBadge badge = new BottomBarBadge(getContext());
         badge.setTag(TAG_BADGE + tabPosition);
         badge.setCount(initialCount);
 
@@ -630,7 +632,25 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private BottomBarTab getTabAtPosition(int position) {
-        return (BottomBarTab) tabContainer.getChildAt(position);
+        View child = tabContainer.getChildAt(position);
+
+        if (child instanceof FrameLayout) {
+            return findTabInLayout((FrameLayout) child);
+        }
+
+        return (BottomBarTab) child;
+    }
+
+    private BottomBarTab findTabInLayout(ViewGroup child) {
+        for (int i = 0; i < child.getChildCount(); i++) {
+            View candidate = child.getChildAt(i);
+
+            if (candidate instanceof BottomBarTab) {
+                return (BottomBarTab) candidate;
+            }
+        }
+
+        return null;
     }
 
     private int getTabCount() {
@@ -899,5 +919,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         if (tabContainer != null) {
             tabContainer.removeAllViews();
         }
+    }
+
+    @Nullable
+    public BottomBarTab getTabWithId(@IdRes int tabId) {
+        return (BottomBarTab) tabContainer.findViewById(tabId);
     }
 }

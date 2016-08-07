@@ -63,6 +63,8 @@ class TabParser {
             workingTab = tabWithDefaults();
         }
 
+        workingTab.setIndexInContainer(tabs.size());
+
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             String attrName = parser.getAttributeName(i);
 
@@ -91,7 +93,18 @@ class TabParser {
                     }
                     break;
                 case "barColorWhenSelected":
-                    workingTab.setBarColorWhenSelected(getColorValue(i, parser));
+                    Integer barColorWhenSelected = getColorValue(i, parser);
+
+                    if (barColorWhenSelected != null) {
+                        workingTab.setBarColorWhenSelected(barColorWhenSelected);
+                    }
+                    break;
+                case "badgeBackgroundColor":
+                    Integer badgeBackgroundColor = getColorValue(i, parser);
+
+                    if (badgeBackgroundColor != null) {
+                        workingTab.setBadgeBackgroundColor(badgeBackgroundColor);
+                    }
                     break;
             }
         }
@@ -104,6 +117,7 @@ class TabParser {
         tab.setInActiveColor(config.inActiveTabColor);
         tab.setActiveColor(config.activeTabColor);
         tab.setBarColorWhenSelected(config.barColorWhenSelected);
+        tab.setBadgeBackgroundColor(config.badgeBackgroundColor);
 
         return tab;
     }
@@ -142,6 +156,7 @@ class TabParser {
         private final int inActiveTabColor;
         private final int activeTabColor;
         private final int barColorWhenSelected;
+        private final int badgeBackgroundColor;
 
         private Config(Builder builder) {
             this.inActiveTabAlpha = builder.inActiveTabAlpha;
@@ -149,6 +164,7 @@ class TabParser {
             this.inActiveTabColor = builder.inActiveTabColor;
             this.activeTabColor = builder.activeTabColor;
             this.barColorWhenSelected = builder.barColorWhenSelected;
+            this.badgeBackgroundColor = builder.badgeBackgroundColor;
         }
 
         static class Builder {
@@ -157,6 +173,7 @@ class TabParser {
             private int inActiveTabColor;
             private int activeTabColor;
             private int barColorWhenSelected;
+            private int badgeBackgroundColor;
 
             Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
@@ -180,6 +197,11 @@ class TabParser {
 
             Builder barColorWhenSelected(@ColorInt int color) {
                 this.barColorWhenSelected = color;
+                return this;
+            }
+
+            Builder badgeBackgroundColor(@ColorInt int color) {
+                this.badgeBackgroundColor = color;
                 return this;
             }
 

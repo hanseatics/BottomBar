@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
+import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -45,7 +45,7 @@ public class BadgeActivity extends AppCompatActivity {
         int redColor = Color.parseColor("#FF0000");
 
         // We want the nearbyBadge to be always shown, except when the Favorites tab is selected.
-        BottomBarBadge nearbyBadge = bottomBar.makeBadgeForTabAt(1, redColor, 5);
-        nearbyBadge.setAutoShowAfterUnSelection(true);
+        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
+        nearby.setBadgeCount(5);
     }
 }
