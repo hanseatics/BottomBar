@@ -1,25 +1,12 @@
 package com.roughike.bottombar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
-import android.support.annotation.XmlRes;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.List;
 
 /*
  * BottomBar library for Android
