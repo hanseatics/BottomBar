@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -127,9 +126,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param xmlRes  the menu resource to inflate items from.
      */
     public void setItems(@XmlRes int xmlRes) {
-        clearItems();
         mItems = MiscUtils.inflateFromXMLResource(getContext(), xmlRes);
-        newUpdateItems(mItems);
+        updateItems(mItems);
     }
 
     /**
@@ -210,59 +208,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public int getCurrentTabPosition() {
         return mCurrentTabPosition;
-    }
-
-    /**
-     * Hide the BottomBar.
-     */
-    public void hide() {
-        setBarVisibility(GONE);
-    }
-
-    /**
-     * Show the BottomBar.
-     */
-    public void show() {
-        setBarVisibility(VISIBLE);
-    }
-
-    /**
-     * Set the maximum number of tabs, after which the tabs should be shifting
-     * ones with a background activeIconColor.
-     * 
-     * NOTE: You must call this method before setting any items.
-     *
-     * @param count maximum number of fixed tabs.
-     */
-    public void setMaxFixedTabs(int count) {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call the setMaxFixedTabs() method before specifying any items.");
-        }
-
-        mMaxFixedTabCount = count;
-    }
-
-    /**
-     * Always show the titles and icons also on inactive tabs, even if there's more
-     * than three of them.
-     */
-    public void useFixedMode() {
-        if (mItems != null) {
-            throw new UnsupportedOperationException("This BottomBar already has items! " +
-                    "You must call the useFixedMode() method before specifying any items.");
-        }
-
-        mMaxFixedTabCount = -1;
-    }
-
-    /**
-     * Deprecated. Use {@link #useDarkTheme()} instead.
-     */
-    @Deprecated
-    public void useDarkTheme(boolean darkThemeEnabled) {
-        mIsDarkTheme = darkThemeEnabled;
-        useDarkTheme();
     }
 
     /**
@@ -869,7 +814,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return true;
     }
 
-    private void newUpdateItems(final List<BottomBarTab> bottomBarItems) {
+    private void updateItems(final List<BottomBarTab> bottomBarItems) {
         if (mTabContainer == null) {
             initializeViews();
         }
