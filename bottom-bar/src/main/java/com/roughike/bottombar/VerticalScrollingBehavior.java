@@ -1,4 +1,4 @@
-package com.roughike.bottombar.scrollsweetness;
+package com.roughike.bottombar;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
  * Credit goes to Nikola Despotoski:
  * https://github.com/NikolaDespotoski
  */
-public abstract class VerticalScrollingBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
+abstract class VerticalScrollingBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
     private int totalDyUnconsumed = 0;
     private int totalDy = 0;
@@ -26,17 +26,17 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
     @ScrollDirection
     private int scrollDirection = ScrollDirection.SCROLL_NONE;
 
-    public VerticalScrollingBehavior(Context context, AttributeSet attrs) {
+    VerticalScrollingBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public VerticalScrollingBehavior() {
+    VerticalScrollingBehavior() {
         super();
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ScrollDirection.SCROLL_DIRECTION_UP, ScrollDirection.SCROLL_DIRECTION_DOWN})
-    public @interface ScrollDirection {
+    @interface ScrollDirection {
         int SCROLL_DIRECTION_UP = 1;
         int SCROLL_DIRECTION_DOWN = -1;
         int SCROLL_NONE = 0;
@@ -47,7 +47,7 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
        @return Overscroll direction: SCROLL_DIRECTION_UP, CROLL_DIRECTION_DOWN, SCROLL_NONE
    */
     @ScrollDirection
-    public int getOverScrollDirection() {
+    int getOverScrollDirection() {
         return overScrollDirection;
     }
 
@@ -57,7 +57,7 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
      */
 
     @ScrollDirection
-    public int getScrollDirection() {
+    int getScrollDirection() {
         return scrollDirection;
     }
 
@@ -69,12 +69,12 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
      * @param currentOverScroll Unconsumed value, negative or positive based on the direction;
      * @param totalOverScroll   Cumulative value for current direction
      */
-    public abstract void onNestedVerticalOverScroll(CoordinatorLayout coordinatorLayout, V child, @ScrollDirection int direction, int currentOverScroll, int totalOverScroll);
+    abstract void onNestedVerticalOverScroll(CoordinatorLayout coordinatorLayout, V child, @ScrollDirection int direction, int currentOverScroll, int totalOverScroll);
 
     /**
      * @param scrollDirection Direction of the overscroll: SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN
      */
-    public abstract void onDirectionNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed, @ScrollDirection int scrollDirection);
+    abstract void onDirectionNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed, @ScrollDirection int scrollDirection);
 
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, V child, View directTargetChild, View target, int nestedScrollAxes) {
@@ -127,7 +127,7 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
         return onNestedDirectionFling(coordinatorLayout, child, target, velocityX, velocityY, scrollDirection);
     }
 
-    protected abstract boolean onNestedDirectionFling(CoordinatorLayout coordinatorLayout, V child, View target, float velocityX, float velocityY, @ScrollDirection int scrollDirection);
+    abstract boolean onNestedDirectionFling(CoordinatorLayout coordinatorLayout, V child, View target, float velocityX, float velocityY, @ScrollDirection int scrollDirection);
 
     @Override
     public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, V child, View target, float velocityX, float velocityY) {

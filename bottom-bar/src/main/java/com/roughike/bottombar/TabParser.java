@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by iiro on 21.7.2016.
  */
-public class TabParser {
+class TabParser {
     private final Context context;
     private final Config config;
     private final XmlResourceParser parser;
@@ -24,7 +24,7 @@ public class TabParser {
     private ArrayList<BottomBarTab> tabs;
     private BottomBarTab workingTab;
 
-    public TabParser(Context context, Config config, @XmlRes int tabsXmlResId) {
+    TabParser(Context context, Config config, @XmlRes int tabsXmlResId) {
         this.context = context;
         this.config = config;
 
@@ -132,11 +132,11 @@ public class TabParser {
         }
     }
 
-    public List<BottomBarTab> getTabs() {
+    List<BottomBarTab> getTabs() {
         return tabs;
     }
 
-    public static class Config {
+    static class Config {
         private final float inActiveTabAlpha;
         private final float activeTabAlpha;
         private final int inActiveTabColor;
@@ -151,39 +151,39 @@ public class TabParser {
             this.barColorWhenSelected = builder.barColorWhenSelected;
         }
 
-        public static class Builder {
+        static class Builder {
             private float inActiveTabAlpha;
             private float activeTabAlpha;
             private int inActiveTabColor;
             private int activeTabColor;
             private int barColorWhenSelected;
 
-            public Builder inActiveTabAlpha(float alpha) {
+            Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
                 return this;
             }
 
-            public Builder activeTabAlpha(float alpha) {
+            Builder activeTabAlpha(float alpha) {
                 this.activeTabAlpha = alpha;
                 return this;
             }
 
-            public Builder inActiveTabColor(@ColorInt int color) {
+            Builder inActiveTabColor(@ColorInt int color) {
                 this.inActiveTabColor = color;
                 return this;
             }
 
-            public Builder activeTabColor(@ColorInt int color) {
+            Builder activeTabColor(@ColorInt int color) {
                 this.activeTabColor = color;
                 return this;
             }
 
-            public Builder barColorWhenSelected(@ColorInt int color) {
+            Builder barColorWhenSelected(@ColorInt int color) {
                 this.barColorWhenSelected = color;
                 return this;
             }
 
-            public Config build() {
+            Config build() {
                 return new Config(this);
             }
         }

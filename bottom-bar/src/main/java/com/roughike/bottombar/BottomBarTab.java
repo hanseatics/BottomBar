@@ -28,7 +28,7 @@ import android.widget.TextView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BottomBarTab extends LinearLayout {
+class BottomBarTab extends LinearLayout {
     private static final long ANIMATION_DURATION = 150;
     private static final float ACTIVE_TITLE_SCALE = 1;
     private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
@@ -51,15 +51,15 @@ public class BottomBarTab extends LinearLayout {
     private TextView titleView;
     private boolean isSelected;
 
-    public boolean isActive() {
+    boolean isActive() {
         return isSelected;
     }
 
-    public enum Type {
+    enum Type {
         FIXED, SHIFTING, TABLET
     }
 
-    public BottomBarTab(Context context) {
+    BottomBarTab(Context context) {
         super(context);
 
         sixDps = MiscUtils.dpToPixel(context, 6);
@@ -67,71 +67,71 @@ public class BottomBarTab extends LinearLayout {
         sixteenDps = MiscUtils.dpToPixel(context, 16);
     }
 
-    public Type getType() {
+    Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    void setType(Type type) {
         this.type = type;
     }
 
-    public int getIconResId() {
+    int getIconResId() {
         return iconResId;
     }
 
-    public void setIconResId(int iconResId) {
+    void setIconResId(int iconResId) {
         this.iconResId = iconResId;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
-    public float getInActiveAlpha() {
+    float getInActiveAlpha() {
         return inActiveAlpha;
     }
 
-    public void setInActiveAlpha(float inActiveAlpha) {
+    void setInActiveAlpha(float inActiveAlpha) {
         this.inActiveAlpha = inActiveAlpha;
     }
 
-    public float getActiveAlpha() {
+    float getActiveAlpha() {
         return activeAlpha;
     }
 
-    public void setActiveAlpha(float activeAlpha) {
+    void setActiveAlpha(float activeAlpha) {
         this.activeAlpha = activeAlpha;
     }
 
-    public int getInActiveColor() {
+    int getInActiveColor() {
         return inActiveColor;
     }
 
-    public void setInActiveColor(int inActiveColor) {
+    void setInActiveColor(int inActiveColor) {
         this.inActiveColor = inActiveColor;
     }
 
-    public int getActiveColor() {
+    int getActiveColor() {
         return activeColor;
     }
 
-    public void setActiveColor(int activeIconColor) {
+    void setActiveColor(int activeIconColor) {
         this.activeColor = activeIconColor;
     }
 
-    public int getBarColorWhenSelected() {
+    int getBarColorWhenSelected() {
         return barColorWhenSelected;
     }
 
-    public void setBarColorWhenSelected(Integer barColorWhenSelected) {
+    void setBarColorWhenSelected(Integer barColorWhenSelected) {
         this.barColorWhenSelected = barColorWhenSelected;
     }
 
-    public void prepareLayout() {
+    void prepareLayout() {
         int layoutResource;
 
         switch (type) {
@@ -160,12 +160,12 @@ public class BottomBarTab extends LinearLayout {
         titleView.setText(title);
     }
 
-    public void setIconTint(int tint) {
+    void setIconTint(int tint) {
         iconView.setColorFilter(tint);
     }
 
     @SuppressWarnings("deprecation")
-    public void setTitleTextAppearance(int resId) {
+    void setTitleTextAppearance(int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             titleView.setTextAppearance(resId);
         } else {
@@ -173,11 +173,11 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    public void setTitleTypeface(Typeface typeface) {
+    void setTitleTypeface(Typeface typeface) {
         titleView.setTypeface(typeface);
     }
 
-    public void select(boolean animate) {
+    void select(boolean animate) {
         isSelected = true;
 
         boolean isShifting = type == Type.SHIFTING;
@@ -201,7 +201,7 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    public void deselect(boolean animate) {
+    void deselect(boolean animate) {
         isSelected = false;
 
         boolean isShifting = type == Type.SHIFTING;
@@ -239,7 +239,7 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    public void updateWidthAnimated(float endWidth) {
+    void updateWidthAnimated(float endWidth) {
         float start = getWidth();
 
         ValueAnimator animator = ValueAnimator.ofFloat(start, endWidth);

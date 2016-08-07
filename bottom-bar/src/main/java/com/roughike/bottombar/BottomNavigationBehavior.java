@@ -1,4 +1,4 @@
-package com.roughike.bottombar.scrollsweetness;
+package com.roughike.bottombar;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,7 +17,7 @@ import android.view.animation.Interpolator;
  * Credit goes to Nikola Despotoski:
  * https://github.com/NikolaDespotoski
  */
-public class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
+class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
     private final int bottomNavHeight;
     private final int defaultOffset;
@@ -30,7 +30,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
     private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
     private boolean mScrollingEnabled = true;
 
-    public BottomNavigationBehavior(int bottomNavHeight, int defaultOffset, boolean shy, boolean tablet) {
+    BottomNavigationBehavior(int bottomNavHeight, int defaultOffset, boolean shy, boolean tablet) {
         this.bottomNavHeight = bottomNavHeight;
         this.defaultOffset = defaultOffset;
         isShy = shy;
@@ -103,7 +103,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
     }
 
 
-    public void setHidden(@NonNull  V view, boolean bottomLayoutHidden) {
+    void setHidden(@NonNull  V view, boolean bottomLayoutHidden) {
         if (!bottomLayoutHidden && hidden) {
             animateOffset(view, defaultOffset);
         } else if (bottomLayoutHidden && !hidden) {
@@ -113,7 +113,7 @@ public class BottomNavigationBehavior<V extends View> extends VerticalScrollingB
     }
 
 
-    public static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
+    static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (!(params instanceof CoordinatorLayout.LayoutParams)) {
             throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");

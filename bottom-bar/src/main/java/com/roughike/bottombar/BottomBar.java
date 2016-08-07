@@ -20,7 +20,6 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -28,8 +27,6 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.roughike.bottombar.scrollsweetness.BottomNavigationBehavior;
 
 import java.io.Serializable;
 import java.util.HashMap;
