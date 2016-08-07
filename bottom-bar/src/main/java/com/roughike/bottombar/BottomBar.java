@@ -58,7 +58,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private static final float DEFAULT_INACTIVE_TAB_ALPHA = 0.6f;
     private static final float DEFAULT_ACTIVE_TAB_ALPHA = 1;
 
-    private Context mContext;
     private boolean mIsComingFromRestoredState;
     private boolean mIgnoreTabReselectionListener;
     private boolean mIsTabletMode;
@@ -275,7 +274,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         final View tab = getTabAtPosition(tabPosition);
 
-        BottomBarBadge badge = new BottomBarBadge(mContext, tabPosition,
+        BottomBarBadge badge = new BottomBarBadge(getContext(), tabPosition,
                 tab, backgroundColor);
         badge.setTag(TAG_BADGE + tabPosition);
         badge.setCount(initialCount);
@@ -324,7 +323,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param typeFacePath path for the custom typeface in the assets directory.
      */
     public void setTypeFace(String typeFacePath) {
-        Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),
+        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),
                 typeFacePath);
 
         if (mTabContainer != null && getTabCount() > 0) {
@@ -472,7 +471,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setOrientation(VERTICAL);
 
-        mContext = context;
         mDarkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         mPrimaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
 
@@ -485,9 +483,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         //mPrimaryColor = Color.parseColor("#555555");
         //mInActiveColor = Color.parseColor("#ffffff");
 
-        mScreenWidth = MiscUtils.getScreenWidth(mContext);
-        mTenDp = MiscUtils.dpToPixel(mContext, 10);
-        mMaxFixedItemWidth = MiscUtils.dpToPixel(mContext, 168);
+        mScreenWidth = MiscUtils.getScreenWidth(getContext());
+        mTenDp = MiscUtils.dpToPixel(getContext(), 10);
+        mMaxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
@@ -505,9 +503,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void initializeViews() {
-        mIsTabletMode = mContext.getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
-        ViewCompat.setElevation(this, MiscUtils.dpToPixel(mContext, 8));
-        View rootView = inflate(mContext, mIsTabletMode ?
+        mIsTabletMode = getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
+        ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
+        View rootView = inflate(getContext(), mIsTabletMode ?
                         R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
                 this);
         mTabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
@@ -668,7 +666,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private boolean handleLongClick(View v) {
         if ((mIsShiftingMode || mIsTabletMode) && !((BottomBarTab) v).isActive()) {
-            Toast.makeText(mContext, getTabAtPosition(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getTabAtPosition(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
         return true;
@@ -697,7 +695,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         mIsShiftingMode = mMaxFixedTabCount >= 0 && mMaxFixedTabCount < bottomBarItems.size();
 
         if (!mIsDarkTheme && !mIgnoreNightMode
-                && MiscUtils.isNightMode(mContext)) {
+                && MiscUtils.isNightMode(getContext())) {
             mIsDarkTheme = true;
         }
 
@@ -763,14 +761,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (!mIsTabletMode) {
             int proposedItemWidth = Math.min(
-                    MiscUtils.dpToPixel(mContext, mScreenWidth / bottomBarItems.size()),
+                    MiscUtils.dpToPixel(getContext(), mScreenWidth / bottomBarItems.size()),
                     mMaxFixedItemWidth
             );
 
             mInActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
             mActiveShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.size() * 0.1)));
 
-            int height = Math.round(mContext.getResources().getDimension(R.dimen.bb_height));
+            int height = Math.round(getContext().getResources().getDimension(R.dimen.bb_height));
             for (BottomBarTab bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
@@ -803,7 +801,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             mTabContainer.setBackgroundColor(mDarkBackgroundColor);
         } else {
             mTabContainer.setBackgroundColor(mDarkBackgroundColor);
-            mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bb_tabletRightBorderDark));
+            mTabletRightBorder.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bb_tabletRightBorderDark));
         }
     }
 
