@@ -54,8 +54,6 @@ import java.util.List;
  */
 public class BottomBar extends LinearLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
-    private static final String STATE_BADGE_STATES_BUNDLE = "STATE_BADGE_STATES_BUNDLE";
-    private static final String TAG_BADGE = "BOTTOMBAR_BADGE_";
 
     private static final float DEFAULT_INACTIVE_TAB_ALPHA = 0.6f;
     private static final float DEFAULT_ACTIVE_TAB_ALPHA = 1;
