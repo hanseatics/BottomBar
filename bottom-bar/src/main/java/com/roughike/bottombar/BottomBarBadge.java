@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
@@ -30,7 +31,8 @@ import android.widget.TextView;
  * limitations under the License.
  */
 class BottomBarBadge extends TextView {
-    private static final String STATE_COUNT = "STATE_COUNT";
+    @VisibleForTesting
+    static final String STATE_COUNT = "STATE_BADGE_COUNT";
 
     private int count;
     private boolean isVisible = false;

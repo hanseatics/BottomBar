@@ -1,5 +1,6 @@
 package com.roughike.bottombar;
 
+import android.os.Bundle;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -53,6 +54,7 @@ public class BadgeActivityTest {
         assertEquals(false, nearby.badge.isVisible());
     }
 
+    @Test
     @UiThreadTest
     public void whenBadgeCountIsZero_BadgeIsRemoved() {
         assertNotNull(nearby.badge);
@@ -61,11 +63,27 @@ public class BadgeActivityTest {
         assertNull(nearby.badge);
     }
 
+    @Test
     @UiThreadTest
     public void whenBadgeCountIsNegative_BadgeIsRemoved() {
         assertNotNull(nearby.badge);
 
         nearby.setBadgeCount(-1);
         assertNull(nearby.badge);
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenBadgeStateRestored_CountPersists() {
+        assertNotNull(nearby.badge);
+
+        nearby.setBadgeCount(1);
+        assertEquals(1, nearby.badge.getCount());
+
+        Bundle savedInstanceState = new Bundle();
+        savedInstanceState.putInt(BottomBarBadge.STATE_COUNT, 2);
+        nearby.badge.restoreState(savedInstanceState);
+
+        assertEquals(2, nearby.badge.getCount());
     }
 }
