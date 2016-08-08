@@ -806,7 +806,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    @Nullable
     public BottomBarTab getTabWithId(@IdRes int tabId) {
         return (BottomBarTab) tabContainer.findViewById(tabId);
     }

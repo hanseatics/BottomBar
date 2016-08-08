@@ -1,6 +1,5 @@
 package com.example.bottombar.sample;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -26,7 +25,7 @@ public class BadgeActivity extends AppCompatActivity {
 
         messageView = (TextView) findViewById(R.id.messageView);
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setItems(R.xml.bottombar_tabs_three);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -41,8 +40,6 @@ public class BadgeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), TabMessage.get(tabId, true), Toast.LENGTH_LONG).show();
             }
         });
-
-        int redColor = Color.parseColor("#FF0000");
 
         // We want the nearbyBadge to be always shown, except when the Favorites tab is selected.
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);

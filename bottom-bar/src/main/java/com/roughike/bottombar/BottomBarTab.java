@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
@@ -54,8 +55,10 @@ public class BottomBarTab extends LinearLayout {
     private TextView titleView;
     private boolean isActive;
 
-    private BottomBarBadge badge;
     private int indexInContainer;
+
+    @VisibleForTesting
+    BottomBarBadge badge;
 
     enum Type {
         FIXED, SHIFTING, TABLET
