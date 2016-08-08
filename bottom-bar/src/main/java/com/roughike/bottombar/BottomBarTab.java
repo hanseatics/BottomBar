@@ -6,10 +6,13 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -395,5 +398,27 @@ public class BottomBarTab extends LinearLayout {
     private void setTitleScale(float scale) {
         ViewCompat.setScaleX(titleView, scale);
         ViewCompat.setScaleY(titleView, scale);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        if (badge != null) {
+            Bundle bundle = badge.saveState();
+            bundle.putParcelable("superstate", super.onSaveInstanceState());
+            return bundle;
+        }
+
+        return super.onSaveInstanceState();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (badge != null && state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            badge.restoreState(bundle);
+
+            state = bundle.getParcelable("superstate");
+        }
+        super.onRestoreInstanceState(state);
     }
 }

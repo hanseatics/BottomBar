@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -30,9 +30,10 @@ import android.widget.TextView;
  * limitations under the License.
  */
 class BottomBarBadge extends TextView {
+    private static final String STATE_COUNT = "STATE_COUNT";
+
     private int count;
     private boolean isVisible = false;
-    private long animationDuration = 150;
 
     BottomBarBadge(Context context) {
         super(context);
@@ -58,21 +59,12 @@ class BottomBarBadge extends TextView {
     }
 
     /**
-     * Set the scale animation duration in milliseconds.
-     *
-     * @param duration animation duration in milliseconds.
-     */
-    void setAnimationDuration(long duration) {
-        this.animationDuration = duration;
-    }
-
-    /**
      * Shows the badge with a neat little scale animation.
      */
     void show() {
         isVisible = true;
         ViewCompat.animate(this)
-                .setDuration(animationDuration)
+                .setDuration(150)
                 .alpha(1)
                 .scaleX(1)
                 .scaleY(1)
@@ -85,7 +77,7 @@ class BottomBarBadge extends TextView {
     void hide() {
         isVisible = false;
         ViewCompat.animate(this)
-                .setDuration(animationDuration)
+                .setDuration(150)
                 .alpha(0)
                 .scaleX(0)
                 .scaleY(0)
@@ -168,5 +160,15 @@ class BottomBarBadge extends TextView {
         } else {
             setBackgroundDrawable(background);
         }
+    }
+
+    Bundle saveState() {
+        Bundle state = new Bundle();
+        state.putInt(STATE_COUNT, count);
+        return state;
+    }
+
+    void restoreState(Bundle bundle) {
+        setCount(bundle.getInt(STATE_COUNT, count));
     }
 }
