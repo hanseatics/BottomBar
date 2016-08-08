@@ -21,7 +21,6 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -32,8 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -401,40 +398,31 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private void initializeViews() {
         View rootView = inflate(getContext(), isTabletMode ?
-                        R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container,
-                this);
+                        R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container, this);
 
-        isShy = getParent() instanceof CoordinatorLayout;
         tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
         shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
         backgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
         outerContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         tabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
-
-        if (isShy && !isTabletMode) {
-            initializeShyBehavior();
-        }
     }
 
-    private void initializeShyBehavior() {
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout() {
-                if (!shyHeightAlreadyCalculated) {
-                    ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                            .setBehavior(new BottomNavigationBehavior(getHeight(), 0, isShy, isTabletMode));
-                }
+    private void initializeShyBehaviorIfShy() {
+        ViewParent parent = getParent();
 
-                ViewTreeObserver obs = getViewTreeObserver();
+        boolean hasAbusiveParent = parent != null
+                && parent instanceof CoordinatorLayout;
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    obs.removeOnGlobalLayoutListener(this);
-                } else {
-                    obs.removeGlobalOnLayoutListener(this);
-                }
+        if (!shyHeightAlreadyCalculated
+                && !isTabletMode
+                && hasAbusiveParent) {
+            int height = getHeight();
+
+            if (height != 0) {
+                ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                        .setBehavior(new BottomNavigationBehavior(height, 0, isShy, isTabletMode));
             }
-        });
+        }
     }
 
     /**
@@ -657,6 +645,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             updateTitleBottomPadding();
+            initializeShyBehaviorIfShy();
         }
     }
 
