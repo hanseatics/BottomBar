@@ -20,12 +20,11 @@ public class ThreeTabsActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic);
+        setContentView(R.layout.activity_three_tabs);
 
         messageView = (TextView) findViewById(R.id.messageView);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setItems(R.xml.bottombar_tabs_three);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
 
             @Override

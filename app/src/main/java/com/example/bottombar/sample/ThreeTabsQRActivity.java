@@ -12,7 +12,6 @@ import com.roughike.bottombar.OnTabSelectListener;
  * Created by iiro on 7.6.2016.
  */
 public class ThreeTabsQRActivity extends AppCompatActivity {
-    private BottomBar bottomBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -20,7 +19,6 @@ public class ThreeTabsQRActivity extends AppCompatActivity {
         setContentView(R.layout.activity_three_tabs_quick_return);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setItems(R.xml.bottombar_tabs_three);
 
         // We're doing nothing with this listener here this time. Check example usage
         // from ThreeTabsActivity on how to use it.

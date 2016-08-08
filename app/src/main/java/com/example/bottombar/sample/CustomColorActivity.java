@@ -21,7 +21,7 @@ public class CustomColorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic);
+        setContentView(R.layout.activity_five_tabs);
 
         messageView = (TextView) findViewById(R.id.messageView);
 
@@ -32,7 +32,6 @@ public class CustomColorActivity extends AppCompatActivity {
                 0.25f); // Tab Item Alpha*/
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setItems(R.xml.bottombar_tabs_five);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {

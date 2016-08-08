@@ -116,7 +116,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      *
      * @param xmlRes the menu resource to inflate items from.
      */
-    public void setItems(@XmlRes int xmlRes) {
+    void setItems(@XmlRes int xmlRes) {
         TabParser.Config config = new TabParser.Config.Builder()
                 .inActiveTabAlpha(inActiveTabAlpha)
                 .activeTabAlpha(activeTabAlpha)
@@ -391,6 +391,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                     ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor));
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor,
                     MiscUtils.getColor(context, R.attr.colorPrimary));
+
+            int tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
+            setItems(tabXmlResource);
         } finally {
             ta.recycle();
         }
