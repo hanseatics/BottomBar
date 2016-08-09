@@ -388,6 +388,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                     ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor));
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor,
                     MiscUtils.getColor(context, R.attr.colorPrimary));
+            isShiftingMode = ta.getBoolean(R.styleable.BottomBar_bb_shiftingMode, false);
 
             int tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
             setItems(tabXmlResource);
@@ -526,8 +527,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         int index = 0;
         int biggestWidth = 0;
-
-        isShiftingMode = maxFixedTabCount >= 0 && maxFixedTabCount < bottomBarItems.size();
 
         if (!isDarkTheme && !ignoreNightMode
                 && MiscUtils.isNightMode(getContext())) {
