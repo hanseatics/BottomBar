@@ -105,6 +105,30 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int tabXmlResource;
 
     /**
+     * ------------------------------------------- //
+     */
+    public BottomBar(Context context) {
+        super(context);
+        init(context, null, 0, 0);
+    }
+
+    public BottomBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs, 0, 0);
+    }
+
+    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr, 0);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    /**
      * Set items for this BottomBar from an XML menu resource file.
      * <p/>
      * When setting more than 3 items, only the icons will show by
@@ -271,30 +295,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void useOnlyStatusBarTopOffset() {
         useOnlyStatusBarOffset = true;
-    }
-
-    /**
-     * ------------------------------------------- //
-     */
-    public BottomBar(Context context) {
-        super(context);
-        init(context, null, 0, 0);
-    }
-
-    public BottomBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
-    }
-
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
