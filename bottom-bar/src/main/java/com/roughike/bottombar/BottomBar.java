@@ -203,12 +203,26 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     /**
-     * Get the current selected tab position.
-     *
-     * @return the position of currently selected tab.
+     * Get the currently selected tab position.
      */
     public int getCurrentTabPosition() {
         return currentTabPosition;
+    }
+
+    /**
+     * Get the currently selected tab.
+     */
+    public BottomBarTab getCurrentTab() {
+        return getTabAtPosition(getCurrentTabPosition());
+    }
+
+    /**
+     * Get the resource id for the currently selected tab.
+     * @return
+     */
+    @IdRes
+    public int getCurrentTabId() {
+        return getCurrentTab().getId();
     }
 
     @Override
