@@ -14,14 +14,14 @@ import com.roughike.bottombar.OnTabSelectListener;
  * Created by mikemilla on 7.17.2016.
  * http://mikemilla.com
  */
-public class CustomColorActivity extends AppCompatActivity {
+public class CustomColorAndFontActivity extends AppCompatActivity {
 
     private TextView messageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_color);
+        setContentView(R.layout.activity_custom_color_and_font);
 
         messageView = (TextView) findViewById(R.id.messageView);
 

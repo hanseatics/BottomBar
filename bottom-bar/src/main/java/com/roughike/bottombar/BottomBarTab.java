@@ -12,7 +12,6 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.AppCompatImageView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -62,6 +61,8 @@ public class BottomBarTab extends LinearLayout {
 
     @VisibleForTesting
     BottomBarBadge badge;
+    private int titleTextAppearanceResId;
+    private Typeface titleTypeFace;
 
     enum Type {
         FIXED, SHIFTING, TABLET
@@ -73,6 +74,57 @@ public class BottomBarTab extends LinearLayout {
         sixDps = MiscUtils.dpToPixel(context, 6);
         eightDps = MiscUtils.dpToPixel(context, 8);
         sixteenDps = MiscUtils.dpToPixel(context, 16);
+    }
+
+    void prepareLayout() {
+        int layoutResource;
+
+        switch (type) {
+            case FIXED:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed;
+                break;
+            case SHIFTING:
+                layoutResource = R.layout.bb_bottom_bar_item_shifting;
+                break;
+            case TABLET:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
+                break;
+            default:
+                // should never happen
+                throw new RuntimeException("Unknown BottomBarTab type.");
+        }
+
+        inflate(getContext(), layoutResource, this);
+        setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER_HORIZONTAL);
+
+        iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
+        titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
+
+        iconView.setImageResource(iconResId);
+        titleView.setText(title);
+
+        initCustomTextAppearance();
+        initCustomFont();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void initCustomTextAppearance() {
+        if (titleTextAppearanceResId == 0) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            titleView.setTextAppearance(titleTextAppearanceResId);
+        } else {
+            titleView.setTextAppearance(getContext(), titleTextAppearanceResId);
+        }
+    }
+
+    private void initCustomFont() {
+        if (titleTypeFace != null) {
+            titleView.setTypeface(titleTypeFace);
+        }
     }
 
     Type getType() {
@@ -189,50 +241,17 @@ public class BottomBarTab extends LinearLayout {
         this.indexInContainer = indexInContainer;
     }
 
-    void prepareLayout() {
-        int layoutResource;
-
-        switch (type) {
-            case FIXED:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed;
-                break;
-            case SHIFTING:
-                layoutResource = R.layout.bb_bottom_bar_item_shifting;
-                break;
-            case TABLET:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
-                break;
-            default:
-                // should never happen
-                throw new RuntimeException("Unknown BottomBarTab type.");
-        }
-
-        inflate(getContext(), layoutResource, this);
-        setOrientation(VERTICAL);
-        setGravity(Gravity.CENTER_HORIZONTAL);
-
-        iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
-        titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
-
-        iconView.setImageResource(iconResId);
-        titleView.setText(title);
-    }
-
     void setIconTint(int tint) {
         iconView.setColorFilter(tint);
     }
 
     @SuppressWarnings("deprecation")
     void setTitleTextAppearance(int resId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            titleView.setTextAppearance(resId);
-        } else {
-            titleView.setTextAppearance(getContext(), resId);
-        }
+        this.titleTextAppearanceResId = resId;
     }
 
-    void setTitleTypeface(Typeface typeface) {
-        titleView.setTypeface(typeface);
+    void titleTypeFace(Typeface typeface) {
+        this.titleTypeFace = typeface;
     }
 
     void select(boolean animate) {

@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 clazz = ThreeTabsQRActivity.class;
                 break;
             case R.id.five_tabs_custom_colors:
-                clazz = CustomColorActivity.class;
+                clazz = CustomColorAndFontActivity.class;
                 break;
             case R.id.badges:
                 clazz = BadgeActivity.class;

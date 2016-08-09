@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -15,13 +14,11 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.annotation.XmlRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -87,14 +84,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int currentBackgroundColor;
     private int defaultBackgroundColor = Color.WHITE;
 
-    private boolean drawBehindNavBar = true;
-    private boolean useTopOffset = true;
-    private boolean useOnlyStatusBarOffset;
-
-    private int pendingTextAppearance = -1;
-    private Typeface pendingTypeface;
-
-    private int maxFixedTabCount = 3;
     private ViewGroup outerContainer;
 
     // XML Attributes
@@ -103,6 +92,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int inActiveTabColor;
     private int activeTabColor;
     private int tabXmlResource;
+    private int titleTextAppearance;
+    private String titleTypeFace;
 
     /**
      * ------------------------------------------- //
@@ -137,6 +128,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .activeTabColor(activeTabColor)
                 .barColorWhenSelected(defaultBackgroundColor)
                 .badgeBackgroundColor(Color.RED)
+                .titleTextAppearance(titleTextAppearance)
+                .titleTypeFace(getContext(), titleTypeFace)
                 .build();
 
         TabParser parser = new TabParser(getContext(), config, xmlRes);
@@ -218,74 +211,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return currentTabPosition;
     }
 
-    /**
-     * Set a custom TypeFace for the tab titles.
-     * The .ttf file should be located at "/src/main/assets".
-     *
-     * @param typeFacePath path for the custom typeface in the assets directory.
-     */
-    public void setTypeFace(String typeFacePath) {
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),
-                typeFacePath);
-
-        if (tabContainer != null && getTabCount() > 0) {
-            for (int i = 0; i < getTabCount(); i++) {
-                View bottomBarTab = getTabAtPosition(i);
-                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
-                title.setTypeface(typeface);
-            }
-        } else {
-            pendingTypeface = typeface;
-        }
-    }
-
-    /**
-     * Set a custom text appearance for the tab title.
-     *
-     * @param resId path to the custom text appearance.
-     */
-    public void setTextAppearance(@StyleRes int resId) {
-        if (tabContainer != null && getTabCount() > 0) {
-            for (int i = 0; i < getTabCount(); i++) {
-                View bottomBarTab = getTabAtPosition(i);
-                TextView title = (TextView) bottomBarTab.findViewById(R.id.bb_bottom_bar_title);
-                MiscUtils.setTextAppearance(title, resId);
-            }
-        } else {
-            pendingTextAppearance = resId;
-        }
-    }
-
-    /**
-     * Hide the shadow that's normally above the BottomBar.
-     */
-    public void hideShadow() {
-        if (shadowView != null) {
-            shadowView.setVisibility(GONE);
-        }
-    }
-
-    /**
-     * Super ugly hacks
-     * ----------------------------/
-     */
-
-    /**
-     * If you get some unwanted extra padding in the top (such as
-     * when using CoordinatorLayout), this fixes it.
-     */
-    public void noTopOffset() {
-        useTopOffset = false;
-    }
-
-    /**
-     * If your ActionBar gets inside the status bar for some reason,
-     * this fixes it.
-     */
-    public void useOnlyStatusBarTopOffset() {
-        useOnlyStatusBarOffset = true;
-    }
-
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = saveState();
@@ -344,6 +269,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 attrs, R.styleable.BottomBar, 0, 0);
 
         try {
+            tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
             isShiftingMode = ta.getBoolean(R.styleable.BottomBar_bb_shiftingMode, false);
             inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha, DEFAULT_INACTIVE_TAB_ALPHA);
             activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, DEFAULT_ACTIVE_TAB_ALPHA);
@@ -355,7 +281,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
-            tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
+            titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
+            titleTypeFace = ta.getString(R.styleable.BottomBar_bb_titleTypeFace);
         } finally {
             ta.recycle();
         }
@@ -525,16 +452,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             bottomBarTab.setType(type);
             bottomBarTab.prepareLayout();
 
-            if (!isTabletMode) {
-                if (pendingTextAppearance != -1) {
-                    bottomBarTab.setTitleTextAppearance(pendingTextAppearance);
-                }
-
-                if (pendingTypeface != null) {
-                    bottomBarTab.setTitleTypeface(pendingTypeface);
-                }
-            }
-
             if (index == currentTabPosition) {
                 bottomBarTab.select(false);
 
@@ -585,14 +502,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 bottomBarView.setLayoutParams(params);
                 tabContainer.addView(bottomBarView);
             }
-        }
-
-        if (pendingTextAppearance != -1) {
-            pendingTextAppearance = -1;
-        }
-
-        if (pendingTypeface != null) {
-            pendingTypeface = null;
         }
     }
 

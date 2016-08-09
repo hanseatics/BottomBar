@@ -3,6 +3,7 @@ package com.roughike.bottombar;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.XmlRes;
 import android.support.v4.content.ContextCompat;
@@ -118,6 +119,8 @@ class TabParser {
         tab.setActiveColor(config.activeTabColor);
         tab.setBarColorWhenSelected(config.barColorWhenSelected);
         tab.setBadgeBackgroundColor(config.badgeBackgroundColor);
+        tab.setTitleTextAppearance(config.titleTextAppearance);
+        tab.titleTypeFace(config.titleTypeFace);
 
         return tab;
     }
@@ -157,6 +160,8 @@ class TabParser {
         private final int activeTabColor;
         private final int barColorWhenSelected;
         private final int badgeBackgroundColor;
+        private final int titleTextAppearance;
+        private final Typeface titleTypeFace;
 
         private Config(Builder builder) {
             this.inActiveTabAlpha = builder.inActiveTabAlpha;
@@ -165,6 +170,8 @@ class TabParser {
             this.activeTabColor = builder.activeTabColor;
             this.barColorWhenSelected = builder.barColorWhenSelected;
             this.badgeBackgroundColor = builder.badgeBackgroundColor;
+            this.titleTextAppearance = builder.titleTextAppearance;
+            this.titleTypeFace = builder.titleTypeFace;
         }
 
         static class Builder {
@@ -174,6 +181,8 @@ class TabParser {
             private int activeTabColor;
             private int barColorWhenSelected;
             private int badgeBackgroundColor;
+            private int titleTextAppearance;
+            private Typeface titleTypeFace;
 
             Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
@@ -202,6 +211,18 @@ class TabParser {
 
             Builder badgeBackgroundColor(@ColorInt int color) {
                 this.badgeBackgroundColor = color;
+                return this;
+            }
+
+            Builder titleTextAppearance(int titleTextAppearance) {
+                this.titleTextAppearance = titleTextAppearance;
+                return this;
+            }
+
+            Builder titleTypeFace(Context context, String titleCustomFont) {
+                this.titleTypeFace = Typeface.createFromAsset(
+                        context.getAssets(), titleCustomFont);
+
                 return this;
             }
 
