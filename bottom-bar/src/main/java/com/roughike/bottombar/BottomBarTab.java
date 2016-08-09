@@ -240,9 +240,7 @@ public class BottomBarTab extends LinearLayout {
 
         boolean isShifting = type == Type.SHIFTING;
 
-        if (!isShifting) {
-            setColors(activeColor);
-        }
+        setColors(activeColor);
 
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
@@ -268,9 +266,7 @@ public class BottomBarTab extends LinearLayout {
 
         boolean isShifting = type == Type.SHIFTING;
 
-        if (!isShifting) {
-            setColors(inActiveColor);
-        }
+        setColors(inActiveColor);
 
         float scale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
         int iconPaddingTop = isShifting ? sixteenDps : eightDps;

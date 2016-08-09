@@ -21,15 +21,9 @@ public class CustomColorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_five_tabs);
+        setContentView(R.layout.activity_custom_color);
 
         messageView = (TextView) findViewById(R.id.messageView);
-
-        // Customize the colors here
-        /*bottomBar = BottomBar.attach(this, savedInstanceState,
-                Color.parseColor("#FFFFFF"), // Background Color
-                ContextCompat.getColor(this, R.color.colorAccent), // Tab Item Color
-                0.25f); // Tab Item Alpha*/
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
