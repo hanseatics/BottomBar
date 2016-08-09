@@ -734,79 +734,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             clickedView = tab.getOuterView();
         }
 
-        animateBGColorChange(clickedView, backgroundOverlay, newColor);
+        BackgroundColorAnimator.animateBGColorChange(
+                clickedView,
+                outerContainer,
+                backgroundOverlay,
+                newColor
+        );
+
         currentBackgroundColor = newColor;
-    }
-
-    private void animateBGColorChange(View clickedView, final View bgOverlay, final int newColor) {
-        int centerX = (int) (ViewCompat.getX(clickedView) + (clickedView.getMeasuredWidth() / 2));
-        int centerY = clickedView.getMeasuredHeight() / 2;
-        int finalRadius = outerContainer.getWidth();
-
-        outerContainer.clearAnimation();
-        bgOverlay.clearAnimation();
-
-        Object animator;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (!bgOverlay.isAttachedToWindow()) {
-                return;
-            }
-
-            animator = ViewAnimationUtils.createCircularReveal(
-                    bgOverlay,
-                    centerX,
-                    centerY,
-                    0, // startRadius
-                    finalRadius
-            );
-        } else {
-            ViewCompat.setAlpha(bgOverlay, 0);
-            animator = ViewCompat.animate(bgOverlay).alpha(1);
-        }
-
-        if (animator instanceof ViewPropertyAnimatorCompat) {
-            ((ViewPropertyAnimatorCompat) animator).setListener(new ViewPropertyAnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(View view) {
-                    onEnd();
-                }
-
-                @Override
-                public void onAnimationCancel(View view) {
-                    onEnd();
-                }
-
-                private void onEnd() {
-                    outerContainer.setBackgroundColor(newColor);
-                    bgOverlay.setVisibility(View.INVISIBLE);
-                    ViewCompat.setAlpha(bgOverlay, 1);
-                }
-            }).start();
-        } else if (animator != null) {
-            ((Animator) animator).addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    onEnd();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    onEnd();
-                }
-
-                private void onEnd() {
-                    outerContainer.setBackgroundColor(newColor);
-                    bgOverlay.setVisibility(View.INVISIBLE);
-                    ViewCompat.setAlpha(bgOverlay, 1);
-                }
-            });
-
-            ((Animator) animator).start();
-        }
-
-        bgOverlay.setBackgroundColor(newColor);
-        bgOverlay.setVisibility(View.VISIBLE);
     }
 
     private int findItemPosition(View viewToFind) {
