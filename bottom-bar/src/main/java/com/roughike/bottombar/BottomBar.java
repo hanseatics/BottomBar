@@ -20,7 +20,6 @@ import android.support.annotation.XmlRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
@@ -87,9 +86,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private int currentBackgroundColor;
     private int defaultBackgroundColor = Color.WHITE;
-
-    private boolean isDarkTheme;
-    private boolean ignoreNightMode;
 
     private boolean drawBehindNavBar = true;
     private boolean useTopOffset = true;
@@ -207,43 +203,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public int getCurrentTabPosition() {
         return currentTabPosition;
-    }
-
-    /**
-     * Use dark theme instead of the light one.
-     */
-    public void useDarkTheme() {
-        if (!isDarkTheme && getTabCount() > 0) {
-            darkThemeMagic();
-
-            for (int i = 0; i < getTabCount(); i++) {
-                BottomBarTab bottomBarTab = (BottomBarTab) getTabAtPosition(i);
-                ((AppCompatImageView) bottomBarTab.findViewById(R.id.bb_bottom_bar_icon))
-                        .setColorFilter(Color.WHITE);
-
-                if (i == currentTabPosition) {
-                    bottomBarTab.select(false);
-                } else {
-                    bottomBarTab.deselect(false);
-                }
-            }
-        }
-
-        isDarkTheme = true;
-    }
-
-    /**
-     * Ignore the automatic Night Mode detection and use a light theme by default,
-     * even if the Night Mode is on.
-     */
-    public void ignoreNightMode() {
-        if (getTabCount() > 0) {
-            throw new UnsupportedOperationException("This BottomBar " +
-                    "already has items! You must call ignoreNightMode() " +
-                    "before setting any items.");
-        }
-
-        ignoreNightMode = true;
     }
 
     /**
@@ -563,14 +522,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         int index = 0;
         int biggestWidth = 0;
 
-        if (!isDarkTheme && !ignoreNightMode
-                && MiscUtils.isNightMode(getContext())) {
-            isDarkTheme = true;
-        }
-
-        if (isDarkTheme) {
-            darkThemeMagic();
-        } else if (!isTabletMode && isShiftingMode) {
+        if (!isTabletMode && isShiftingMode) {
             defaultBackgroundColor = currentBackgroundColor = primaryColor;
         }
 
@@ -598,10 +550,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 if (pendingTypeface != null) {
                     bottomBarTab.setTitleTypeface(pendingTypeface);
                 }
-            }
-
-            if (isDarkTheme) {
-                bottomBarTab.setIconTint(Color.WHITE);
             }
 
             if (index == currentTabPosition) {
@@ -665,15 +613,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    private void darkThemeMagic() {
-        if (!isTabletMode) {
-            tabContainer.setBackgroundColor(darkBackgroundColor);
-        } else {
-            tabContainer.setBackgroundColor(darkBackgroundColor);
-            tabletRightBorder.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bb_tabletRightBorderDark));
-        }
-    }
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -734,14 +673,90 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             clickedView = tab.getOuterView();
         }
 
-        BackgroundColorAnimator.animateBGColorChange(
-                clickedView,
-                outerContainer,
-                backgroundOverlay,
-                newColor
-        );
+        animateBGColorChange(clickedView, newColor);
 
         currentBackgroundColor = newColor;
+    }
+
+    private void animateBGColorChange(View clickedView, final int newColor) {
+        prepareForBackgroundColorAnimation(newColor);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!outerContainer.isAttachedToWindow()) {
+                return;
+            }
+
+            backgroundCircularRevealAnimation(clickedView, newColor);
+        } else {
+            backgroundCrossfadeAnimation(newColor);
+        }
+    }
+
+    private void prepareForBackgroundColorAnimation(int newColor) {
+        outerContainer.clearAnimation();
+        backgroundOverlay.clearAnimation();
+
+        backgroundOverlay.setBackgroundColor(newColor);
+        backgroundOverlay.setVisibility(View.VISIBLE);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void backgroundCircularRevealAnimation(View clickedView, final int newColor) {
+        int centerX = (int) (ViewCompat.getX(clickedView) + (clickedView.getMeasuredWidth() / 2));
+        int centerY = clickedView.getMeasuredHeight() / 2;
+        int startRadius = 0;
+        int finalRadius = outerContainer.getWidth();
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(
+                backgroundOverlay,
+                centerX,
+                centerY,
+                startRadius,
+                finalRadius
+        );
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                onEnd();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                onEnd();
+            }
+
+            private void onEnd() {
+                outerContainer.setBackgroundColor(newColor);
+                backgroundOverlay.setVisibility(View.INVISIBLE);
+                ViewCompat.setAlpha(backgroundOverlay, 1);
+            }
+        });
+
+        animator.start();
+    }
+
+    private void backgroundCrossfadeAnimation(final int newColor) {
+        ViewCompat.setAlpha(backgroundOverlay, 0);
+        ViewCompat.animate(backgroundOverlay)
+                .alpha(1)
+                .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(View view) {
+                        onEnd();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(View view) {
+                        onEnd();
+                    }
+
+                    private void onEnd() {
+                        outerContainer.setBackgroundColor(newColor);
+                        backgroundOverlay.setVisibility(View.INVISIBLE);
+                        ViewCompat.setAlpha(backgroundOverlay, 1);
+                    }
+                }).start();
     }
 
     private int findItemPosition(View viewToFind) {
