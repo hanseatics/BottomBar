@@ -420,6 +420,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             if (height != 0) {
                 ((CoordinatorLayout.LayoutParams) getLayoutParams())
                         .setBehavior(new BottomNavigationBehavior(height, 0, isShy, isTabletMode));
+                shyHeightAlreadyCalculated = true;
             }
         }
     }
