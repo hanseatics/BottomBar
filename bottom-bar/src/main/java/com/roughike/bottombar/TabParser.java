@@ -219,9 +219,11 @@ class TabParser {
                 return this;
             }
 
-            Builder titleTypeFace(Context context, String titleCustomFont) {
-                this.titleTypeFace = Typeface.createFromAsset(
-                        context.getAssets(), titleCustomFont);
+            Builder titleTypeFace(Context context, String titleTypeFace) {
+                if (titleTypeFace != null) {
+                    this.titleTypeFace = Typeface.createFromAsset(
+                            context.getAssets(), titleTypeFace);
+                }
 
                 return this;
             }

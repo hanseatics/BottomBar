@@ -80,9 +80,11 @@ public class BadgeActivityTest {
         nearby.setBadgeCount(1);
         assertEquals(1, nearby.badge.getCount());
 
+
+        int tabIndex = nearby.getIndexInContainer();
         Bundle savedInstanceState = new Bundle();
-        savedInstanceState.putInt(BottomBarBadge.STATE_COUNT, 2);
-        nearby.badge.restoreState(savedInstanceState);
+        savedInstanceState.putInt(BottomBarBadge.STATE_COUNT + tabIndex, 2);
+        nearby.badge.restoreState(savedInstanceState, tabIndex);
 
         assertEquals(2, nearby.badge.getCount());
     }

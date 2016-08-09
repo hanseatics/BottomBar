@@ -418,7 +418,7 @@ public class BottomBarTab extends LinearLayout {
     @Override
     public Parcelable onSaveInstanceState() {
         if (badge != null) {
-            Bundle bundle = badge.saveState();
+            Bundle bundle = badge.saveState(indexInContainer);
             bundle.putParcelable("superstate", super.onSaveInstanceState());
             return bundle;
         }
@@ -430,7 +430,7 @@ public class BottomBarTab extends LinearLayout {
     public void onRestoreInstanceState(Parcelable state) {
         if (badge != null && state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            badge.restoreState(bundle);
+            badge.restoreState(bundle, indexInContainer);
 
             state = bundle.getParcelable("superstate");
         }
