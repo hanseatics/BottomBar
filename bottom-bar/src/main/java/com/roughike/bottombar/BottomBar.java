@@ -109,23 +109,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public BottomBar(Context context) {
         super(context);
-        init(context, null, 0, 0);
+        init(context, null);
     }
 
     public BottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs, 0, 0);
-    }
-
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BottomBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs);
     }
 
     /**
@@ -332,23 +321,17 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    private void init(Context context, AttributeSet attrs) {
         setOrientation(VERTICAL);
         ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
 
-        populateAttributes(
-                context,
-                attrs,
-                defStyleAttr,
-                defStyleRes
-        );
-
+        populateAttributes(context, attrs);
         initializeViews();
         determineInitialBackgroundColor();
         setItems(tabXmlResource);
     }
 
-    private void populateAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    private void populateAttributes(Context context, AttributeSet attrs) {
         isTabletMode = getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         darkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         primaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
@@ -358,7 +341,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         maxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(
-                attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
+                attrs, R.styleable.BottomBar, 0, 0);
 
         try {
             isShiftingMode = ta.getBoolean(R.styleable.BottomBar_bb_shiftingMode, false);
@@ -372,7 +355,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
-
             tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
         } finally {
             ta.recycle();
