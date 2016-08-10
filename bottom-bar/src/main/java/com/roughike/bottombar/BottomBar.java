@@ -351,7 +351,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (!hasAbusiveParent) {
             throw new RuntimeException("In order to have shy behavior, the " +
-                    "BottomBar must be directly contained by a CoordinatorLayout.");
+                    "BottomBar must be a direct child of a CoordinatorLayout.");
         }
 
         if (!shyHeightAlreadyCalculated) {
