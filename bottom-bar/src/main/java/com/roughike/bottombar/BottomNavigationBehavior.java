@@ -21,7 +21,6 @@ class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
     private final int bottomNavHeight;
     private final int defaultOffset;
-    private boolean isShy = false;
     private boolean isTablet = false;
 
     private ViewPropertyAnimatorCompat mTranslationAnimator;
@@ -30,10 +29,9 @@ class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior
     private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
     private boolean mScrollingEnabled = true;
 
-    BottomNavigationBehavior(int bottomNavHeight, int defaultOffset, boolean shy, boolean tablet) {
+    BottomNavigationBehavior(int bottomNavHeight, int defaultOffset, boolean tablet) {
         this.bottomNavHeight = bottomNavHeight;
         this.defaultOffset = defaultOffset;
-        isShy = shy;
         isTablet = tablet;
     }
 
@@ -136,7 +134,7 @@ class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior
 
         @Override
         public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
-            if (!isTablet && isShy && dependency instanceof Snackbar.SnackbarLayout) {
+            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
@@ -156,10 +154,9 @@ class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior
     }
 
     private class LollipopBottomNavWithSnackBarImpl implements BottomNavigationWithSnackbar {
-
         @Override
         public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
-            if (!isTablet && isShy && dependency instanceof Snackbar.SnackbarLayout) {
+            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }

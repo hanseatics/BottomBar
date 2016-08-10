@@ -53,10 +53,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private static final float DEFAULT_INACTIVE_TAB_ALPHA = 0.6f;
     private static final float DEFAULT_ACTIVE_TAB_ALPHA = 1;
 
+    // Behaviors
+    private static final int BEHAVIOR_NONE = 0;
+    private static final int BEHAVIOR_SHIFTING = 1;
+    private static final int BEHAVIOR_SHY = 2;
+
     private boolean isComingFromRestoredState;
     private boolean ignoreTabReselectionListener;
-    private boolean isTabletMode;
-    private boolean isShy;
     private boolean shyHeightAlreadyCalculated;
     private boolean useExtraOffset;
 
@@ -79,7 +82,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private OnTabReselectListener onTabReselectListener;
 
     private int currentTabPosition;
-    private boolean isShiftingMode;
 
     private int currentBackgroundColor;
     private int defaultBackgroundColor = Color.WHITE;
@@ -87,13 +89,15 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private ViewGroup outerContainer;
 
     // XML Attributes
+    private int tabXmlResource;
+    private int behaviors;
     private float inActiveTabAlpha;
     private float activeTabAlpha;
     private int inActiveTabColor;
     private int activeTabColor;
-    private int tabXmlResource;
     private int titleTextAppearance;
     private String titleTypeFace;
+    private boolean isTabletMode;
 
     /**
      * ------------------------------------------- //
@@ -271,7 +275,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
-        isTabletMode = getContext().getResources().getBoolean(R.bool.bb_bottom_bar_is_tablet_mode);
         darkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         primaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
 
@@ -284,14 +287,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         try {
             tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
-            isShiftingMode = ta.getBoolean(R.styleable.BottomBar_bb_shiftingMode, false);
+            behaviors = ta.getInteger(R.styleable.BottomBar_bb_behavior, BEHAVIOR_NONE);
             inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha, DEFAULT_INACTIVE_TAB_ALPHA);
             activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, DEFAULT_ACTIVE_TAB_ALPHA);
 
             @ColorInt
-            int defaultInActiveColor = isShiftingMode?
+            int defaultInActiveColor = isShiftingMode()?
                     Color.WHITE : ContextCompat.getColor(context, R.color.bb_inActiveBottomBarItemColor);
-            int defaultActiveColor = isShiftingMode? Color.WHITE : primaryColor;
+            int defaultActiveColor = isShiftingMode()? Color.WHITE : primaryColor;
 
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
@@ -303,8 +306,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void initializeViews() {
-        View rootView = inflate(getContext(), isTabletMode ?
-                        R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container, this);
+        View rootView = inflate(getContext(), R.layout.bb_bottom_bar_item_container, this);
 
         tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
         shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
@@ -314,7 +316,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void determineInitialBackgroundColor() {
-        if (isShiftingMode) {
+        if (isShiftingMode()) {
             defaultBackgroundColor = primaryColor;
         }
 
@@ -329,20 +331,35 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    private void initializeShyBehaviorIfShy() {
+    private boolean isShiftingMode() {
+        return hasBehavior(BEHAVIOR_SHIFTING);
+    }
+
+    private boolean isShy() {
+        return hasBehavior(BEHAVIOR_SHY);
+    }
+
+    private boolean hasBehavior(int behavior) {
+        return (behaviors | behavior) == behaviors;
+    }
+
+    private void initializeShyBehavior() {
         ViewParent parent = getParent();
 
         boolean hasAbusiveParent = parent != null
                 && parent instanceof CoordinatorLayout;
 
-        if (!shyHeightAlreadyCalculated
-                && !isTabletMode
-                && hasAbusiveParent) {
+        if (!hasAbusiveParent) {
+            throw new RuntimeException("In order to have shy behavior, the " +
+                    "BottomBar must be directly contained by a CoordinatorLayout.");
+        }
+
+        if (!shyHeightAlreadyCalculated) {
             int height = getHeight();
 
             if (height != 0) {
                 ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                        .setBehavior(new BottomNavigationBehavior(height, 0, isShy, isTabletMode));
+                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
                 shyHeightAlreadyCalculated = true;
             }
         }
@@ -378,7 +395,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void shiftingMagic(BottomBarTab oldTab, BottomBarTab newTab, boolean animate) {
-        if (!isTabletMode && isShiftingMode) {
+        if (isShiftingMode()) {
             oldTab.updateWidth(inActiveShiftingItemWidth, animate);
             newTab.updateWidth(activeShiftingItemWidth, animate);
         }
@@ -405,7 +422,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private boolean handleLongClick(View v) {
-        if ((isShiftingMode || isTabletMode) && !((BottomBarTab) v).isActive()) {
+        if (isShiftingMode() && !((BottomBarTab) v).isActive()) {
             Toast.makeText(getContext(), getTabAtPosition(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
         }
 
@@ -446,7 +463,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         int index = 0;
         int biggestWidth = 0;
 
-        if (!isTabletMode && isShiftingMode) {
+        if (isShiftingMode()) {
             defaultBackgroundColor = currentBackgroundColor = primaryColor;
         }
 
@@ -455,7 +472,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         for (BottomBarTab bottomBarTab : bottomBarItems) {
             BottomBarTab.Type type;
 
-            if (isShiftingMode && !isTabletMode) {
+            if (isShiftingMode()) {
                 type = BottomBarTab.Type.SHIFTING;
             } else if (isTabletMode) {
                 type = BottomBarTab.Type.TABLET;
@@ -503,7 +520,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             for (BottomBarTab bottomBarView : viewsToAdd) {
                 LinearLayout.LayoutParams params;
 
-                if (isShiftingMode) {
+                if (isShiftingMode()) {
                     if (bottomBarView.isActive()) {
                         params = new LinearLayout.LayoutParams(activeShiftingItemWidth, height);
                     } else {
@@ -522,9 +539,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+
         if (changed) {
             updateTitleBottomPadding();
-            initializeShyBehaviorIfShy();
+
+            if (isShy()) {
+                initializeShyBehavior();
+            }
         }
     }
 

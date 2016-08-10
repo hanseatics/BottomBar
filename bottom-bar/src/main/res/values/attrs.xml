@@ -2,7 +2,10 @@
 <resources>
     <declare-styleable name="BottomBar">
         <attr name="bb_tabXmlResource" format="reference" />
-        <attr name="bb_shiftingMode" format="boolean" />
+        <attr name="bb_behavior">
+            <flag name="shifting" value="1" />
+            <flag name="shy" value="2" />
+        </attr>
         <attr name="bb_inActiveTabAlpha" format="float" />
         <attr name="bb_activeTabAlpha" format="float" />
         <attr name="bb_inActiveTabColor" format="color" />
