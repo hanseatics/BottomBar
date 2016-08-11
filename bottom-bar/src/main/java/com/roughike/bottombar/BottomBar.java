@@ -112,6 +112,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         init(context, attrs);
     }
 
+    private void init(Context context, AttributeSet attrs) {
+        setOrientation(VERTICAL);
+        ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
+
+        populateAttributes(context, attrs);
+        initializeViews();
+        determineInitialBackgroundColor();
+        setItems(tabXmlResource);
+    }
+
     /**
      * Set a listener that gets fired when the selected tab changes.
      * <p/>
@@ -137,26 +147,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         onTabReselectListener = listener;
     }
 
-    /**
-     * Select a tab at the specified position.
-     *
-     * @param position the position to select.
-     */
-    public void selectTabAtPosition(int position, boolean animate) {
-        if (position > getTabCount() - 1 || position < 0) {
-            throw new IndexOutOfBoundsException("Can't select tab at position " +
-                    position + ". This BottomBar has no items at that position.");
-        }
-
-        BottomBarTab oldTab = getSelectedTab();
-        BottomBarTab newTab = getTabAtPosition(position);
-
-        oldTab.deselect(animate);
-        newTab.select(animate);
-
-        updateSelectedTab(position);
-        shiftingMagic(oldTab, newTab, animate);
-        handleBackgroundColorChange(newTab, false);
+    public void setDefaultTabId(@IdRes int defaultTabId) {
+        int defaultTabPosition = findPositionForTabWithId(defaultTabId);
+        setDefaultTabPosition(defaultTabPosition);
     }
 
     /**
@@ -176,6 +169,25 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         selectTabAtPosition(defaultTabPosition, false);
+    }
+
+    public void selectTabWithId(@IdRes int tabResId) {
+        int tabPosition = findPositionForTabWithId(tabResId);
+        selectTabAtPosition(tabPosition, false);
+    }
+
+    /**
+     * Select a tab at the specified position.
+     *
+     * @param position the position to select.
+     */
+    public void selectTabAtPosition(int position) {
+        if (position > getTabCount() - 1 || position < 0) {
+            throw new IndexOutOfBoundsException("Can't select tab at position " +
+                    position + ". This BottomBar has no items at that position.");
+        }
+
+        selectTabAtPosition(position, false);
     }
 
     /**
@@ -201,49 +213,16 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return getCurrentTab().getId();
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Bundle bundle = saveState();
-        bundle.putParcelable("superstate", super.onSaveInstanceState());
-        return bundle;
-    }
+    private void selectTabAtPosition(int position, boolean animate) {
+        BottomBarTab oldTab = getSelectedTab();
+        BottomBarTab newTab = getTabAtPosition(position);
 
-    private Bundle saveState() {
-        Bundle outState = new Bundle();
-        outState.putInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
+        oldTab.deselect(animate);
+        newTab.select(animate);
 
-        return outState;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            restoreState(bundle);
-
-            state = bundle.getParcelable("superstate");
-        }
-        super.onRestoreInstanceState(state);
-    }
-
-    private void restoreState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isComingFromRestoredState = true;
-            ignoreTabReselectionListener = true;
-
-            int restoredPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
-            selectTabAtPosition(restoredPosition, false);
-        }
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        setOrientation(VERTICAL);
-        ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
-
-        populateAttributes(context, attrs);
-        initializeViews();
-        determineInitialBackgroundColor();
-        setItems(tabXmlResource);
+        updateSelectedTab(position);
+        shiftingMagic(oldTab, newTab, animate);
+        handleBackgroundColorChange(newTab, false);
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
@@ -348,6 +327,41 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = saveState();
+        bundle.putParcelable("superstate", super.onSaveInstanceState());
+        return bundle;
+    }
+
+    private Bundle saveState() {
+        Bundle outState = new Bundle();
+        outState.putInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
+
+        return outState;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            restoreState(bundle);
+
+            state = bundle.getParcelable("superstate");
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            isComingFromRestoredState = true;
+            ignoreTabReselectionListener = true;
+
+            int restoredPosition = savedInstanceState.getInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
+            selectTabAtPosition(restoredPosition, false);
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         handleClick(v);
     }
@@ -361,7 +375,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         shiftingMagic(oldTab, newTab, true);
         handleBackgroundColorChange(newTab, true);
-        updateSelectedTab(findItemPosition(v));
+        updateSelectedTab(findTabPosition(newTab));
     }
 
     private void shiftingMagic(BottomBarTab oldTab, BottomBarTab newTab, boolean animate) {
@@ -392,8 +406,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private boolean handleLongClick(View v) {
-        if (isShiftingMode() && !((BottomBarTab) v).isActive()) {
-            Toast.makeText(getContext(), getTabAtPosition(findItemPosition(v)).getTitle(), Toast.LENGTH_SHORT).show();
+        if (v instanceof  BottomBarTab) {
+            BottomBarTab longClickedTab = (BottomBarTab) v;
+
+            if (isShiftingMode() && !longClickedTab.isActive()) {
+                Toast.makeText(getContext(), longClickedTab.getTitle(), Toast.LENGTH_SHORT).show();
+            }
         }
 
         return true;
@@ -678,13 +696,32 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 }).start();
     }
 
-    private int findItemPosition(View viewToFind) {
-        int position = 0;
+    public BottomBarTab getTabWithId(@IdRes int tabId) {
+        return (BottomBarTab) tabContainer.findViewById(tabId);
+    }
+
+    private int findPositionForTabWithId(@IdRes int tabId) {
+        int position = -1;
 
         for (int i = 0; i < getTabCount(); i++) {
             View candidate = getTabAtPosition(i);
 
-            if (candidate.equals(viewToFind)) {
+            if (candidate.getId() == tabId) {
+                position = i;
+                break;
+            }
+        }
+
+        return position;
+    }
+
+    private int findTabPosition(BottomBarTab tabToFind) {
+        int position = -1;
+
+        for (int i = 0; i < getTabCount(); i++) {
+            View candidate = getTabAtPosition(i);
+
+            if (candidate.equals(tabToFind)) {
                 position = i;
                 break;
             }
@@ -697,9 +734,5 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         if (tabContainer != null) {
             tabContainer.removeAllViews();
         }
-    }
-
-    public BottomBarTab getTabWithId(@IdRes int tabId) {
-        return (BottomBarTab) tabContainer.findViewById(tabId);
     }
 }
