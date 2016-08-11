@@ -113,38 +113,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     /**
-     * Set items for this BottomBar from an XML menu resource file.
-     * <p/>
-     * When setting more than 3 items, only the icons will show by
-     * default, but the selected item will have the text visible.
-     *
-     * @param xmlRes the menu resource to inflate items from.
-     */
-    void setItems(@XmlRes int xmlRes) {
-        if (xmlRes == 0) {
-            throw new RuntimeException("No items specified for the BottomBar!");
-        }
-
-        TabParser.Config config = new TabParser.Config.Builder()
-                .inActiveTabAlpha(inActiveTabAlpha)
-                .activeTabAlpha(activeTabAlpha)
-                .inActiveTabColor(inActiveTabColor)
-                .activeTabColor(activeTabColor)
-                .barColorWhenSelected(defaultBackgroundColor)
-                .badgeBackgroundColor(Color.RED)
-                .titleTextAppearance(titleTextAppearance)
-                .titleTypeFace(getContext(), titleTypeFace)
-                .build();
-
-        TabParser parser = new TabParser(getContext(), config, xmlRes);
-        updateItems(parser.getTabs());
-    }
-
-    /**
      * Set a listener that gets fired when the selected tab changes.
      * <p/>
-     * Note: If listener is set after items are added to the BottomBar, onTabSelected
-     * will be immediately called for the currently selected tab
+     * Note: Will be immediately called for the currently selected tab
+     * once when set.
      *
      * @param listener a listener for monitoring changes in tab selection.
      */
@@ -331,6 +303,26 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
+    void setItems(@XmlRes int xmlRes) {
+        if (xmlRes == 0) {
+            throw new RuntimeException("No items specified for the BottomBar!");
+        }
+
+        TabParser.Config config = new TabParser.Config.Builder()
+                .inActiveTabAlpha(inActiveTabAlpha)
+                .activeTabAlpha(activeTabAlpha)
+                .inActiveTabColor(inActiveTabColor)
+                .activeTabColor(activeTabColor)
+                .barColorWhenSelected(defaultBackgroundColor)
+                .badgeBackgroundColor(Color.RED)
+                .titleTextAppearance(titleTextAppearance)
+                .titleTypeFace(getContext(), titleTypeFace)
+                .build();
+
+        TabParser parser = new TabParser(getContext(), config, xmlRes);
+        updateItems(parser.getTabs());
+    }
+
     private boolean isShiftingMode() {
         return hasBehavior(BEHAVIOR_SHIFTING);
     }
@@ -341,28 +333,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private boolean hasBehavior(int behavior) {
         return (behaviors | behavior) == behaviors;
-    }
-
-    private void initializeShyBehavior() {
-        ViewParent parent = getParent();
-
-        boolean hasAbusiveParent = parent != null
-                && parent instanceof CoordinatorLayout;
-
-        if (!hasAbusiveParent) {
-            throw new RuntimeException("In order to have shy behavior, the " +
-                    "BottomBar must be a direct child of a CoordinatorLayout.");
-        }
-
-        if (!shyHeightAlreadyCalculated) {
-            int height = getHeight();
-
-            if (height != 0) {
-                ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
-                shyHeightAlreadyCalculated = true;
-            }
-        }
     }
 
     /**
@@ -545,6 +515,28 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             if (isShy()) {
                 initializeShyBehavior();
+            }
+        }
+    }
+
+    private void initializeShyBehavior() {
+        ViewParent parent = getParent();
+
+        boolean hasAbusiveParent = parent != null
+                && parent instanceof CoordinatorLayout;
+
+        if (!hasAbusiveParent) {
+            throw new RuntimeException("In order to have shy behavior, the " +
+                    "BottomBar must be a direct child of a CoordinatorLayout.");
+        }
+
+        if (!shyHeightAlreadyCalculated) {
+            int height = getHeight();
+
+            if (height != 0) {
+                ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
+                shyHeightAlreadyCalculated = true;
             }
         }
     }
