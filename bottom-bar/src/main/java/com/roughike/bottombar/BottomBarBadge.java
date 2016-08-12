@@ -119,7 +119,7 @@ class BottomBarBadge extends TextView {
         container.addView(tabToAddTo);
         container.addView(this);
 
-        parent.addView(container, tabToAddTo.getIndexInContainer());
+        parent.addView(container, tabToAddTo.getIndexInTabContainer());
         container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")
             @Override
@@ -136,7 +136,7 @@ class BottomBarBadge extends TextView {
 
         badgeAndTabContainer.removeView(tab);
         originalTabContainer.removeView(badgeAndTabContainer);
-        originalTabContainer.addView(tab, tab.getIndexInContainer());
+        originalTabContainer.addView(tab, tab.getIndexInTabContainer());
     }
 
     void adjustPositionAndSize(BottomBarTab tab) {

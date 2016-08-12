@@ -81,7 +81,7 @@ public class BadgeActivityTest {
         assertEquals(1, nearby.badge.getCount());
 
 
-        int tabIndex = nearby.getIndexInContainer();
+        int tabIndex = nearby.getIndexInTabContainer();
         Bundle savedInstanceState = new Bundle();
         savedInstanceState.putInt(BottomBarBadge.STATE_COUNT + tabIndex, 2);
         nearby.badge.restoreState(savedInstanceState, tabIndex);
