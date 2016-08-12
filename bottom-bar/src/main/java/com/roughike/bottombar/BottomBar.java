@@ -153,6 +153,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
+    private boolean isShiftingMode() {
+        return hasBehavior(BEHAVIOR_SHIFTING);
+    }
+
+    private boolean hasBehavior(int behavior) {
+        return (behaviors | behavior) == behaviors;
+    }
+
     private void initializeViews() {
         View rootView = inflate(getContext(), R.layout.bb_bottom_bar_item_container, this);
 
@@ -391,6 +399,75 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * Override methods
      * ----------------------------------------------->
      */
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        if (changed) {
+            updateTitleBottomPadding();
+
+            if (hasBehavior(BEHAVIOR_SHY)) {
+                initializeShyBehavior();
+            }
+        }
+    }
+
+    /**
+     * Material Design specify that there should be a 10dp padding under the text, it seems that
+     * it means 10dp starting from the text baseline.
+     * This method takes care of calculating the amount of padding that needs to be added to the
+     * Title TextView in order to comply with the Material Design specifications.
+     */
+    private void updateTitleBottomPadding() {
+        if (tabContainer == null) {
+            return;
+        }
+
+        int childCount = getTabCount();
+
+        for (int i = 0; i < childCount; i++) {
+            View tab = tabContainer.getChildAt(i);
+            TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+
+            if (title == null) {
+                continue;
+            }
+
+            int baseline = title.getBaseline();
+            int height = title.getHeight();
+            int paddingInsideTitle = height - baseline;
+            int missingPadding = tenDp - paddingInsideTitle;
+
+            if (missingPadding > 0) {
+                title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
+                        title.getPaddingRight(), missingPadding + title.getPaddingBottom());
+            }
+        }
+    }
+
+    private void initializeShyBehavior() {
+        ViewParent parent = getParent();
+
+        boolean hasAbusiveParent = parent != null
+                && parent instanceof CoordinatorLayout;
+
+        if (!hasAbusiveParent) {
+            throw new RuntimeException("In order to have shy behavior, the " +
+                    "BottomBar must be a direct child of a CoordinatorLayout.");
+        }
+
+        if (!shyHeightAlreadyCalculated) {
+            int height = getHeight();
+
+            if (height != 0) {
+                ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
+                shyHeightAlreadyCalculated = true;
+            }
+        }
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = saveState();
@@ -440,6 +517,36 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * Private methods
      * ----------------------------------------------->
      */
+    private BottomBarTab getSelectedTab() {
+        return getTabAtPosition(currentTabPosition);
+    }
+
+    private BottomBarTab getTabAtPosition(int position) {
+        View child = tabContainer.getChildAt(position);
+
+        if (child instanceof FrameLayout) {
+            return findTabInLayout((FrameLayout) child);
+        }
+
+        return (BottomBarTab) child;
+    }
+
+    private BottomBarTab findTabInLayout(ViewGroup child) {
+        for (int i = 0; i < child.getChildCount(); i++) {
+            View candidate = child.getChildAt(i);
+
+            if (candidate instanceof BottomBarTab) {
+                return (BottomBarTab) candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private int getTabCount() {
+        return tabContainer.getChildCount();
+    }
+
     private void handleClick(View v) {
         BottomBarTab oldTab = getSelectedTab();
         BottomBarTab newTab = (BottomBarTab) v;
@@ -601,18 +708,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 }).start();
     }
 
-    private boolean isShiftingMode() {
-        return hasBehavior(BEHAVIOR_SHIFTING);
-    }
-
-    private boolean isShy() {
-        return hasBehavior(BEHAVIOR_SHY);
-    }
-
-    private boolean hasBehavior(int behavior) {
-        return (behaviors | behavior) == behaviors;
-    }
-
     /**
      * Toggle translation of BottomBar to hidden and visible in a CoordinatorLayout.
      *
@@ -622,104 +717,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         BottomNavigationBehavior<BottomBar> from = BottomNavigationBehavior.from(this);
         if (from != null) {
             from.setHidden(this, visible);
-        }
-    }
-
-    private BottomBarTab getSelectedTab() {
-        return getTabAtPosition(currentTabPosition);
-    }
-
-    private BottomBarTab getTabAtPosition(int position) {
-        View child = tabContainer.getChildAt(position);
-
-        if (child instanceof FrameLayout) {
-            return findTabInLayout((FrameLayout) child);
-        }
-
-        return (BottomBarTab) child;
-    }
-
-    private BottomBarTab findTabInLayout(ViewGroup child) {
-        for (int i = 0; i < child.getChildCount(); i++) {
-            View candidate = child.getChildAt(i);
-
-            if (candidate instanceof BottomBarTab) {
-                return (BottomBarTab) candidate;
-            }
-        }
-
-        return null;
-    }
-
-    private int getTabCount() {
-        return tabContainer.getChildCount();
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        if (changed) {
-            updateTitleBottomPadding();
-
-            if (isShy()) {
-                initializeShyBehavior();
-            }
-        }
-    }
-
-    private void initializeShyBehavior() {
-        ViewParent parent = getParent();
-
-        boolean hasAbusiveParent = parent != null
-                && parent instanceof CoordinatorLayout;
-
-        if (!hasAbusiveParent) {
-            throw new RuntimeException("In order to have shy behavior, the " +
-                    "BottomBar must be a direct child of a CoordinatorLayout.");
-        }
-
-        if (!shyHeightAlreadyCalculated) {
-            int height = getHeight();
-
-            if (height != 0) {
-                ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
-                shyHeightAlreadyCalculated = true;
-            }
-        }
-    }
-
-    /**
-     * Material Design specify that there should be a 10dp padding under the text, it seems that
-     * it means 10dp starting from the text baseline.
-     * This method takes care of calculating the amount of padding that needs to be added to the
-     * Title TextView in order to comply with the Material Design specifications.
-     */
-    private void updateTitleBottomPadding() {
-        if (tabContainer == null) {
-            return;
-        }
-
-        int childCount = getTabCount();
-
-        for (int i = 0; i < childCount; i++) {
-            View tab = tabContainer.getChildAt(i);
-            TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
-
-            if (title == null) {
-                continue;
-            }
-
-            int baseline = title.getBaseline();
-            int height = title.getHeight();
-            int paddingInsideTitle = height - baseline;
-            int missingPadding = tenDp - paddingInsideTitle;
-
-            if (missingPadding > 0) {
-                title.setPadding(title.getPaddingLeft(), title.getPaddingTop(),
-                        title.getPaddingRight(), missingPadding + title.getPaddingBottom());
-            }
         }
     }
 }
