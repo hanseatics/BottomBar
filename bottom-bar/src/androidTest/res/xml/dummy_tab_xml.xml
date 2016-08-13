@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bar>
-    <tab activeColor="#FF0000" id="@+id/bb_menu_recents" title="Recents" icon="@drawable/empty_icon" />
-    <tab activeColor="@color/test_random_color" id="@+id/bb_menu_favorites" title="@string/favorites" icon="@drawable/empty_icon" />
-    <tab activeColor="#0000FF" id="@+id/bb_menu_nearby" title="Nearby" icon="@drawable/empty_icon" />
-    <tab activeColor="@color/test_random_color_two" id="@+id/bb_menu_friends" title="@string/friends" icon="@drawable/empty_icon" />
-    <tab activeColor="#F00F00" id="@+id/bb_menu_food" title="Food" icon="@drawable/empty_icon" />
+    <tab activeColor="#FF0000" id="@+id/bb_menu_recents" title="Recents" icon="@drawable/empty_icon" barColorWhenSelected="#FF0000" />
+    <tab activeColor="@color/test_random_color" id="@+id/bb_menu_favorites" title="@string/favorites" icon="@drawable/empty_icon" barColorWhenSelected="#FF0000" />
+    <tab activeColor="#0000FF" id="@+id/bb_menu_nearby" title="Nearby" icon="@drawable/empty_icon" barColorWhenSelected="#FF0000" />
+    <tab activeColor="@color/test_random_color_two" id="@+id/bb_menu_friends" title="@string/friends" icon="@drawable/empty_icon" barColorWhenSelected="#FF0000" />
+    <tab activeColor="#F00F00" id="@+id/bb_menu_food" title="Food" icon="@drawable/empty_icon" barColorWhenSelected="#FF0000" />
 </bar>

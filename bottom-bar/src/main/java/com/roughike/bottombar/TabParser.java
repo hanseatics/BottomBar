@@ -73,11 +73,11 @@ class TabParser {
                 case "id":
                     workingTab.setId(parser.getIdAttributeResourceValue(i));
                     break;
-                case "title":
-                    workingTab.setTitle(getTitleValue(i, parser));
-                    break;
                 case "icon":
                     workingTab.setIconResId(parser.getAttributeResourceValue(i, 0));
+                    break;
+                case "title":
+                    workingTab.setTitle(getTitleValue(i, parser));
                     break;
                 case "inActiveColor":
                     Integer inActiveColor = getColorValue(i, parser);

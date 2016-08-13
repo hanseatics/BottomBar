@@ -2,6 +2,7 @@ package com.roughike.bottombar;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
@@ -68,11 +69,37 @@ public class TabParserTest {
     }
 
     @Test
-    public void iIconResourcesExist() {
-        assertNotNull(ContextCompat.getDrawable(context, tabs.get(0).getIconResId()));
-        assertNotNull(ContextCompat.getDrawable(context, tabs.get(1).getIconResId()));
-        assertNotNull(ContextCompat.getDrawable(context, tabs.get(2).getIconResId()));
-        assertNotNull(ContextCompat.getDrawable(context, tabs.get(3).getIconResId()));
-        assertNotNull(ContextCompat.getDrawable(context, tabs.get(4).getIconResId()));
+    public void iconResourcesExist() {
+        assertNotNull(getDrawableByResource(tabs.get(0).getIconResId()));
+        assertNotNull(getDrawableByResource(tabs.get(1).getIconResId()));
+        assertNotNull(getDrawableByResource(tabs.get(2).getIconResId()));
+        assertNotNull(getDrawableByResource(tabs.get(3).getIconResId()));
+        assertNotNull(getDrawableByResource(tabs.get(4).getIconResId()));
+    }
+
+    @Test
+    public void iconResourceIdsAsExpected() {
+        int expectedId = com.roughike.bottombar.test.R.drawable.empty_icon;
+
+        assertEquals(expectedId, tabs.get(0).getIconResId());
+        assertEquals(expectedId, tabs.get(1).getIconResId());
+        assertEquals(expectedId, tabs.get(2).getIconResId());
+        assertEquals(expectedId, tabs.get(3).getIconResId());
+        assertEquals(expectedId, tabs.get(4).getIconResId());
+    }
+
+    @Test
+    public void barColorWhenSelectedAsExpected() {
+        int expectedColor = Color.parseColor("#FF0000");
+
+        assertEquals(expectedColor, tabs.get(0).getBarColorWhenSelected());
+        assertEquals(expectedColor, tabs.get(1).getBarColorWhenSelected());
+        assertEquals(expectedColor, tabs.get(2).getBarColorWhenSelected());
+        assertEquals(expectedColor, tabs.get(3).getBarColorWhenSelected());
+        assertEquals(expectedColor, tabs.get(4).getBarColorWhenSelected());
+    }
+
+    private Drawable getDrawableByResource(int iconResId) {
+        return ContextCompat.getDrawable(context, iconResId);
     }
 }
