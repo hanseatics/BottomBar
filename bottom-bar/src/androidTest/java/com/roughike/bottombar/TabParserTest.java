@@ -55,6 +55,15 @@ public class TabParserTest {
     }
 
     @Test
+    public void correctInActiveColors() {
+        assertEquals(Color.parseColor("#00FF00"), tabs.get(0).getInActiveColor());
+        assertEquals(Color.parseColor("#0000FF"), tabs.get(1).getInActiveColor());
+        assertEquals(Color.parseColor("#FF0000"), tabs.get(2).getInActiveColor());
+        assertEquals(Color.parseColor("#F0F000"), tabs.get(3).getInActiveColor());
+        assertEquals(Color.parseColor("#F00F00"), tabs.get(4).getInActiveColor());
+    }
+
+    @Test
     public void correctActiveColors() {
         assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveColor());
 
@@ -90,13 +99,11 @@ public class TabParserTest {
 
     @Test
     public void barColorWhenSelectedAsExpected() {
-        int expectedColor = Color.parseColor("#FF0000");
-
-        assertEquals(expectedColor, tabs.get(0).getBarColorWhenSelected());
-        assertEquals(expectedColor, tabs.get(1).getBarColorWhenSelected());
-        assertEquals(expectedColor, tabs.get(2).getBarColorWhenSelected());
-        assertEquals(expectedColor, tabs.get(3).getBarColorWhenSelected());
-        assertEquals(expectedColor, tabs.get(4).getBarColorWhenSelected());
+        assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getBarColorWhenSelected());
+        assertEquals(Color.parseColor("#00FF00"), tabs.get(1).getBarColorWhenSelected());
+        assertEquals(Color.parseColor("#F00000"), tabs.get(2).getBarColorWhenSelected());
+        assertEquals(Color.parseColor("#00F000"), tabs.get(3).getBarColorWhenSelected());
+        assertEquals(Color.parseColor("#00F0F0"), tabs.get(4).getBarColorWhenSelected());
     }
 
     private Drawable getDrawableByResource(int iconResId) {
