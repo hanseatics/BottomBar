@@ -257,31 +257,35 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         if (!isTabletMode) {
-            int proposedItemWidth = Math.min(
-                    MiscUtils.dpToPixel(getContext(), screenWidth / bottomBarItems.size()),
-                    maxFixedItemWidth
-            );
+            resizeTabsToCorrectSizes(bottomBarItems, viewsToAdd);
+        }
+    }
 
-            inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
-            activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.size() * 0.1)));
+    private void resizeTabsToCorrectSizes(List<BottomBarTab> bottomBarItems, BottomBarTab[] viewsToAdd) {
+        int proposedItemWidth = Math.min(
+                MiscUtils.dpToPixel(getContext(), screenWidth / bottomBarItems.size()),
+                maxFixedItemWidth
+        );
 
-            int height = Math.round(getContext().getResources().getDimension(R.dimen.bb_height));
-            for (BottomBarTab bottomBarView : viewsToAdd) {
-                LinearLayout.LayoutParams params;
+        inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
+        activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.size() * 0.1)));
+        int height = Math.round(getContext().getResources().getDimension(R.dimen.bb_height));
 
-                if (isShiftingMode()) {
-                    if (bottomBarView.isActive()) {
-                        params = new LinearLayout.LayoutParams(activeShiftingItemWidth, height);
-                    } else {
-                        params = new LinearLayout.LayoutParams(inActiveShiftingItemWidth, height);
-                    }
+        for (BottomBarTab bottomBarView : viewsToAdd) {
+            LayoutParams params;
+
+            if (isShiftingMode()) {
+                if (bottomBarView.isActive()) {
+                    params = new LayoutParams(activeShiftingItemWidth, height);
                 } else {
-                    params = new LinearLayout.LayoutParams(proposedItemWidth, height);
+                    params = new LayoutParams(inActiveShiftingItemWidth, height);
                 }
-
-                bottomBarView.setLayoutParams(params);
-                tabContainer.addView(bottomBarView);
+            } else {
+                params = new LayoutParams(proposedItemWidth, height);
             }
+
+            bottomBarView.setLayoutParams(params);
+            tabContainer.addView(bottomBarView);
         }
     }
 
