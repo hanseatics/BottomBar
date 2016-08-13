@@ -95,7 +95,7 @@ class BottomBarBadge extends TextView {
         return isVisible;
     }
 
-    void attachToTab(final BottomBarTab tabToAddTo, int backgroundColor) {
+    void attachToTab(BottomBarTab tab, int backgroundColor) {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -103,29 +103,36 @@ class BottomBarBadge extends TextView {
         setGravity(Gravity.CENTER);
         MiscUtils.setTextAppearance(this, R.style.BB_BottomBarBadge_Text);
 
-        int three = MiscUtils.dpToPixel(getContext(), 3);
-        ShapeDrawable backgroundCircle = BadgeCircle.make(three * 3, backgroundColor);
-        setPadding(three, three, three, three);
+        setColoredCircleBackground(backgroundColor);
+        wrapTabAndBadgeInSameContainer(tab);
+    }
+
+    private void setColoredCircleBackground(int circleColor) {
+        int innerPadding = MiscUtils.dpToPixel(getContext(), 3);
+        ShapeDrawable backgroundCircle = BadgeCircle.make(innerPadding * 3, circleColor);
+        setPadding(innerPadding, innerPadding, innerPadding, innerPadding);
         setBackgroundCompat(backgroundCircle);
+    }
 
-        final FrameLayout container = new FrameLayout(getContext());
-        container.setLayoutParams(params);
+    private void wrapTabAndBadgeInSameContainer(final BottomBarTab tab) {
+        ViewGroup tabContainer = (ViewGroup) tab.getParent();
+        tabContainer.removeView(tab);
 
-        ViewGroup parent = (ViewGroup) tabToAddTo.getParent();
-        parent.removeView(tabToAddTo);
+        final FrameLayout badgeContainer = new FrameLayout(getContext());
+        badgeContainer.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        container.setTag(tabToAddTo.getTag());
-        tabToAddTo.setTag(null);
-        container.addView(tabToAddTo);
-        container.addView(this);
+        badgeContainer.addView(tab);
+        badgeContainer.addView(this);
 
-        parent.addView(container, tabToAddTo.getIndexInTabContainer());
-        container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        tabContainer.addView(badgeContainer, tab.getIndexInTabContainer());
+
+        badgeContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
-                container.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                adjustPositionAndSize(tabToAddTo);
+                badgeContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                adjustPositionAndSize(tab);
             }
         });
     }
