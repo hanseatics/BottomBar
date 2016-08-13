@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.annotation.XmlRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -360,13 +361,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     /**
-     * Get the currently selected tab position.
-     */
-    public int getCurrentTabPosition() {
-        return currentTabPosition;
-    }
-
-    /**
      * Get the currently selected tab.
      */
     public BottomBarTab getCurrentTab() {
@@ -379,6 +373,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     @IdRes
     public int getCurrentTabId() {
         return getCurrentTab().getId();
+    }
+
+    /**
+     * Get the currently selected tab position.
+     */
+    public int getCurrentTabPosition() {
+        return currentTabPosition;
     }
 
     /**
@@ -475,7 +476,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return bundle;
     }
 
-    private Bundle saveState() {
+    @VisibleForTesting
+    Bundle saveState() {
         Bundle outState = new Bundle();
         outState.putInt(STATE_CURRENT_SELECTED_TAB, currentTabPosition);
 
@@ -493,7 +495,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         super.onRestoreInstanceState(state);
     }
 
-    private void restoreState(Bundle savedInstanceState) {
+    @VisibleForTesting
+    void restoreState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             isComingFromRestoredState = true;
             ignoreTabReselectionListener = true;
