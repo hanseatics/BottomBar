@@ -418,12 +418,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    /**
-     * Material Design specify that there should be a 10dp padding under the text, it seems that
-     * it means 10dp starting from the text baseline.
-     * This method takes care of calculating the amount of padding that needs to be added to the
-     * Title TextView in order to comply with the Material Design specifications.
-     */
     private void updateTitleBottomPadding() {
         if (tabContainer == null) {
             return;
