@@ -62,7 +62,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean isComingFromRestoredState;
     private boolean ignoreTabReselectionListener;
     private boolean shyHeightAlreadyCalculated;
-    private boolean useExtraOffset;
 
     private ViewGroup tabContainer;
 
