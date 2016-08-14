@@ -300,7 +300,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         onTabSelectListener = listener;
 
         if (onTabSelectListener != null && getTabCount() > 0) {
-            listener.onTabSelected(getSelectedTab().getId());
+            listener.onTabSelected(getCurrentTabId());
         }
     }
 
@@ -363,11 +363,28 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         selectTabAtPosition(position, false);
     }
 
+    public int getTabCount() {
+        return tabContainer.getChildCount();
+    }
+
     /**
      * Get the currently selected tab.
      */
     public BottomBarTab getCurrentTab() {
         return getTabAtPosition(getCurrentTabPosition());
+    }
+
+    /**
+     * Get the tab at the specified position.
+     */
+    public BottomBarTab getTabAtPosition(int position) {
+        View child = tabContainer.getChildAt(position);
+
+        if (child instanceof FrameLayout) {
+            return findTabInLayout((FrameLayout) child);
+        }
+
+        return (BottomBarTab) child;
     }
 
     /**
@@ -517,20 +534,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * Private methods
      * ----------------------------------------------->
      */
-    private BottomBarTab getSelectedTab() {
-        return getTabAtPosition(currentTabPosition);
-    }
-
-    private BottomBarTab getTabAtPosition(int position) {
-        View child = tabContainer.getChildAt(position);
-
-        if (child instanceof FrameLayout) {
-            return findTabInLayout((FrameLayout) child);
-        }
-
-        return (BottomBarTab) child;
-    }
-
     private BottomBarTab findTabInLayout(ViewGroup child) {
         for (int i = 0; i < child.getChildCount(); i++) {
             View candidate = child.getChildAt(i);
@@ -543,12 +546,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return null;
     }
 
-    private int getTabCount() {
-        return tabContainer.getChildCount();
-    }
-
     private void handleClick(View v) {
-        BottomBarTab oldTab = getSelectedTab();
+        BottomBarTab oldTab = getCurrentTab();
         BottomBarTab newTab = (BottomBarTab) v;
 
         oldTab.deselect(true);
@@ -572,7 +571,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void selectTabAtPosition(int position, boolean animate) {
-        BottomBarTab oldTab = getSelectedTab();
+        BottomBarTab oldTab = getCurrentTab();
         BottomBarTab newTab = getTabAtPosition(position);
 
         oldTab.deselect(animate);

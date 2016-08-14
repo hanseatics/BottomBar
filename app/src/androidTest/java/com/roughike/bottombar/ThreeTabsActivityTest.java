@@ -53,6 +53,20 @@ public class ThreeTabsActivityTest {
 
     @Test
     @UiThreadTest
+    public void tabCount_IsCorrect() {
+        assertEquals(3, bottomBar.getTabCount());
+    }
+
+    @Test
+    @UiThreadTest
+    public void findingPositionForTabs_ReturnsCorrectPositions() {
+        assertEquals(0, bottomBar.findPositionForTabWithId(R.id.tab_favorites));
+        assertEquals(1, bottomBar.findPositionForTabWithId(R.id.tab_nearby));
+        assertEquals(2, bottomBar.findPositionForTabWithId(R.id.tab_friends));
+    }
+
+    @Test
+    @UiThreadTest
     public void whenTabIsSelected_SelectionListenerIsFired() {
         bottomBar.selectTabWithId(R.id.tab_friends);
         bottomBar.selectTabWithId(R.id.tab_nearby);
@@ -63,6 +77,18 @@ public class ThreeTabsActivityTest {
         inOrder.verify(selectListener).onTabSelected(R.id.tab_nearby);
         inOrder.verify(selectListener).onTabSelected(R.id.tab_favorites);
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    @UiThreadTest
+    public void afterConfigurationChanged_SavedStateRestored_AndSelectedTabPersists() {
+        bottomBar.selectTabWithId(R.id.tab_favorites);
+
+        Bundle savedState = bottomBar.saveState();
+        bottomBar.selectTabWithId(R.id.tab_nearby);
+        bottomBar.restoreState(savedState);
+
+        assertEquals(R.id.tab_favorites, bottomBar.getCurrentTabId());
     }
 
     @Test
@@ -106,5 +132,30 @@ public class ThreeTabsActivityTest {
 
         assertNotSame(defaultTabId, bottomBar.getCurrentTabId());
         assertEquals(R.id.tab_nearby, bottomBar.getCurrentTabId());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenGettingCurrentTab_ReturnsCorrectOne() {
+        int firstTabId = R.id.tab_favorites;
+        bottomBar.selectTabWithId(firstTabId);
+
+        assertEquals(firstTabId, bottomBar.getCurrentTabId());
+        assertEquals(bottomBar.findPositionForTabWithId(firstTabId), bottomBar.getCurrentTabPosition());
+        assertEquals(bottomBar.getTabWithId(firstTabId), bottomBar.getCurrentTab());
+
+        int secondTabId = R.id.tab_nearby;
+        bottomBar.selectTabWithId(secondTabId);
+
+        assertEquals(secondTabId, bottomBar.getCurrentTabId());
+        assertEquals(bottomBar.findPositionForTabWithId(secondTabId), bottomBar.getCurrentTabPosition());
+        assertEquals(bottomBar.getTabWithId(secondTabId), bottomBar.getCurrentTab());
+
+        int thirdTabId = R.id.tab_friends;
+        bottomBar.selectTabWithId(thirdTabId);
+
+        assertEquals(thirdTabId, bottomBar.getCurrentTabId());
+        assertEquals(bottomBar.findPositionForTabWithId(thirdTabId), bottomBar.getCurrentTabPosition());
+        assertEquals(bottomBar.getTabWithId(thirdTabId), bottomBar.getCurrentTab());
     }
 }
