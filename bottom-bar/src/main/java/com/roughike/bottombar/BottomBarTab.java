@@ -97,6 +97,7 @@ public class BottomBarTab extends LinearLayout {
         inflate(getContext(), layoutResource, this);
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
+        setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
         iconView.setImageResource(iconResId);

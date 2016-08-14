@@ -91,6 +91,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     // XML Attributes
     private int tabXmlResource;
+    private boolean isTabletMode;
     private int behaviors;
     private float inActiveTabAlpha;
     private float activeTabAlpha;
@@ -98,7 +99,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int activeTabColor;
     private int titleTextAppearance;
     private String titleTypeFace;
-    private boolean isTabletMode;
 
     /**
      * ------------------------------------------- //
@@ -153,7 +153,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private boolean isShiftingMode() {
-        return hasBehavior(BEHAVIOR_SHIFTING);
+        return !isTabletMode && hasBehavior(BEHAVIOR_SHIFTING);
     }
 
     private boolean hasBehavior(int behavior) {
@@ -161,11 +161,17 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void initializeViews() {
+        int width = isTabletMode? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT;
+        int height = isTabletMode? LayoutParams.MATCH_PARENT : LayoutParams.WRAP_CONTENT;
+        LayoutParams params = new LayoutParams(width, height);
+
+        setLayoutParams(params);
         setOrientation(isTabletMode? HORIZONTAL : VERTICAL);
         ViewCompat.setElevation(this, MiscUtils.dpToPixel(getContext(), 8));
 
         View rootView = inflate(getContext(),
                 isTabletMode? R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container, this);
+        rootView.setLayoutParams(params);
 
         tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
         shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
@@ -426,10 +432,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         if (changed) {
             updateTitleBottomPadding();
 
-            if (hasBehavior(BEHAVIOR_SHY)) {
+            if (isShy()) {
                 initializeShyBehavior();
             }
         }
+    }
+
+    private boolean isShy() {
+        return !isTabletMode && hasBehavior(BEHAVIOR_SHY);
     }
 
     private void updateTitleBottomPadding() {
@@ -605,7 +615,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void handleBackgroundColorChange(BottomBarTab tab, boolean animate) {
         int newColor = tab.getBarColorWhenSelected();
 
-        if (isTabletMode || currentBackgroundColor == newColor) {
+        if (currentBackgroundColor == newColor) {
             return;
         }
 
@@ -649,9 +659,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void backgroundCircularRevealAnimation(View clickedView, final int newColor) {
         int centerX = (int) (ViewCompat.getX(clickedView) + (clickedView.getMeasuredWidth() / 2));
-        int centerY = clickedView.getMeasuredHeight() / 2;
+        int yOffset = isTabletMode? (int) ViewCompat.getY(clickedView) : 0;
+        int centerY = yOffset + clickedView.getMeasuredHeight() / 2;
         int startRadius = 0;
-        int finalRadius = outerContainer.getWidth();
+        int finalRadius = isTabletMode? outerContainer.getHeight() : outerContainer.getWidth();
 
         Animator animator = ViewAnimationUtils.createCircularReveal(
                 backgroundOverlay,
@@ -660,6 +671,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 startRadius,
                 finalRadius
         );
+
+        if (isTabletMode) {
+            animator.setDuration(500);
+        }
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override

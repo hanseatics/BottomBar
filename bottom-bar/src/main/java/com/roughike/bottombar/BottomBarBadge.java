@@ -108,7 +108,7 @@ class BottomBarBadge extends TextView {
     }
 
     private void setColoredCircleBackground(int circleColor) {
-        int innerPadding = MiscUtils.dpToPixel(getContext(), 3);
+        int innerPadding = MiscUtils.dpToPixel(getContext(), 1);
         ShapeDrawable backgroundCircle = BadgeCircle.make(innerPadding * 3, circleColor);
         setPadding(innerPadding, innerPadding, innerPadding, innerPadding);
         setBackgroundCompat(backgroundCircle);
