@@ -7,16 +7,16 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.content.ContextCompat;
-import android.test.InstrumentationTestCase;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -27,7 +27,7 @@ public class TabParserTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getContext();
-        tabs = new TabParser(context, new TabParser.Config.Builder().build(), com.roughike.bottombar.test.R.xml.dummy_tab_xml)
+        tabs = new TabParser(context, new TabParser.Config.Builder().build(), com.example.bottombar.sample.test.R.xml.dummy_tab_xml)
                 .getTabs();
     }
 
@@ -68,7 +68,7 @@ public class TabParserTest {
         assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveColor());
 
         assertEquals(
-                ContextCompat.getColor(context, com.roughike.bottombar.test.R.color.test_random_color),
+                ContextCompat.getColor(context, com.example.bottombar.sample.test.R.color.test_random_color),
                 tabs.get(1).getActiveColor()
         );
 
@@ -88,7 +88,7 @@ public class TabParserTest {
 
     @Test
     public void iconResourceIdsAsExpected() {
-        int expectedId = com.roughike.bottombar.test.R.drawable.empty_icon;
+        int expectedId = com.example.bottombar.sample.test.R.drawable.empty_icon;
 
         assertEquals(expectedId, tabs.get(0).getIconResId());
         assertEquals(expectedId, tabs.get(1).getIconResId());
