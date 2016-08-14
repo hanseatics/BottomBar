@@ -99,10 +99,12 @@ public class BottomBarTab extends LinearLayout {
         setGravity(Gravity.CENTER_HORIZONTAL);
 
         iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
-        titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
-
         iconView.setImageResource(iconResId);
-        titleView.setText(title);
+
+        if (type != Type.TABLET) {
+            titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
+            titleView.setText(title);
+        }
 
         initCustomTextAppearance();
         initCustomFont();
@@ -110,7 +112,7 @@ public class BottomBarTab extends LinearLayout {
 
     @SuppressWarnings("deprecation")
     private void initCustomTextAppearance() {
-        if (titleTextAppearanceResId == 0) {
+        if (type == Type.TABLET || titleTextAppearanceResId == 0) {
             return;
         }
 
@@ -315,7 +317,7 @@ public class BottomBarTab extends LinearLayout {
     private void setColors(int color) {
         iconView.setColorFilter(color);
 
-        if (titleView != null) {
+        if (type != Type.TABLET) {
             titleView.setTextColor(color);
         }
     }
@@ -364,6 +366,10 @@ public class BottomBarTab extends LinearLayout {
     }
 
     private void setTopPaddingAnimated(int start, int end) {
+        if (type == Type.TABLET) {
+            return;
+        }
+
         ValueAnimator paddingAnimator = ValueAnimator.ofInt(start, end);
         paddingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -382,6 +388,10 @@ public class BottomBarTab extends LinearLayout {
     }
 
     private void animateTitle(float finalScale, float finalAlpha) {
+        if (type == Type.TABLET) {
+            return;
+        }
+
         ViewPropertyAnimatorCompat titleAnimator = ViewCompat.animate(titleView)
                 .setDuration(ANIMATION_DURATION)
                 .scaleX(finalScale)
@@ -402,6 +412,10 @@ public class BottomBarTab extends LinearLayout {
     }
 
     private void setTopPadding(int topPadding) {
+        if (type == Type.TABLET) {
+            return;
+        }
+
         iconView.setPadding(
                 iconView.getPaddingLeft(),
                 topPadding,
@@ -411,6 +425,10 @@ public class BottomBarTab extends LinearLayout {
     }
 
     private void setTitleScale(float scale) {
+        if (type == Type.TABLET) {
+            return;
+        }
+
         ViewCompat.setScaleX(titleView, scale);
         ViewCompat.setScaleY(titleView, scale);
     }

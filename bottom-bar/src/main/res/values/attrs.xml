@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="BottomBar">
         <attr name="bb_tabXmlResource" format="reference" />
+        <attr name="bb_tabletMode" format="boolean" />
         <attr name="bb_behavior">
             <flag name="shifting" value="1" />
             <flag name="shy" value="2" />
