@@ -60,34 +60,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private static final int BEHAVIOR_SHIFTING = 1;
     private static final int BEHAVIOR_SHY = 2;
 
-    private boolean isComingFromRestoredState;
-    private boolean ignoreTabReselectionListener;
-    private boolean shyHeightAlreadyCalculated;
-
-    private ViewGroup tabContainer;
-
-    private View backgroundOverlay;
-    private View shadowView;
-    private View tabletRightBorder;
-
     private int primaryColor;
-    private int darkBackgroundColor;
-
     private int screenWidth;
     private int tenDp;
     private int maxFixedItemWidth;
-    private int inActiveShiftingItemWidth;
-    private int activeShiftingItemWidth;
-
-    private OnTabSelectListener onTabSelectListener;
-    private OnTabReselectListener onTabReselectListener;
-
-    private int currentTabPosition;
-
-    private int currentBackgroundColor;
-    private int defaultBackgroundColor = Color.WHITE;
-
-    private ViewGroup outerContainer;
 
     // XML Attributes
     private int tabXmlResource;
@@ -99,6 +75,25 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int activeTabColor;
     private int titleTextAppearance;
     private String titleTypeFace;
+
+    private View backgroundOverlay;
+    private ViewGroup outerContainer;
+    private ViewGroup tabContainer;
+
+    private int defaultBackgroundColor;
+    private int currentBackgroundColor;
+    private int currentTabPosition;
+
+    private int inActiveShiftingItemWidth;
+    private int activeShiftingItemWidth;
+
+    private OnTabSelectListener onTabSelectListener;
+    private OnTabReselectListener onTabReselectListener;
+
+    private boolean isComingFromRestoredState;
+    private boolean shyHeightAlreadyCalculated;
+    private boolean ignoreTabReselectionListener;
+
 
     /**
      * ------------------------------------------- //
@@ -121,9 +116,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
-        darkBackgroundColor = ContextCompat.getColor(getContext(), R.color.bb_darkBackgroundColor);
         primaryColor = MiscUtils.getColor(getContext(), R.attr.colorPrimary);
-
         screenWidth = MiscUtils.getScreenWidth(getContext());
         tenDp = MiscUtils.dpToPixel(getContext(), 10);
         maxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
@@ -173,8 +166,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 isTabletMode? R.layout.bb_bottom_bar_item_container_tablet : R.layout.bb_bottom_bar_item_container, this);
         rootView.setLayoutParams(params);
 
-        tabletRightBorder = rootView.findViewById(R.id.bb_tablet_right_border);
-        shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
         backgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
         outerContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         tabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
