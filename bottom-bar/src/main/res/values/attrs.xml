@@ -6,6 +6,7 @@
         <attr name="bb_behavior">
             <flag name="shifting" value="1" />
             <flag name="shy" value="2" />
+            <flag name="underNavbar" value="4" />
         </attr>
         <attr name="bb_inActiveTabAlpha" format="float" />
         <attr name="bb_activeTabAlpha" format="float" />

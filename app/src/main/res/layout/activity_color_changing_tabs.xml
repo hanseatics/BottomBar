@@ -18,6 +18,6 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs_color_changing"
-        app:bb_behavior="shifting" />
+        app:bb_behavior="shifting|underNavbar" />
 
 </RelativeLayout>
