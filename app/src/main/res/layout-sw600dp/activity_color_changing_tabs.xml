@@ -15,7 +15,7 @@
         app:bb_tabletMode="true"
         app:bb_inActiveTabColor="#FFFFFF"
         app:bb_activeTabColor="#FFFFFF"
-        app:bb_inActiveTabAlpha="0.3"
+        app:bb_inActiveTabAlpha="0.6"
         app:bb_activeTabAlpha="1" />
 
     <TextView

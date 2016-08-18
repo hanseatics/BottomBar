@@ -260,8 +260,6 @@ public class BottomBarTab extends LinearLayout {
     void select(boolean animate) {
         isActive = true;
 
-        boolean isShifting = type == Type.SHIFTING;
-
         setColors(activeColor);
 
         if (animate) {
@@ -272,8 +270,9 @@ public class BottomBarTab extends LinearLayout {
             setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
 
-            if (isShifting) {
-                ViewCompat.setAlpha(iconView, activeAlpha);
+            ViewCompat.setAlpha(iconView, activeAlpha);
+
+            if (titleView != null) {
                 ViewCompat.setAlpha(titleView, activeAlpha);
             }
         }
@@ -296,16 +295,14 @@ public class BottomBarTab extends LinearLayout {
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), iconPaddingTop);
             animateTitle(scale, 0);
-
-            if (isShifting) {
-                animateIcon(inActiveAlpha);
-            }
+            animateIcon(inActiveAlpha);
         } else {
             setTitleScale(scale);
             setTopPadding(iconPaddingTop);
 
-            if (isShifting) {
-                ViewCompat.setAlpha(iconView, inActiveAlpha);
+            ViewCompat.setAlpha(iconView, inActiveAlpha);
+
+            if (titleView != null) {
                 ViewCompat.setAlpha(titleView, 0);
             }
         }

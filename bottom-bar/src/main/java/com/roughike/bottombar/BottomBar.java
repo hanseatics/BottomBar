@@ -51,8 +51,7 @@ import java.util.List;
 public class BottomBar extends LinearLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
 
-    private static final float DEFAULT_INACTIVE_TAB_ALPHA = 0.6f;
-    private static final float DEFAULT_ACTIVE_TAB_ALPHA = 1;
+    private static final float DEFAULT_INACTIVE_SHIFTING_TAB_ALPHA = 0.6f;
 
     // Behaviors
     private static final int BEHAVIOR_NONE = 0;
@@ -130,8 +129,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
             isTabletMode = ta.getBoolean(R.styleable.BottomBar_bb_tabletMode, false);
             behaviors = ta.getInteger(R.styleable.BottomBar_bb_behavior, BEHAVIOR_NONE);
-            inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha, DEFAULT_INACTIVE_TAB_ALPHA);
-            activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, DEFAULT_ACTIVE_TAB_ALPHA);
+            inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha,
+                    isShiftingMode()? DEFAULT_INACTIVE_SHIFTING_TAB_ALPHA : 1);
+            activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, 1);
 
             @ColorInt
             int defaultInActiveColor = isShiftingMode() ?
