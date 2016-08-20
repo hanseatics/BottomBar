@@ -5,6 +5,7 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.WindowManager;
 
 import com.example.bottombar.sample.BadgeActivity;
 import com.example.bottombar.sample.R;
@@ -38,6 +39,8 @@ public class BadgeActivityTest {
     public void setUp() {
         bottomBar = (BottomBar) badgeActivityRule.getActivity().findViewById(R.id.bottomBar);
         nearby = bottomBar.getTabWithId(R.id.tab_nearby);
+
+        TestUtils.dismissLockScreen(badgeActivityRule.getActivity());
     }
 
     @Test
