@@ -148,12 +148,17 @@ class BottomBarBadge extends TextView {
 
     void adjustPositionAndSize(BottomBarTab tab) {
         AppCompatImageView iconView = tab.getIconView();
-        setX(iconView.getX() + iconView.getWidth());
-        setTranslationY(10);
+        ViewGroup.LayoutParams params = getLayoutParams();
 
         int size = Math.max(getWidth(), getHeight());
+        float xOffset = iconView.getWidth();
 
-        ViewGroup.LayoutParams params = getLayoutParams();
+        if (tab.getType() == BottomBarTab.Type.TABLET) {
+            xOffset /= 1.25;
+        }
+
+        setX(iconView.getX() + xOffset);
+        setTranslationY(10);
 
         if (params.width != size || params.height != size) {
             params.width = size;
