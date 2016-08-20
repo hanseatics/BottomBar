@@ -5,8 +5,9 @@
 
 * Cleaner code and better APIs
 * No more unnecessary stuff or spaghetti mess
-* Now with automated tests; no more nasty regressions
-* Everything is a little different compared to earlier, but it's for the greater good!
+* Now the look, feel and behavior is defined in XML, as it should be
+* No more nasty regressions, thanks to the automated tests
+* **Everything is a little different compared to earlier, but it's for the greater good!**
 
 [How to contribute](https://github.com/roughike/BottomBar/blob/master/README.md#contributions)
 
