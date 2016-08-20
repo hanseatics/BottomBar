@@ -17,10 +17,13 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 /**
  * Created by iiro on 13.8.2016.
@@ -154,5 +157,48 @@ public class ThreeTabsActivityTest {
         assertEquals(thirdTabId, bottomBar.getCurrentTabId());
         assertEquals(bottomBar.findPositionForTabWithId(thirdTabId), bottomBar.getCurrentTabPosition());
         assertEquals(bottomBar.getTabWithId(thirdTabId), bottomBar.getCurrentTab());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenSelectionChanges_AndHasNoListeners_onlyOneTabIsSelectedAtATime() {
+        bottomBar.setOnTabSelectListener(null);
+        bottomBar.setOnTabReselectListener(null);
+
+        int firstTabId = R.id.tab_favorites;
+        int secondTabId = R.id.tab_nearby;
+        int thirdTabId = R.id.tab_friends;
+
+        bottomBar.selectTabWithId(secondTabId);
+        assertOnlyHasOnlyOneSelectedTabWithId(secondTabId);
+
+        bottomBar.selectTabWithId(thirdTabId);
+        assertOnlyHasOnlyOneSelectedTabWithId(thirdTabId);
+
+        bottomBar.selectTabWithId(firstTabId);
+        assertOnlyHasOnlyOneSelectedTabWithId(firstTabId);
+    }
+
+    private void assertOnlyHasOnlyOneSelectedTabWithId(int tabId) {
+        for (int i = 0; i < bottomBar.getTabCount(); i++) {
+            BottomBarTab tab = bottomBar.getTabAtPosition(i);
+
+            if (tab.getId() == tabId) {
+                assertTrue(tab.isActive());
+            } else {
+                assertFalse(tab.isActive());
+            }
+        }
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenTabIsSelectedOnce_AndNoSelectionListenerSet_ReselectionListenerIsNotFired() {
+        bottomBar.setOnTabSelectListener(null);
+        bottomBar.selectTabWithId(R.id.tab_friends);
+        bottomBar.selectTabWithId(R.id.tab_nearby);
+        bottomBar.selectTabWithId(R.id.tab_favorites);
+
+        verifyZeroInteractions(reselectListener);
     }
 }

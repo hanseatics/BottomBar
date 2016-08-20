@@ -2,7 +2,12 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 2.0
+### Newest version: 2.0.1
+
+* Fixed a bug where the tab selection listener is set and multiple tabs could be selected at once
+* Fixed a bug where the reselection listener was fired even it shouldn't have.
+
+### 2.0
 
 * Cleaner code and better APIs
 * No more unnecessary stuff or spaghetti mess
