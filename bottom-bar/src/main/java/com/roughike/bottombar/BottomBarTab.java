@@ -275,10 +275,7 @@ public class BottomBarTab extends LinearLayout {
             setTopPadding(sixDps);
 
             ViewCompat.setAlpha(iconView, activeAlpha);
-
-            if (titleView != null) {
-                ViewCompat.setAlpha(titleView, activeAlpha);
-            }
+            ViewCompat.setAlpha(titleView, activeAlpha);
         }
 
         if (badge != null) {
@@ -298,17 +295,14 @@ public class BottomBarTab extends LinearLayout {
 
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), iconPaddingTop);
-            animateTitle(scale, 0);
+            animateTitle(scale, inActiveAlpha);
             animateIcon(inActiveAlpha);
         } else {
             setTitleScale(scale);
             setTopPadding(iconPaddingTop);
 
             ViewCompat.setAlpha(iconView, inActiveAlpha);
-
-            if (titleView != null) {
-                ViewCompat.setAlpha(titleView, 0);
-            }
+            ViewCompat.setAlpha(titleView, inActiveAlpha);
         }
 
         if (!isShifting && badge != null) {
@@ -398,11 +392,7 @@ public class BottomBarTab extends LinearLayout {
                 .setDuration(ANIMATION_DURATION)
                 .scaleX(finalScale)
                 .scaleY(finalScale);
-
-        if (type == Type.SHIFTING) {
-            titleAnimator.alpha(finalAlpha);
-        }
-
+        titleAnimator.alpha(finalAlpha);
         titleAnimator.start();
     }
 
