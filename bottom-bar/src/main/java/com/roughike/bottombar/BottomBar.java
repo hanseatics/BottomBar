@@ -79,7 +79,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private ViewGroup outerContainer;
     private ViewGroup tabContainer;
 
-    private int defaultBackgroundColor;
+    private int defaultBackgroundColor = Color.WHITE;
     private int currentBackgroundColor;
     private int currentTabPosition;
 
