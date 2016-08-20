@@ -2,9 +2,18 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 1.4.0.1
+### Newest version: 2.0
 
-* Merged a [PR that adds support for vector drawables for API < 21](https://github.com/roughike/BottomBar/pull/332)
+* Cleaner code and better APIs
+* No more unnecessary stuff or spaghetti mess
+* Now the look, feel and behavior is defined in XML, as it should be
+* No more nasty regressions, thanks to the automated tests
+* **Everything is a little different compared to earlier, but it's for the greater good!**
+
+See the readme for how to use the new version.
+
+### 1.4.0.1
+
 * Merged a [PR that fixes removing all tabs from BottomBar](https://github.com/roughike/BottomBar/pull/339)
 
 ### 1.4.0
