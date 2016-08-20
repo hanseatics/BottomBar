@@ -111,6 +111,58 @@ Just add ```barColorWhenSelected``` to each tab. When that tab is selected, the 
 </tabs>
 ```
 
+### How do I draw it under the navbar?
+
+First, define a style that is a child of your main application theme:
+
+**res/values-v21/styles.xml**
+
+```xml
+<style name="AppTheme.TransNav" parent="AppTheme">
+    <item name="android:navigationBarColor">@android:color/transparent</item>
+    <item name="android:windowTranslucentNavigation">true</item>
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+</style>
+```
+
+You'll also have to **make a stub version of the same theme** to avoid crashes in previous API levels than Lollipop:
+
+**res/values/styles.xml**
+
+```xml
+<style name="AppTheme.TransNav" parent="AppTheme" />
+```
+
+Also include the same stub in your ```values-land-v21.xml``` to avoid transparent navbar and weird behavior on landscape.
+
+**res/values-land-v21.xml:**
+
+```xml
+<style name="AppTheme.TransNav" parent="AppTheme" />
+```
+
+Apply the theme in ```AndroidManifest.xml``` for your Activity.
+
+**AndroidManifest.xml:**
+
+```xml
+<activity android:name=".MyAwesomeActivity" android:theme="@style/AppTheme.TransNav" />
+```
+
+Finally, set ```bb_behavior``` to include the ```underNavbar``` flag and you're good to go!
+
+**activity_my_awesome.xml:**
+
+```xml
+<com.roughike.bottombar.BottomBar
+    android:id="@+id/bottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_alignParentBottom="true"
+    app:bb_tabXmlResource="@xml/my_awesome_bottombar_tabs"
+    app:bb_behavior="underNavbar" />
+```
+
 ### What about Tablets?
 
 Specify a different layout for your activity in ```res/layout-sw600dp``` folder and set ```bb_tabletMode``` to true.
