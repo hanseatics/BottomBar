@@ -51,6 +51,8 @@ The icons must be fully opaque, solid black color, 24dp and **with no padding**.
 
 ### Adding items from XML resource
 
+Define your tabs in an XML resource file.
+
 **res/xml/bottombar_tabs.xml:**
 
 ```xml
@@ -69,6 +71,8 @@ The icons must be fully opaque, solid black color, 24dp and **with no padding**.
         title="Friends" />
 </tabs>
 ```
+
+Then, add the BottomBar to your layout and give it a resource id for your tabs xml file.
 
 **layout/activity_main.xml**
 
@@ -93,6 +97,47 @@ The icons must be fully opaque, solid black color, 24dp and **with no padding**.
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
 
 </RelativeLayout>
+```
+
+### Setting up listeners
+
+By default, the tabs don't do anything unless you listen for selection events and do something when the tabs are selected.
+
+**MainActivity.java:**
+
+```java
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_favorites) {
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
+                }
+            }
+        });
+    }
+}
+```
+
+If you want to listen for reselection events, here's how you do it:
+
+```java
+bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+    @Override
+    public void onTabReSelected(@IdRes int tabId) {
+        if (tabId == R.id.tab_favorites) {
+            // The tab with id R.id.tab_favorites was reselected,
+            // change your content accordingly.
+        }
+    }
+});
 ```
 
 ### Those color changing tabs look dope. Howdoidodat?
