@@ -5,7 +5,6 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.WindowManager;
 
 import com.example.bottombar.sample.BadgeActivity;
 import com.example.bottombar.sample.R;
@@ -15,10 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
@@ -39,8 +36,6 @@ public class BadgeActivityTest {
     public void setUp() {
         bottomBar = (BottomBar) badgeActivityRule.getActivity().findViewById(R.id.bottomBar);
         nearby = bottomBar.getTabWithId(R.id.tab_nearby);
-
-        TestUtils.dismissLockScreen(badgeActivityRule.getActivity());
     }
 
     @Test
@@ -52,9 +47,10 @@ public class BadgeActivityTest {
     }
 
     @Test
+    @UiThreadTest
     public void whenTabWithBadgeClicked_BadgeIsHidden() {
-        onView(withId(R.id.tab_nearby)).perform(click());
-        assertEquals(false, nearby.badge.isVisible());
+        bottomBar.selectTabWithId(R.id.tab_nearby);
+        assertFalse(nearby.badge.isVisible());
     }
 
     @Test
