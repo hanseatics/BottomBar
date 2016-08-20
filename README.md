@@ -333,6 +333,7 @@ nearby.removeBadge/();
   * [BottomNavigationBar](https://github.com/pocheshire/BottomNavigationBar) : BottomBar ported to C# for Xamarin developers
   * [KyudoScoreBookTeam](https://play.google.com/store/apps/details?id=com.bowyer.app.android.kyudoscoreteam&hl=en) : BottomBar is used in the KyudoScoreBookTeam app.
   * [memeham](https://play.google.com/store/apps/details?id=com.memeham.beyourself.memeham) : BottomBar is used in the memeham app.
+  * [NewsCatchr](https://play.google.com/store/apps/details?id=jlelse.readit) : A newsreader app, which uses this BottomBar library.
   
 Send me a pull request with modified README.md to get a shoutout!
 
