@@ -33,8 +33,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
@@ -42,9 +40,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:' + rootProject.ext.supportLibraryVersion
     compile 'com.android.support:design:' + rootProject.ext.supportLibraryVersion
-
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
 
     testCompile 'junit:junit:' + rootProject.ext.junitVersion
 }

@@ -95,10 +95,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean shyHeightAlreadyCalculated;
     private boolean navBarAccountedHeightCalculated;
 
-
-    /**
-     * ------------------------------------------- //
-     */
     public BottomBar(Context context) {
         super(context);
         init(context, null);
@@ -297,7 +293,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Set a listener that gets fired when the selected tab changes.
-     * <p/>
+     * 
      * Note: Will be immediately called for the currently selected tab
      * once when set.
      *
@@ -422,11 +418,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public BottomBarTab getTabWithId(@IdRes int tabId) {
         return (BottomBarTab) tabContainer.findViewById(tabId);
     }
-
-    /**
-     * Override methods
-     * ----------------------------------------------->
-     */
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -555,10 +546,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return handleLongClick(v);
     }
 
-    /**
-     * Private methods
-     * ----------------------------------------------->
-     */
     private BottomBarTab findTabInLayout(ViewGroup child) {
         for (int i = 0; i < child.getChildCount(); i++) {
             View candidate = child.getChildAt(i);
