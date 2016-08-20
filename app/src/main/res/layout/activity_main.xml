@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Check out these samples and their sources for the most basic use cases.\n\nIMPORTANT: These samples look a bit different on tablets. If you want same behavior for tablets and phones, use mBottomBar.noTabletGoodness();"
+        android:text="Check out these samples and their sources for the most basic use cases."
         android:layout_marginBottom="16dp" />
 
     <Button
@@ -23,7 +23,7 @@
         android:id="@+id/five_tabs_custom_colors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Using Custom Tab and Background Colors" />
+        android:text="Using custom colors and fonts" />
 
     <Button
         android:id="@+id/five_tabs_changing_colors"
