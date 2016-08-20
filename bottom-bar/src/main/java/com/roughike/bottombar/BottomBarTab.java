@@ -228,6 +228,10 @@ public class BottomBarTab extends LinearLayout {
         badge.setCount(count);
     }
 
+    public void removeBadge() {
+        setBadgeCount(0);
+    }
+
     boolean isActive() {
         return isActive;
     }

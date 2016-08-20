@@ -40,8 +40,8 @@ public class BadgeActivity extends AppCompatActivity {
             }
         });
 
-        // We want the nearbyBadge to be always shown, except when the Favorites tab is selected.
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
         nearby.setBadgeCount(5);
+        nearby.removeBadge();
     }
 }
