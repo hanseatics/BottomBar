@@ -1,28 +1,25 @@
 package com.roughike.bottombar;
 
 import android.os.Bundle;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.bottombar.sample.ThreeTabsActivity;
 import com.example.bottombar.sample.R;
+import com.example.bottombar.sample.ThreeTabsActivity;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -73,9 +70,9 @@ public class ThreeTabsActivityTest {
         bottomBar.selectTabWithId(R.id.tab_favorites);
 
         InOrder inOrder = inOrder(selectListener);
-        inOrder.verify(selectListener).onTabSelected(R.id.tab_friends);
-        inOrder.verify(selectListener).onTabSelected(R.id.tab_nearby);
-        inOrder.verify(selectListener).onTabSelected(R.id.tab_favorites);
+        inOrder.verify(selectListener, times(1)).onTabSelected(R.id.tab_friends);
+        inOrder.verify(selectListener, times(1)).onTabSelected(R.id.tab_nearby);
+        inOrder.verify(selectListener, times(1)).onTabSelected(R.id.tab_favorites);
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -96,17 +93,17 @@ public class ThreeTabsActivityTest {
     public void whenTabIsReselected_ReselectionListenerIsFired() {
         int firstTabId = R.id.tab_favorites;
         bottomBar.selectTabWithId(firstTabId);
-        verify(reselectListener).onTabReSelected(firstTabId);
+        verify(reselectListener, times(1)).onTabReSelected(firstTabId);
 
         int secondTabId = R.id.tab_nearby;
         bottomBar.selectTabWithId(secondTabId);
         bottomBar.selectTabWithId(secondTabId);
-        verify(reselectListener).onTabReSelected(secondTabId);
+        verify(reselectListener, times(1)).onTabReSelected(secondTabId);
 
         int thirdTabId = R.id.tab_friends;
         bottomBar.selectTabWithId(thirdTabId);
         bottomBar.selectTabWithId(thirdTabId);
-        verify(reselectListener).onTabReSelected(thirdTabId);
+        verify(reselectListener, times(1)).onTabReSelected(thirdTabId);
     }
 
     @Test
