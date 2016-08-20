@@ -4,6 +4,7 @@
 
 ### Newest version: 1.4.0.1
 
+* Merged a [PR that adds support for vector drawables for API < 21](https://github.com/roughike/BottomBar/pull/332)
 * Merged a [PR that fixes removing all tabs from BottomBar](https://github.com/roughike/BottomBar/pull/339)
 
 ### 1.4.0
