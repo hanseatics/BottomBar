@@ -275,7 +275,10 @@ public class BottomBarTab extends LinearLayout {
             setTopPadding(sixDps);
 
             ViewCompat.setAlpha(iconView, activeAlpha);
-            ViewCompat.setAlpha(titleView, activeAlpha);
+
+            if (titleView != null) {
+                ViewCompat.setAlpha(titleView, activeAlpha);
+            }
         }
 
         if (badge != null) {
@@ -302,7 +305,10 @@ public class BottomBarTab extends LinearLayout {
             setTopPadding(iconPaddingTop);
 
             ViewCompat.setAlpha(iconView, inActiveAlpha);
-            ViewCompat.setAlpha(titleView, inActiveAlpha);
+
+            if (titleView != null) {
+                ViewCompat.setAlpha(titleView, inActiveAlpha);
+            }
         }
 
         if (!isShifting && badge != null) {
