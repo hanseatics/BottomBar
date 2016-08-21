@@ -1,16 +1,12 @@
 package com.roughike.bottombar;
 
 import android.os.Bundle;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.bottombar.sample.BadgeActivity;
-import com.example.bottombar.sample.R;
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,24 +20,22 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class BadgeActivityTest {
-    @Rule
-    public ActivityTestRule<BadgeActivity> badgeActivityRule =
-            new ActivityTestRule<>(BadgeActivity.class);
-
+public class BadgeTest {
     private BottomBar bottomBar;
     private BottomBarTab nearby;
 
     @Before
     public void setUp() {
-        bottomBar = (BottomBar) badgeActivityRule.getActivity().findViewById(R.id.bottomBar);
-        nearby = bottomBar.getTabWithId(R.id.tab_nearby);
+        bottomBar = new BottomBar(InstrumentationRegistry.getContext());
+        bottomBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three);
+        nearby = bottomBar.getTabWithId(com.roughike.bottombar.test.R.id.tab_nearby);
+        nearby.setBadgeCount(5);
     }
 
     @Test
     public void hasNoBadges_ExceptNearby() {
-        assertNull(bottomBar.getTabWithId(R.id.tab_favorites).badge);
-        assertNull(bottomBar.getTabWithId(R.id.tab_friends).badge);
+        assertNull(bottomBar.getTabWithId(com.roughike.bottombar.test.R.id.tab_favorites).badge);
+        assertNull(bottomBar.getTabWithId(com.roughike.bottombar.test.R.id.tab_friends).badge);
 
         assertNotNull(nearby.badge);
     }
@@ -49,8 +43,13 @@ public class BadgeActivityTest {
     @Test
     @UiThreadTest
     public void whenTabWithBadgeClicked_BadgeIsHidden() {
-        bottomBar.selectTabWithId(R.id.tab_nearby);
-        assertFalse(nearby.badge.isVisible());
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                bottomBar.selectTabWithId(com.roughike.bottombar.test.R.id.tab_nearby);
+                assertFalse(nearby.badge.isVisible());
+            }
+        });
     }
 
     @Test
