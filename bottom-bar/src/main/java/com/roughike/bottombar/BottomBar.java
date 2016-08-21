@@ -478,11 +478,15 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             int height = getHeight();
 
             if (height != 0) {
-                ((CoordinatorLayout.LayoutParams) getLayoutParams())
-                        .setBehavior(new BottomNavigationBehavior(height, 0, false));
+                updateShyHeight(height);
                 shyHeightAlreadyCalculated = true;
             }
         }
+    }
+
+    private void updateShyHeight(int height) {
+        ((CoordinatorLayout.LayoutParams) getLayoutParams())
+                .setBehavior(new BottomNavigationBehavior(height, 0, false));
     }
 
     private void resizeForDrawingUnderNavbar() {
@@ -494,7 +498,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 tabContainer.getLayoutParams().height = currentHeight;
 
                 int navbarHeight = NavbarUtils.getNavbarHeight(getContext());
-                getLayoutParams().height = currentHeight + navbarHeight;
+                int finalHeight = currentHeight + navbarHeight;
+                getLayoutParams().height = finalHeight;
+
+                if (isShy()) {
+                    updateShyHeight(finalHeight);
+                }
             }
         }
     }
