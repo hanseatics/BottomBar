@@ -4,7 +4,8 @@
 
 ### 2.0.2
 
-* Now we're animating the color change on tab titles and icons
+* Now we're animating the color change on tab titles and icons.
+* Fixed a bug where the BottomBar wouldn't hide completely when it was both shy and drawing under navbar.
 
 ### 2.0.1
 
