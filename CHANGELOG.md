@@ -2,7 +2,11 @@
 
 (or: y u no add shiny new things?!)
 
-### Newest version: 2.0.1
+### 2.0.2
+
+* Now we're animating the color change on tab titles and icons
+
+### 2.0.1
 
 * Fixed a bug where the tab selection listener is set and multiple tabs could be selected at once
 * Fixed a bug where the reselection listener was fired even it shouldn't have.
