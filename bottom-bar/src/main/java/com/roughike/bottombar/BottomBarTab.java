@@ -2,6 +2,7 @@ package com.roughike.bottombar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -264,15 +265,15 @@ public class BottomBarTab extends LinearLayout {
     void select(boolean animate) {
         isActive = true;
 
-        setColors(activeColor);
-
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
             animateIcon(activeAlpha);
             animateTitle(ACTIVE_TITLE_SCALE, activeAlpha);
+            animateColors(inActiveColor, activeColor);
         } else {
             setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
+            setColors(activeColor);
 
             ViewCompat.setAlpha(iconView, activeAlpha);
 
@@ -291,8 +292,6 @@ public class BottomBarTab extends LinearLayout {
 
         boolean isShifting = type == Type.SHIFTING;
 
-        setColors(inActiveColor);
-
         float scale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
         int iconPaddingTop = isShifting ? sixteenDps : eightDps;
 
@@ -300,9 +299,11 @@ public class BottomBarTab extends LinearLayout {
             setTopPaddingAnimated(iconView.getPaddingTop(), iconPaddingTop);
             animateTitle(scale, inActiveAlpha);
             animateIcon(inActiveAlpha);
+            animateColors(activeColor, inActiveColor);
         } else {
             setTitleScale(scale);
             setTopPadding(iconPaddingTop);
+            setColors(inActiveColor);
 
             ViewCompat.setAlpha(iconView, inActiveAlpha);
 
@@ -314,6 +315,21 @@ public class BottomBarTab extends LinearLayout {
         if (!isShifting && badge != null) {
             badge.show();
         }
+    }
+
+    private void animateColors(int previousColor, int color) {
+        ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(previousColor, color);
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+               setColors((Integer) valueAnimator.getAnimatedValue());
+            }
+        });
+
+        anim.setDuration(150);
+        anim.start();
     }
 
     private void setColors(int color) {
