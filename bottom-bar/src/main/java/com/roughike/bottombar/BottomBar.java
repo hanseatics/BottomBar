@@ -103,13 +103,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public BottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
+        setItems(tabXmlResource);
     }
 
     private void init(Context context, AttributeSet attrs) {
         populateAttributes(context, attrs);
         initializeViews();
         determineInitialBackgroundColor();
-        setItems(tabXmlResource);
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
@@ -195,7 +195,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
-    private void setItems(@XmlRes int xmlRes) {
+    public void setItems(@XmlRes int xmlRes) {
         if (xmlRes == 0) {
             throw new RuntimeException("No items specified for the BottomBar!");
         }
