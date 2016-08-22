@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -77,23 +78,21 @@ public class BottomBarTab extends LinearLayout {
         sixteenDps = MiscUtils.dpToPixel(context, 16);
     }
 
+    void setConfig(Config config) {
+        setInActiveAlpha(config.inActiveTabAlpha);
+        setActiveAlpha(config.activeTabAlpha);
+        setInActiveColor(config.inActiveTabColor);
+        setActiveColor(config.activeTabColor);
+        setBarColorWhenSelected(config.barColorWhenSelected);
+        setBadgeBackgroundColor(config.badgeBackgroundColor);
+        setTitleTextAppearance(config.titleTextAppearance);
+        titleTypeFace(config.titleTypeFace);
+    }
+
     void prepareLayout() {
         int layoutResource;
 
-        switch (type) {
-            case FIXED:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed;
-                break;
-            case SHIFTING:
-                layoutResource = R.layout.bb_bottom_bar_item_shifting;
-                break;
-            case TABLET:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
-                break;
-            default:
-                // should never happen
-                throw new RuntimeException("Unknown BottomBarTab type.");
-        }
+        layoutResource = getLayoutResource();
 
         inflate(getContext(), layoutResource, this);
         setOrientation(VERTICAL);
@@ -110,6 +109,26 @@ public class BottomBarTab extends LinearLayout {
 
         initCustomTextAppearance();
         initCustomFont();
+    }
+
+    @VisibleForTesting
+    int getLayoutResource() {
+        int layoutResource;
+        switch (type) {
+            case FIXED:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed;
+                break;
+            case SHIFTING:
+                layoutResource = R.layout.bb_bottom_bar_item_shifting;
+                break;
+            case TABLET:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
+                break;
+            default:
+                // should never happen
+                throw new RuntimeException("Unknown BottomBarTab type.");
+        }
+        return layoutResource;
     }
 
     @SuppressWarnings("deprecation")
@@ -467,5 +486,86 @@ public class BottomBarTab extends LinearLayout {
             state = bundle.getParcelable("superstate");
         }
         super.onRestoreInstanceState(state);
+    }
+
+    static class Config {
+        private final float inActiveTabAlpha;
+        private final float activeTabAlpha;
+        private final int inActiveTabColor;
+        private final int activeTabColor;
+        private final int barColorWhenSelected;
+        private final int badgeBackgroundColor;
+        private final int titleTextAppearance;
+        private final Typeface titleTypeFace;
+
+        private Config(Builder builder) {
+            this.inActiveTabAlpha = builder.inActiveTabAlpha;
+            this.activeTabAlpha = builder.activeTabAlpha;
+            this.inActiveTabColor = builder.inActiveTabColor;
+            this.activeTabColor = builder.activeTabColor;
+            this.barColorWhenSelected = builder.barColorWhenSelected;
+            this.badgeBackgroundColor = builder.badgeBackgroundColor;
+            this.titleTextAppearance = builder.titleTextAppearance;
+            this.titleTypeFace = builder.titleTypeFace;
+        }
+
+        static class Builder {
+            private float inActiveTabAlpha;
+            private float activeTabAlpha;
+            private int inActiveTabColor;
+            private int activeTabColor;
+            private int barColorWhenSelected;
+            private int badgeBackgroundColor;
+            private int titleTextAppearance;
+            private Typeface titleTypeFace;
+
+            Builder inActiveTabAlpha(float alpha) {
+                this.inActiveTabAlpha = alpha;
+                return this;
+            }
+
+            Builder activeTabAlpha(float alpha) {
+                this.activeTabAlpha = alpha;
+                return this;
+            }
+
+            Builder inActiveTabColor(@ColorInt int color) {
+                this.inActiveTabColor = color;
+                return this;
+            }
+
+            Builder activeTabColor(@ColorInt int color) {
+                this.activeTabColor = color;
+                return this;
+            }
+
+            Builder barColorWhenSelected(@ColorInt int color) {
+                this.barColorWhenSelected = color;
+                return this;
+            }
+
+            Builder badgeBackgroundColor(@ColorInt int color) {
+                this.badgeBackgroundColor = color;
+                return this;
+            }
+
+            Builder titleTextAppearance(int titleTextAppearance) {
+                this.titleTextAppearance = titleTextAppearance;
+                return this;
+            }
+
+            Builder titleTypeFace(Context context, String titleTypeFace) {
+                if (titleTypeFace != null) {
+                    this.titleTypeFace = Typeface.createFromAsset(
+                            context.getAssets(), titleTypeFace);
+                }
+
+                return this;
+            }
+
+            Config build() {
+                return new Config(this);
+            }
+        }
     }
 }

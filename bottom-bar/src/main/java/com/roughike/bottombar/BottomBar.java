@@ -200,7 +200,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             throw new RuntimeException("No items specified for the BottomBar!");
         }
 
-        TabParser.Config config = new TabParser.Config.Builder()
+        BottomBarTab.Config config = new BottomBarTab.Config.Builder()
                 .inActiveTabAlpha(inActiveTabAlpha)
                 .activeTabAlpha(activeTabAlpha)
                 .inActiveTabColor(inActiveTabColor)
