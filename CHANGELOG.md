@@ -7,6 +7,7 @@
 * Now we're animating the color change on tab titles and icons.
 * Fixed a bug where the BottomBar wouldn't hide completely when it was both shy and drawing under navbar.
 * Made possible to inflate the BottomBar programmatically.
+* Made it possible to control whether the shadow is shown or not.
 * Made setItems to be public to allow writing tests without a designated Activity
 * Increased test coverage a little bit.
 

@@ -74,10 +74,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int activeTabColor;
     private int titleTextAppearance;
     private String titleTypeFace;
+    private boolean showShadow;
 
     private View backgroundOverlay;
     private ViewGroup outerContainer;
     private ViewGroup tabContainer;
+    private View shadowView;
 
     private int defaultBackgroundColor = Color.WHITE;
     private int currentBackgroundColor;
@@ -138,6 +140,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = ta.getString(R.styleable.BottomBar_bb_titleTypeFace);
+            showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
         } finally {
             ta.recycle();
         }
@@ -177,6 +180,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         backgroundOverlay = rootView.findViewById(R.id.bb_bottom_bar_background_overlay);
         outerContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_outer_container);
         tabContainer = (ViewGroup) rootView.findViewById(R.id.bb_bottom_bar_item_container);
+        shadowView = rootView.findViewById(R.id.bb_bottom_bar_shadow);
+
+        if (!showShadow) {
+            shadowView.setVisibility(GONE);
+        }
     }
 
     private void determineInitialBackgroundColor() {
