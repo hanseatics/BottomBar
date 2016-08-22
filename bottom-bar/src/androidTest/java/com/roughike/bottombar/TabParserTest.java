@@ -27,8 +27,11 @@ public class TabParserTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getContext();
-        tabs = new TabParser(context, new TabParser.Config.Builder().build(), com.roughike.bottombar.test.R.xml.dummy_tabs_five)
-                .getTabs();
+        tabs = new TabParser(
+                context,
+                new BottomBarTab.Config.Builder().build(),
+                com.roughike.bottombar.test.R.xml.dummy_tabs_five
+        ).getTabs();
     }
 
     @Test
