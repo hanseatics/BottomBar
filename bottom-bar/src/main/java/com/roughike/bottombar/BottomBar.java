@@ -334,14 +334,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setDefaultTabPosition(int defaultTabPosition) {
         if (isComingFromRestoredState) return;
 
-        int tabCount = getTabCount();
-
-        if (tabCount == 0 || defaultTabPosition > tabCount - 1 || defaultTabPosition < 0) {
-            throw new IndexOutOfBoundsException("Can't set default tab at position " +
-                    defaultTabPosition + ". This BottomBar has no items at that position.");
-        }
-
-        selectTabAtPosition(defaultTabPosition, false);
+        selectTabAtPosition(defaultTabPosition);
     }
 
     /**
@@ -349,7 +342,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void selectTabWithId(@IdRes int tabResId) {
         int tabPosition = findPositionForTabWithId(tabResId);
-        selectTabAtPosition(tabPosition, false);
+        selectTabAtPosition(tabPosition);
     }
 
     /**
