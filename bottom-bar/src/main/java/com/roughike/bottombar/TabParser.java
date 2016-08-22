@@ -54,6 +54,7 @@ class TabParser {
             }
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
+            throw new TabParserException();
         }
     }
 
@@ -144,4 +145,6 @@ class TabParser {
         return tabs;
     }
 
+    private class TabParserException extends RuntimeException {
+    }
 }
