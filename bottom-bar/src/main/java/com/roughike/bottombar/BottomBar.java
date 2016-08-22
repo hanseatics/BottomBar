@@ -196,22 +196,28 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     public void setItems(@XmlRes int xmlRes) {
+        setItems(xmlRes, null);
+    }
+
+    public void setItems(@XmlRes int xmlRes, BottomBarTab.Config defaultTabConfig) {
         if (xmlRes == 0) {
             throw new RuntimeException("No items specified for the BottomBar!");
         }
 
-        BottomBarTab.Config config = new BottomBarTab.Config.Builder()
-                .inActiveTabAlpha(inActiveTabAlpha)
-                .activeTabAlpha(activeTabAlpha)
-                .inActiveTabColor(inActiveTabColor)
-                .activeTabColor(activeTabColor)
-                .barColorWhenSelected(defaultBackgroundColor)
-                .badgeBackgroundColor(Color.RED)
-                .titleTextAppearance(titleTextAppearance)
-                .titleTypeFace(getContext(), titleTypeFace)
-                .build();
+        if (defaultTabConfig == null) {
+            defaultTabConfig = new BottomBarTab.Config.Builder()
+                    .inActiveTabAlpha(inActiveTabAlpha)
+                    .activeTabAlpha(activeTabAlpha)
+                    .inActiveTabColor(inActiveTabColor)
+                    .activeTabColor(activeTabColor)
+                    .barColorWhenSelected(defaultBackgroundColor)
+                    .badgeBackgroundColor(Color.RED)
+                    .titleTextAppearance(titleTextAppearance)
+                    .titleTypeFace(getContext(), titleTypeFace)
+                    .build();
+        }
 
-        TabParser parser = new TabParser(getContext(), config, xmlRes);
+        TabParser parser = new TabParser(getContext(), defaultTabConfig, xmlRes);
         updateItems(parser.getTabs());
     }
 

@@ -277,6 +277,10 @@ public class BottomBarTab extends LinearLayout {
         this.titleTextAppearanceResId = resId;
     }
 
+    public int getTitleTextAppearance() {
+        return titleTextAppearanceResId;
+    }
+
     void titleTypeFace(Typeface typeface) {
         this.titleTypeFace = typeface;
     }

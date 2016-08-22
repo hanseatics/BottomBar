@@ -1,5 +1,6 @@
 package com.roughike.bottombar;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
@@ -47,6 +48,38 @@ public class BottomBarTest {
     public void setItems_ThrowsExceptionWithNoResource() {
         BottomBar secondBar = new BottomBar(InstrumentationRegistry.getContext());
         secondBar.setItems(0);
+    }
+
+    @Test
+    public void setItemsWithCustomConfig_OverridesPreviousValues() {
+        float inActiveTabAlpha = 0.69f;
+        float activeTabAlpha = 0.96f;
+        int inActiveTabColor = Color.BLUE;
+        int activeTabColor = Color.GREEN;
+        int defaultBackgroundColor = Color.CYAN;
+        int titleTextAppearance = com.roughike.bottombar.test.R.style.dummy_text_appearance;
+
+        BottomBarTab.Config config = new BottomBarTab.Config.Builder()
+                .inActiveTabAlpha(inActiveTabAlpha)
+                .activeTabAlpha(activeTabAlpha)
+                .inActiveTabColor(inActiveTabColor)
+                .activeTabColor(activeTabColor)
+                .barColorWhenSelected(defaultBackgroundColor)
+                .badgeBackgroundColor(Color.RED)
+                .titleTextAppearance(titleTextAppearance)
+                .build();
+
+        BottomBar newBar = new BottomBar(InstrumentationRegistry.getContext());
+        newBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three, config);
+
+        BottomBarTab first = newBar.getTabAtPosition(0);
+
+        assertEquals(inActiveTabAlpha, first.getInActiveAlpha(), 0);
+        assertEquals(activeTabAlpha, first.getActiveAlpha(), 0);
+        assertEquals(inActiveTabColor, first.getInActiveColor());
+        assertEquals(activeTabColor, first.getActiveColor());
+        assertEquals(defaultBackgroundColor, first.getBarColorWhenSelected());
+        assertEquals(titleTextAppearance, first.getTitleTextAppearance());
     }
 
     @Test
