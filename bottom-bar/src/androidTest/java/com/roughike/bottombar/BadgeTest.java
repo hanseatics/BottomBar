@@ -6,6 +6,7 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,9 @@ import org.junit.runner.RunWith;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by iiro on 8.8.2016.
@@ -55,8 +58,6 @@ public class BadgeTest {
     @Test
     @UiThreadTest
     public void whenBadgeCountIsZero_BadgeIsRemoved() {
-        assertNotNull(nearby.badge);
-
         nearby.setBadgeCount(0);
         assertNull(nearby.badge);
     }
@@ -64,8 +65,6 @@ public class BadgeTest {
     @Test
     @UiThreadTest
     public void whenBadgeCountIsNegative_BadgeIsRemoved() {
-        assertNotNull(nearby.badge);
-
         nearby.setBadgeCount(-1);
         assertNull(nearby.badge);
     }
@@ -73,8 +72,6 @@ public class BadgeTest {
     @Test
     @UiThreadTest
     public void whenBadgeStateRestored_CountPersists() {
-        assertNotNull(nearby.badge);
-
         nearby.setBadgeCount(1);
         assertEquals(1, nearby.badge.getCount());
 
@@ -85,5 +82,17 @@ public class BadgeTest {
         nearby.badge.restoreState(savedInstanceState, tabIndex);
 
         assertEquals(2, nearby.badge.getCount());
+    }
+
+    @Test
+    @UiThreadTest
+    public void badgeRemovedProperly() {
+        assertNotEquals(bottomBar.findViewById(R.id.bb_bottom_bar_item_container), nearby.getOuterView());
+        assertEquals(2, nearby.getOuterView().getChildCount());
+        assertTrue(nearby.getOuterView().getChildAt(1) instanceof BottomBarBadge);
+
+        nearby.removeBadge();
+        assertNull(nearby.badge);
+        assertEquals(bottomBar.findViewById(R.id.bb_bottom_bar_item_container), nearby.getOuterView());
     }
 }
