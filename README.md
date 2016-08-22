@@ -3,6 +3,8 @@
 
 ## Version 2.0 released!
 
+[The latest version before that can be found in the v1 branch](https://github.com/roughike/BottomBar/tree/v1)
+
 * Cleaner code and better APIs
 * No more unnecessary stuff or spaghetti mess
 * Now the look, feel and behavior is defined in XML, as it should be
