@@ -17,15 +17,15 @@ import java.util.List;
  */
 class TabParser {
     private final Context context;
-    private final BottomBarTab.Config config;
+    private final BottomBarTab.Config defaultTabConfig;
     private final XmlResourceParser parser;
 
     private ArrayList<BottomBarTab> tabs;
     private BottomBarTab workingTab;
 
-    TabParser(Context context, BottomBarTab.Config config, @XmlRes int tabsXmlResId) {
+    TabParser(Context context, BottomBarTab.Config defaultTabConfig, @XmlRes int tabsXmlResId) {
         this.context = context;
-        this.config = config;
+        this.defaultTabConfig = defaultTabConfig;
 
         parser = context.getResources().getXml(tabsXmlResId);
         tabs = new ArrayList<>();
@@ -111,7 +111,7 @@ class TabParser {
 
     private BottomBarTab tabWithDefaults() {
         BottomBarTab tab = new BottomBarTab(context);
-        tab.setConfig(config);
+        tab.setConfig(defaultTabConfig);
 
         return tab;
     }
