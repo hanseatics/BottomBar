@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class ThreeFixedTabsTest {
+public class BottomBarTest {
     private OnTabSelectListener selectListener;
     private OnTabReselectListener reselectListener;
 
@@ -41,6 +41,12 @@ public class ThreeFixedTabsTest {
         bottomBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three);
         bottomBar.setOnTabSelectListener(selectListener);
         bottomBar.setOnTabReselectListener(reselectListener);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void setItems_ThrowsExceptionWithNoResource() {
+        BottomBar secondBar = new BottomBar(InstrumentationRegistry.getContext());
+        secondBar.setItems(0);
     }
 
     @Test
@@ -108,6 +114,16 @@ public class ThreeFixedTabsTest {
 
         bottomBar.setDefaultTab(defaultTabId);
         verify(selectListener).onTabSelected(defaultTabId);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void settingTooLowDefaultPosition_Throws() {
+        bottomBar.setDefaultTabPosition(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void settingTooHighDefaultPosition_Throws() {
+        bottomBar.setDefaultTabPosition(bottomBar.getTabCount());
     }
 
     @Test
