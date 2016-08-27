@@ -109,6 +109,15 @@ public class TabParserTest {
         assertEquals(Color.parseColor("#00F0F0"), tabs.get(4).getBarColorWhenSelected());
     }
 
+    @Test
+    public void badgeBackgroundColorAsExpected() {
+        assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00FF00"), tabs.get(1).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#F00000"), tabs.get(2).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00F000"), tabs.get(3).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00F0F0"), tabs.get(4).getBadgeBackgroundColor());
+    }
+
     private Drawable getDrawableByResource(int iconResId) {
         return ContextCompat.getDrawable(context, iconResId);
     }
