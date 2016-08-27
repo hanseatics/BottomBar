@@ -73,6 +73,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private float activeTabAlpha;
     private int inActiveTabColor;
     private int activeTabColor;
+    private int badgeBackgroundColor;
     private int titleTextAppearance;
     private Typeface titleTypeFace;
     private boolean showShadow;
@@ -139,6 +140,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
+            badgeBackgroundColor = ta.getColor(R.styleable.BottomBar_bb_badgeBackgroundColor, Color.RED);
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
@@ -244,7 +246,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .inActiveTabColor(inActiveTabColor)
                 .activeTabColor(activeTabColor)
                 .barColorWhenSelected(defaultBackgroundColor)
-                .badgeBackgroundColor(Color.RED)
+                .badgeBackgroundColor(badgeBackgroundColor)
                 .titleTextAppearance(titleTextAppearance)
                 .titleTypeFace(titleTypeFace)
                 .build();
@@ -473,6 +475,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setActiveTabColor(@ColorInt int color) {
         activeTabColor = color;
+        refreshTabs();
+    }
+
+    public void setBadgeBackgroundColor(@ColorInt int color) {
+        badgeBackgroundColor = color;
         refreshTabs();
     }
 

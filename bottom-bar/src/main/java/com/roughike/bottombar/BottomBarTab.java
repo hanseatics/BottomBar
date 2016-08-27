@@ -250,6 +250,10 @@ public class BottomBarTab extends LinearLayout {
 
     void setBadgeBackgroundColor(int badgeBackgroundColor) {
         this.badgeBackgroundColor = badgeBackgroundColor;
+
+        if (badge != null) {
+            badge.setColoredCircleBackground(badgeBackgroundColor);
+        }
     }
 
     int getCurrentDisplayedIconColor() {

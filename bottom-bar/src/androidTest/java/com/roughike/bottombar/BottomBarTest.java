@@ -302,7 +302,7 @@ public class BottomBarTest {
         assertNotEquals(testColor, previousIconColor);
         assertNotEquals(testColor, previousTitleColor);
 
-        bottomBar.setInActiveTabColor(Color.GREEN);
+        bottomBar.setInActiveTabColor(testColor);
 
         assertEquals(testColor, inActiveTab.getInActiveColor());
         assertEquals(testColor, inActiveTab.getCurrentDisplayedIconColor());
@@ -324,11 +324,27 @@ public class BottomBarTest {
         assertNotEquals(testColor, previousIconColor);
         assertNotEquals(testColor, previousTitleColor);
 
-        bottomBar.setActiveTabColor(Color.GREEN);
+        bottomBar.setActiveTabColor(testColor);
 
         assertEquals(testColor, activeTab.getActiveColor());
         assertEquals(testColor, activeTab.getCurrentDisplayedIconColor());
         assertEquals(testColor, activeTab.getCurrentDisplayedTitleColor());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenBadgeBackgroundColorSetProgrammatically_ColorIsUpdated() {
+        BottomBarTab inActiveTab = bottomBar.getTabAtPosition(1);
+        inActiveTab.setBadgeCount(3);
+
+        int previousBadgeColor = inActiveTab.getBadgeBackgroundColor();
+        int testColor = Color.GREEN;
+
+        assertNotEquals(testColor, previousBadgeColor);
+
+        bottomBar.setBadgeBackgroundColor(testColor);
+
+        assertEquals(testColor, inActiveTab.getBadgeBackgroundColor());
     }
 
     @Test
