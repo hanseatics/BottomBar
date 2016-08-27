@@ -59,6 +59,7 @@ public class BottomBarTest {
         int inActiveTabColor = Color.BLUE;
         int activeTabColor = Color.GREEN;
         int defaultBackgroundColor = Color.CYAN;
+        int defaultBadgeBackgroundColor = Color.MAGENTA;
         int titleTextAppearance = com.roughike.bottombar.test.R.style.dummy_text_appearance;
 
         BottomBarTab.Config config = new BottomBarTab.Config.Builder()
@@ -67,7 +68,7 @@ public class BottomBarTest {
                 .inActiveTabColor(inActiveTabColor)
                 .activeTabColor(activeTabColor)
                 .barColorWhenSelected(defaultBackgroundColor)
-                .badgeBackgroundColor(Color.RED)
+                .badgeBackgroundColor(defaultBadgeBackgroundColor)
                 .titleTextAppearance(titleTextAppearance)
                 .build();
 
@@ -81,6 +82,7 @@ public class BottomBarTest {
         assertEquals(inActiveTabColor, first.getInActiveColor());
         assertEquals(activeTabColor, first.getActiveColor());
         assertEquals(defaultBackgroundColor, first.getBarColorWhenSelected());
+        assertEquals(defaultBadgeBackgroundColor, first.getBadgeBackgroundColor());
         assertEquals(titleTextAppearance, first.getTitleTextAppearance());
     }
 
