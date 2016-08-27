@@ -213,10 +213,17 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
     }
 
+    /**
+     * Set the items for the BottomBar from XML Resource.
+     */
     public void setItems(@XmlRes int xmlRes) {
         setItems(xmlRes, null);
     }
 
+    /**
+     * Set the item for the BottomBar from XML Resource with a default configuration
+     * for each tab.
+     */
     public void setItems(@XmlRes int xmlRes, BottomBarTab.Config defaultTabConfig) {
         if (xmlRes == 0) {
             throw new RuntimeException("No items specified for the BottomBar!");

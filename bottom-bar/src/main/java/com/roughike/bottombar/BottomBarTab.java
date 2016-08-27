@@ -551,7 +551,7 @@ public class BottomBarTab extends LinearLayout {
         super.onRestoreInstanceState(state);
     }
 
-    static class Config {
+    public static class Config {
         private final float inActiveTabAlpha;
         private final float activeTabAlpha;
         private final int inActiveTabColor;
@@ -572,7 +572,7 @@ public class BottomBarTab extends LinearLayout {
             this.titleTypeFace = builder.titleTypeFace;
         }
 
-        static class Builder {
+        public static class Builder {
             private float inActiveTabAlpha;
             private float activeTabAlpha;
             private int inActiveTabColor;
@@ -582,47 +582,47 @@ public class BottomBarTab extends LinearLayout {
             private int titleTextAppearance;
             private Typeface titleTypeFace;
 
-            Builder inActiveTabAlpha(float alpha) {
+            public Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
                 return this;
             }
 
-            Builder activeTabAlpha(float alpha) {
+            public Builder activeTabAlpha(float alpha) {
                 this.activeTabAlpha = alpha;
                 return this;
             }
 
-            Builder inActiveTabColor(@ColorInt int color) {
+            public Builder inActiveTabColor(@ColorInt int color) {
                 this.inActiveTabColor = color;
                 return this;
             }
 
-            Builder activeTabColor(@ColorInt int color) {
+            public Builder activeTabColor(@ColorInt int color) {
                 this.activeTabColor = color;
                 return this;
             }
 
-            Builder barColorWhenSelected(@ColorInt int color) {
+            public Builder barColorWhenSelected(@ColorInt int color) {
                 this.barColorWhenSelected = color;
                 return this;
             }
 
-            Builder badgeBackgroundColor(@ColorInt int color) {
+            public Builder badgeBackgroundColor(@ColorInt int color) {
                 this.badgeBackgroundColor = color;
                 return this;
             }
 
-            Builder titleTextAppearance(int titleTextAppearance) {
+            public Builder titleTextAppearance(int titleTextAppearance) {
                 this.titleTextAppearance = titleTextAppearance;
                 return this;
             }
 
-            Builder titleTypeFace(Typeface titleTypeFace) {
+            public Builder titleTypeFace(Typeface titleTypeFace) {
                 this.titleTypeFace = titleTypeFace;
                 return this;
             }
 
-            Config build() {
+            public Config build() {
                 return new Config(this);
             }
         }
