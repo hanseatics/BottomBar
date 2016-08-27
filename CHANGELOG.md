@@ -9,6 +9,7 @@
 * Made possible to inflate the BottomBar programmatically.
 * Made it possible to control whether the shadow is shown or not.
 * Made setItems to be public to allow writing tests without a designated Activity
+* Made setters for allowing setting tab colors, alphas, textappearances and typefaces programmatically.
 * Increased test coverage a little bit.
 
 ### 2.0.1
