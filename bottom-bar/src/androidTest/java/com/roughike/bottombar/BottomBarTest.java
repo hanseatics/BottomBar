@@ -1,6 +1,7 @@
 package com.roughike.bottombar;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.inOrder;
@@ -241,5 +243,124 @@ public class BottomBarTest {
         bottomBar.selectTabWithId(com.roughike.bottombar.test.R.id.tab_favorites);
 
         verifyZeroInteractions(reselectListener);
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenInActiveAlphaSetProgrammatically_AlphaIsUpdated() {
+        BottomBarTab inActiveTab = bottomBar.getTabAtPosition(1);
+
+        assertNotEquals(bottomBar.getCurrentTab(), inActiveTab);
+
+        float previousAlpha = inActiveTab.getInActiveAlpha();
+        float testAlpha = 0.69f;
+
+        assertNotEquals(testAlpha, previousAlpha);
+        assertNotEquals(testAlpha, inActiveTab.getIconView().getAlpha());
+        assertNotEquals(testAlpha, inActiveTab.getTitleView().getAlpha());
+
+        bottomBar.setInActiveTabAlpha(testAlpha);
+
+        assertEquals(testAlpha, inActiveTab.getInActiveAlpha(), 0);
+        assertEquals(testAlpha, inActiveTab.getIconView().getAlpha(), 0);
+        assertEquals(testAlpha, inActiveTab.getTitleView().getAlpha(), 0);
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenActiveAlphaSetProgrammatically_AlphaIsUpdated() {
+        BottomBarTab activeTab = bottomBar.getCurrentTab();
+
+        float previousAlpha = activeTab.getActiveAlpha();
+        float testAlpha = 0.69f;
+
+        assertNotEquals(testAlpha, previousAlpha);
+        assertNotEquals(testAlpha, activeTab.getIconView().getAlpha());
+        assertNotEquals(testAlpha, activeTab.getTitleView().getAlpha());
+
+        bottomBar.setActiveTabAlpha(testAlpha);
+
+        assertEquals(testAlpha, activeTab.getActiveAlpha(), 0);
+        assertEquals(testAlpha, activeTab.getIconView().getAlpha(), 0);
+        assertEquals(testAlpha, activeTab.getTitleView().getAlpha(), 0);
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenInActiveColorSetProgrammatically_ColorIsUpdated() {
+        BottomBarTab inActiveTab = bottomBar.getTabAtPosition(1);
+
+        assertNotEquals(bottomBar.getCurrentTab(), inActiveTab);
+
+        int previousInActiveColor = inActiveTab.getInActiveColor();
+        int previousIconColor = inActiveTab.getCurrentDisplayedIconColor();
+        int previousTitleColor = inActiveTab.getCurrentDisplayedTitleColor();
+
+        int testColor = Color.GREEN;
+
+        assertNotEquals(testColor, previousInActiveColor);
+        assertNotEquals(testColor, previousIconColor);
+        assertNotEquals(testColor, previousTitleColor);
+
+        bottomBar.setInActiveTabColor(Color.GREEN);
+
+        assertEquals(testColor, inActiveTab.getInActiveColor());
+        assertEquals(testColor, inActiveTab.getCurrentDisplayedIconColor());
+        assertEquals(testColor, inActiveTab.getCurrentDisplayedTitleColor());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenActiveColorSetProgrammatically_ColorIsUpdated() {
+        BottomBarTab activeTab = bottomBar.getCurrentTab();
+
+        int previousActiveColor = activeTab.getActiveColor();
+        int previousIconColor = activeTab.getCurrentDisplayedIconColor();
+        int previousTitleColor = activeTab.getCurrentDisplayedTitleColor();
+
+        int testColor = Color.GREEN;
+
+        assertNotEquals(testColor, previousActiveColor);
+        assertNotEquals(testColor, previousIconColor);
+        assertNotEquals(testColor, previousTitleColor);
+
+        bottomBar.setActiveTabColor(Color.GREEN);
+
+        assertEquals(testColor, activeTab.getActiveColor());
+        assertEquals(testColor, activeTab.getCurrentDisplayedIconColor());
+        assertEquals(testColor, activeTab.getCurrentDisplayedTitleColor());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenTitleTextAppearanceSetProgrammatically_AppearanceUpdated() {
+        BottomBarTab tab = bottomBar.getCurrentTab();
+
+        int testTextApperance = -666;
+
+        assertNotEquals(testTextApperance, tab.getTitleTextAppearance());
+        assertNotEquals(testTextApperance, tab.getCurrentDisplayedTextAppearance());
+
+        bottomBar.setTabTitleTextAppearance(testTextApperance);
+
+        assertEquals(testTextApperance, tab.getTitleTextAppearance());
+        assertEquals(testTextApperance, tab.getCurrentDisplayedTextAppearance());
+    }
+
+    @Test
+    @UiThreadTest
+    public void whenTitleTypeFaceSetProgrammatically_TypefaceUpdated() {
+        BottomBarTab tab = bottomBar.getCurrentTab();
+
+        Typeface testTypeFace = Typeface.createFromAsset(
+                bottomBar.getContext().getAssets(), "fonts/GreatVibes-Regular.otf");
+
+        assertNotEquals(testTypeFace, tab.getTitleTypeFace());
+        assertNotEquals(testTypeFace, tab.getTitleView().getTypeface());
+
+        bottomBar.setTabTitleTypeface(testTypeFace);
+
+        assertEquals(testTypeFace, tab.getTitleTypeFace());
+        assertEquals(testTypeFace, tab.getTitleView().getTypeface());
     }
 }

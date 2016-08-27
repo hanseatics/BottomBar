@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -73,7 +74,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int inActiveTabColor;
     private int activeTabColor;
     private int titleTextAppearance;
-    private String titleTypeFace;
+    private Typeface titleTypeFace;
     private boolean showShadow;
 
     private View backgroundOverlay;
@@ -128,7 +129,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             isTabletMode = ta.getBoolean(R.styleable.BottomBar_bb_tabletMode, false);
             behaviors = ta.getInteger(R.styleable.BottomBar_bb_behavior, BEHAVIOR_NONE);
             inActiveTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_inActiveTabAlpha,
-                    isShiftingMode()? DEFAULT_INACTIVE_SHIFTING_TAB_ALPHA : 1);
+                    isShiftingMode() ? DEFAULT_INACTIVE_SHIFTING_TAB_ALPHA : 1);
             activeTabAlpha = ta.getFloat(R.styleable.BottomBar_bb_activeTabAlpha, 1);
 
             @ColorInt
@@ -139,7 +140,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
-            titleTypeFace = ta.getString(R.styleable.BottomBar_bb_titleTypeFace);
+            titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
         } finally {
             ta.recycle();
@@ -162,6 +163,15 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     private boolean hasBehavior(int behavior) {
         return (behaviors | behavior) == behaviors;
+    }
+
+    private Typeface getTypeFaceFromAsset(String fontPath) {
+        if (fontPath != null) {
+            return Typeface.createFromAsset(
+                    getContext().getAssets(), fontPath);
+        }
+
+        return null;
     }
 
     private void initializeViews() {
@@ -213,20 +223,24 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         if (defaultTabConfig == null) {
-            defaultTabConfig = new BottomBarTab.Config.Builder()
-                    .inActiveTabAlpha(inActiveTabAlpha)
-                    .activeTabAlpha(activeTabAlpha)
-                    .inActiveTabColor(inActiveTabColor)
-                    .activeTabColor(activeTabColor)
-                    .barColorWhenSelected(defaultBackgroundColor)
-                    .badgeBackgroundColor(Color.RED)
-                    .titleTextAppearance(titleTextAppearance)
-                    .titleTypeFace(getContext(), titleTypeFace)
-                    .build();
+            defaultTabConfig = getTabConfig();
         }
 
         TabParser parser = new TabParser(getContext(), defaultTabConfig, xmlRes);
         updateItems(parser.getTabs());
+    }
+
+    private BottomBarTab.Config getTabConfig() {
+        return new BottomBarTab.Config.Builder()
+                .inActiveTabAlpha(inActiveTabAlpha)
+                .activeTabAlpha(activeTabAlpha)
+                .inActiveTabColor(inActiveTabColor)
+                .activeTabColor(activeTabColor)
+                .barColorWhenSelected(defaultBackgroundColor)
+                .badgeBackgroundColor(Color.RED)
+                .titleTextAppearance(titleTextAppearance)
+                .titleTypeFace(titleTypeFace)
+                .build();
     }
 
     private void updateItems(final List<BottomBarTab> bottomBarItems) {
@@ -307,7 +321,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Set a listener that gets fired when the selected tab changes.
-     * 
+     * <p/>
      * Note: Will be immediately called for the currently selected tab
      * once when set.
      *
@@ -424,6 +438,77 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public BottomBarTab getTabWithId(@IdRes int tabId) {
         return (BottomBarTab) tabContainer.findViewById(tabId);
+    }
+
+    /**
+     * Set alpha value used for inactive BottomBarTabs.
+     */
+    public void setInActiveTabAlpha(float alpha) {
+        inActiveTabAlpha = alpha;
+        refreshTabs();
+    }
+
+    /**
+     * Set alpha value used for active BottomBarTabs.
+     */
+    public void setActiveTabAlpha(float alpha) {
+        activeTabAlpha = alpha;
+        refreshTabs();
+    }
+
+    public void setInActiveTabColor(@ColorInt int color) {
+        inActiveTabColor = color;
+        refreshTabs();
+    }
+
+    /**
+     * Set active color used for selected BottomBarTabs.
+     */
+    public void setActiveTabColor(@ColorInt int color) {
+        activeTabColor = color;
+        refreshTabs();
+    }
+
+    /**
+     * Set custom text apperance for all BottomBarTabs.
+     */
+    public void setTabTitleTextAppearance(int textAppearance) {
+        titleTextAppearance = textAppearance;
+        refreshTabs();
+    }
+
+    /**
+     * Set a custom typeface for all tab's titles.
+     *
+     * @param fontPath path for your custom font file, such as fonts/MySuperDuperFont.ttf.
+     *                 In that case your font path would look like src/main/assets/fonts/MySuperDuperFont.ttf,
+     *                 but you only need to provide fonts/MySuperDuperFont.ttf, as the asset folder
+     *                 will be auto-filled for you.
+     */
+    public void setTabTitleTypeface(String fontPath) {
+        Typeface actualTypeface = getTypeFaceFromAsset(fontPath);
+        setTabTitleTypeface(actualTypeface);
+    }
+
+    /**
+     * Set a custom typeface for all tab's titles.
+     */
+    public void setTabTitleTypeface(Typeface typeface) {
+        titleTypeFace = typeface;
+        refreshTabs();
+    }
+
+    private void refreshTabs() {
+        int tabCount = getTabCount();
+
+        if (tabCount > 0) {
+            BottomBarTab.Config newConfig = getTabConfig();
+
+            for (int i = 0; i < getTabCount(); i++) {
+                BottomBarTab tab = getTabAtPosition(i);
+                tab.setConfig(newConfig);
+            }
+        }
     }
 
     @Override
