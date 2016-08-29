@@ -291,7 +291,7 @@ nearby.removeBadge/();
 
 ## All customization options
 
-**For the BottomBar:**
+### For the BottomBar
 
 ```xml
 <com.roughike.bottombar.BottomBar
@@ -336,7 +336,7 @@ nearby.removeBadge/();
     <dd>controls whether the shadow is shown or hidden, defaults to true.</dd>
 </dl>
 
-**For the tabs:**
+### For the tabs
 
 ```xml
 <tab
