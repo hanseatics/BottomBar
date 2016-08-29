@@ -2,12 +2,14 @@ package com.roughike.bottombar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -76,23 +78,21 @@ public class BottomBarTab extends LinearLayout {
         sixteenDps = MiscUtils.dpToPixel(context, 16);
     }
 
+    void setConfig(Config config) {
+        setInActiveAlpha(config.inActiveTabAlpha);
+        setActiveAlpha(config.activeTabAlpha);
+        setInActiveColor(config.inActiveTabColor);
+        setActiveColor(config.activeTabColor);
+        setBarColorWhenSelected(config.barColorWhenSelected);
+        setBadgeBackgroundColor(config.badgeBackgroundColor);
+        setTitleTextAppearance(config.titleTextAppearance);
+        setTitleTypeface(config.titleTypeFace);
+    }
+
     void prepareLayout() {
         int layoutResource;
 
-        switch (type) {
-            case FIXED:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed;
-                break;
-            case SHIFTING:
-                layoutResource = R.layout.bb_bottom_bar_item_shifting;
-                break;
-            case TABLET:
-                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
-                break;
-            default:
-                // should never happen
-                throw new RuntimeException("Unknown BottomBarTab type.");
-        }
+        layoutResource = getLayoutResource();
 
         inflate(getContext(), layoutResource, this);
         setOrientation(VERTICAL);
@@ -107,13 +107,33 @@ public class BottomBarTab extends LinearLayout {
             titleView.setText(title);
         }
 
-        initCustomTextAppearance();
-        initCustomFont();
+        updateCustomTextAppearance();
+        updateCustomTypeface();
+    }
+
+    @VisibleForTesting
+    int getLayoutResource() {
+        int layoutResource;
+        switch (type) {
+            case FIXED:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed;
+                break;
+            case SHIFTING:
+                layoutResource = R.layout.bb_bottom_bar_item_shifting;
+                break;
+            case TABLET:
+                layoutResource = R.layout.bb_bottom_bar_item_fixed_tablet;
+                break;
+            default:
+                // should never happen
+                throw new RuntimeException("Unknown BottomBarTab type.");
+        }
+        return layoutResource;
     }
 
     @SuppressWarnings("deprecation")
-    private void initCustomTextAppearance() {
-        if (type == Type.TABLET || titleTextAppearanceResId == 0) {
+    private void updateCustomTextAppearance() {
+        if (titleView == null || titleTextAppearanceResId == 0) {
             return;
         }
 
@@ -122,10 +142,12 @@ public class BottomBarTab extends LinearLayout {
         } else {
             titleView.setTextAppearance(getContext(), titleTextAppearanceResId);
         }
+
+        titleView.setTag(titleTextAppearanceResId);
     }
 
-    private void initCustomFont() {
-        if (titleTypeFace != null) {
+    private void updateCustomTypeface() {
+        if (titleTypeFace != null && titleView != null) {
             titleView.setTypeface(titleTypeFace);
         }
     }
@@ -158,6 +180,10 @@ public class BottomBarTab extends LinearLayout {
         return title;
     }
 
+    TextView getTitleView() {
+        return titleView;
+    }
+
     void setTitle(String title) {
         this.title = title;
     }
@@ -168,6 +194,10 @@ public class BottomBarTab extends LinearLayout {
 
     void setInActiveAlpha(float inActiveAlpha) {
         this.inActiveAlpha = inActiveAlpha;
+
+        if (!isActive) {
+            setAlphas(inActiveAlpha);
+        }
     }
 
     float getActiveAlpha() {
@@ -176,6 +206,10 @@ public class BottomBarTab extends LinearLayout {
 
     void setActiveAlpha(float activeAlpha) {
         this.activeAlpha = activeAlpha;
+
+        if (isActive) {
+            setAlphas(activeAlpha);
+        }
     }
 
     int getInActiveColor() {
@@ -184,6 +218,10 @@ public class BottomBarTab extends LinearLayout {
 
     void setInActiveColor(int inActiveColor) {
         this.inActiveColor = inActiveColor;
+
+        if (!isActive) {
+            setColors(inActiveColor);
+        }
     }
 
     int getActiveColor() {
@@ -192,6 +230,10 @@ public class BottomBarTab extends LinearLayout {
 
     void setActiveColor(int activeIconColor) {
         this.activeColor = activeIconColor;
+
+        if (isActive) {
+            setColors(activeColor);
+        }
     }
 
     int getBarColorWhenSelected() {
@@ -208,6 +250,38 @@ public class BottomBarTab extends LinearLayout {
 
     void setBadgeBackgroundColor(int badgeBackgroundColor) {
         this.badgeBackgroundColor = badgeBackgroundColor;
+
+        if (badge != null) {
+            badge.setColoredCircleBackground(badgeBackgroundColor);
+        }
+    }
+
+    int getCurrentDisplayedIconColor() {
+        Object tag = iconView.getTag();
+
+        if (tag instanceof Integer) {
+            return (int) iconView.getTag();
+        }
+
+        return 0;
+    }
+
+    int getCurrentDisplayedTitleColor() {
+        if (titleView != null) {
+            return titleView.getCurrentTextColor();
+        }
+
+        return 0;
+    }
+
+    int getCurrentDisplayedTextAppearance() {
+        Object tag = titleView.getTag();
+
+        if (titleView != null && tag instanceof Integer) {
+            return (int) titleView.getTag();
+        }
+
+        return 0;
     }
 
     public void setBadgeCount(int count) {
@@ -255,30 +329,35 @@ public class BottomBarTab extends LinearLayout {
     @SuppressWarnings("deprecation")
     void setTitleTextAppearance(int resId) {
         this.titleTextAppearanceResId = resId;
+        updateCustomTextAppearance();
     }
 
-    void titleTypeFace(Typeface typeface) {
+    public int getTitleTextAppearance() {
+        return titleTextAppearanceResId;
+    }
+
+    void setTitleTypeface(Typeface typeface) {
         this.titleTypeFace = typeface;
+        updateCustomTypeface();
+    }
+
+    Typeface getTitleTypeFace() {
+        return titleTypeFace;
     }
 
     void select(boolean animate) {
         isActive = true;
 
-        setColors(activeColor);
-
         if (animate) {
             setTopPaddingAnimated(iconView.getPaddingTop(), sixDps);
             animateIcon(activeAlpha);
             animateTitle(ACTIVE_TITLE_SCALE, activeAlpha);
+            animateColors(inActiveColor, activeColor);
         } else {
             setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
-
-            ViewCompat.setAlpha(iconView, activeAlpha);
-
-            if (titleView != null) {
-                ViewCompat.setAlpha(titleView, activeAlpha);
-            }
+            setColors(activeColor);
+            setAlphas(activeAlpha);
         }
 
         if (badge != null) {
@@ -291,8 +370,6 @@ public class BottomBarTab extends LinearLayout {
 
         boolean isShifting = type == Type.SHIFTING;
 
-        setColors(inActiveColor);
-
         float scale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
         int iconPaddingTop = isShifting ? sixteenDps : eightDps;
 
@@ -300,15 +377,12 @@ public class BottomBarTab extends LinearLayout {
             setTopPaddingAnimated(iconView.getPaddingTop(), iconPaddingTop);
             animateTitle(scale, inActiveAlpha);
             animateIcon(inActiveAlpha);
+            animateColors(activeColor, inActiveColor);
         } else {
             setTitleScale(scale);
             setTopPadding(iconPaddingTop);
-
-            ViewCompat.setAlpha(iconView, inActiveAlpha);
-
-            if (titleView != null) {
-                ViewCompat.setAlpha(titleView, inActiveAlpha);
-            }
+            setColors(inActiveColor);
+            setAlphas(inActiveAlpha);
         }
 
         if (!isShifting && badge != null) {
@@ -316,11 +390,39 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    private void setColors(int color) {
-        iconView.setColorFilter(color);
+    private void animateColors(int previousColor, int color) {
+        ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(previousColor, color);
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+               setColors((Integer) valueAnimator.getAnimatedValue());
+            }
+        });
 
-        if (type != Type.TABLET) {
+        anim.setDuration(150);
+        anim.start();
+    }
+
+    private void setColors(int color) {
+        if (iconView != null) {
+            iconView.setColorFilter(color);
+            iconView.setTag(color);
+        }
+
+        if (titleView != null) {
             titleView.setTextColor(color);
+        }
+    }
+
+    private void setAlphas(float alpha) {
+        if (iconView != null) {
+            ViewCompat.setAlpha(iconView, alpha);
+        }
+
+        if (titleView != null) {
+            ViewCompat.setAlpha(titleView, alpha);
         }
     }
 
@@ -451,5 +553,82 @@ public class BottomBarTab extends LinearLayout {
             state = bundle.getParcelable("superstate");
         }
         super.onRestoreInstanceState(state);
+    }
+
+    public static class Config {
+        private final float inActiveTabAlpha;
+        private final float activeTabAlpha;
+        private final int inActiveTabColor;
+        private final int activeTabColor;
+        private final int barColorWhenSelected;
+        private final int badgeBackgroundColor;
+        private final int titleTextAppearance;
+        private final Typeface titleTypeFace;
+
+        private Config(Builder builder) {
+            this.inActiveTabAlpha = builder.inActiveTabAlpha;
+            this.activeTabAlpha = builder.activeTabAlpha;
+            this.inActiveTabColor = builder.inActiveTabColor;
+            this.activeTabColor = builder.activeTabColor;
+            this.barColorWhenSelected = builder.barColorWhenSelected;
+            this.badgeBackgroundColor = builder.badgeBackgroundColor;
+            this.titleTextAppearance = builder.titleTextAppearance;
+            this.titleTypeFace = builder.titleTypeFace;
+        }
+
+        public static class Builder {
+            private float inActiveTabAlpha;
+            private float activeTabAlpha;
+            private int inActiveTabColor;
+            private int activeTabColor;
+            private int barColorWhenSelected;
+            private int badgeBackgroundColor;
+            private int titleTextAppearance;
+            private Typeface titleTypeFace;
+
+            public Builder inActiveTabAlpha(float alpha) {
+                this.inActiveTabAlpha = alpha;
+                return this;
+            }
+
+            public Builder activeTabAlpha(float alpha) {
+                this.activeTabAlpha = alpha;
+                return this;
+            }
+
+            public Builder inActiveTabColor(@ColorInt int color) {
+                this.inActiveTabColor = color;
+                return this;
+            }
+
+            public Builder activeTabColor(@ColorInt int color) {
+                this.activeTabColor = color;
+                return this;
+            }
+
+            public Builder barColorWhenSelected(@ColorInt int color) {
+                this.barColorWhenSelected = color;
+                return this;
+            }
+
+            public Builder badgeBackgroundColor(@ColorInt int color) {
+                this.badgeBackgroundColor = color;
+                return this;
+            }
+
+            public Builder titleTextAppearance(int titleTextAppearance) {
+                this.titleTextAppearance = titleTextAppearance;
+                return this;
+            }
+
+            public Builder titleTypeFace(Typeface titleTypeFace) {
+                this.titleTypeFace = titleTypeFace;
+                return this;
+            }
+
+            public Config build() {
+                return new Config(this);
+            }
+        }
     }
 }

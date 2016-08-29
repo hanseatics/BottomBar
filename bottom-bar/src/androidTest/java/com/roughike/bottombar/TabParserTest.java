@@ -27,8 +27,11 @@ public class TabParserTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getContext();
-        tabs = new TabParser(context, new TabParser.Config.Builder().build(), com.example.bottombar.sample.test.R.xml.dummy_tab_xml)
-                .getTabs();
+        tabs = new TabParser(
+                context,
+                new BottomBarTab.Config.Builder().build(),
+                com.roughike.bottombar.test.R.xml.dummy_tabs_five
+        ).getTabs();
     }
 
     @Test
@@ -68,7 +71,7 @@ public class TabParserTest {
         assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getActiveColor());
 
         assertEquals(
-                ContextCompat.getColor(context, com.example.bottombar.sample.test.R.color.test_random_color),
+                ContextCompat.getColor(context, com.roughike.bottombar.test.R.color.test_random_color),
                 tabs.get(1).getActiveColor()
         );
 
@@ -88,7 +91,7 @@ public class TabParserTest {
 
     @Test
     public void iconResourceIdsAsExpected() {
-        int expectedId = com.example.bottombar.sample.test.R.drawable.empty_icon;
+        int expectedId = com.roughike.bottombar.test.R.drawable.empty_icon;
 
         assertEquals(expectedId, tabs.get(0).getIconResId());
         assertEquals(expectedId, tabs.get(1).getIconResId());
@@ -104,6 +107,15 @@ public class TabParserTest {
         assertEquals(Color.parseColor("#F00000"), tabs.get(2).getBarColorWhenSelected());
         assertEquals(Color.parseColor("#00F000"), tabs.get(3).getBarColorWhenSelected());
         assertEquals(Color.parseColor("#00F0F0"), tabs.get(4).getBarColorWhenSelected());
+    }
+
+    @Test
+    public void badgeBackgroundColorAsExpected() {
+        assertEquals(Color.parseColor("#FF0000"), tabs.get(0).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00FF00"), tabs.get(1).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#F00000"), tabs.get(2).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00F000"), tabs.get(3).getBadgeBackgroundColor());
+        assertEquals(Color.parseColor("#00F0F0"), tabs.get(4).getBadgeBackgroundColor());
     }
 
     private Drawable getDrawableByResource(int iconResId) {
