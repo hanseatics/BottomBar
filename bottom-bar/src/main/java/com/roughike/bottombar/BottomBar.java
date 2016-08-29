@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -413,8 +412,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public BottomBarTab getTabAtPosition(int position) {
         View child = tabContainer.getChildAt(position);
 
-        if (child instanceof FrameLayout) {
-            return findTabInLayout((FrameLayout) child);
+        if (child instanceof BadgeContainer) {
+            return findTabInLayout((BadgeContainer) child);
         }
 
         return (BottomBarTab) child;
@@ -543,15 +542,15 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void updateTitleBottomPadding() {
-        if (tabContainer == null) {
+        int tabCount = getTabCount();
+
+        if (tabContainer == null || tabCount == 0 || !isShiftingMode()) {
             return;
         }
 
-        int childCount = getTabCount();
-
-        for (int i = 0; i < childCount; i++) {
-            View tab = tabContainer.getChildAt(i);
-            TextView title = (TextView) tab.findViewById(R.id.bb_bottom_bar_title);
+        for (int i = 0; i < tabCount; i++) {
+            BottomBarTab tab = getTabAtPosition(i);
+            TextView title = tab.getTitleView();
 
             if (title == null) {
                 continue;
