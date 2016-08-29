@@ -6,6 +6,8 @@
 
 ## Version 2.0 released!
 
+[The latest version before that can be found in the v1 branch](https://github.com/roughike/BottomBar/tree/v1)
+
 * Cleaner code and better APIs
 * No more unnecessary stuff or spaghetti mess
 * Now the look, feel and behavior is defined in XML, as it should be
@@ -303,7 +305,8 @@ nearby.removeBadge/();
     app:bb_inActiveTabColor="#222222"
     app:bb_activeTabColor="@color/colorPrimary"
     app:bb_titleTextAppearance="@style/MyTextAppearance"
-    app:bb_titleTypeFace="fonts/MySuperDuperFont.ttf" />
+    app:bb_titleTypeFace="fonts/MySuperDuperFont.ttf"
+    app:bb_showShadow="true" />
 ```
 
 <dl>
@@ -325,6 +328,8 @@ nearby.removeBadge/();
     <dd>custom textAppearance for the titles</dd>
     <dt>bb_titleTypeFace</dt>
     <dd>path for your custom font file, such as <code>fonts/MySuperDuperFont.ttf</code>. In that case your font path would look like <code>src/main/assets/fonts/MySuperDuperFont.ttf</code>, but you only need to provide <code>fonts/MySuperDuperFont.ttf</code>, as the asset folder will be auto-filled for you.</dd>
+    <dt>bb_showShadow</dt>
+    <dd>controls whether the shadow is shown or hidden, defaults to true.</dd>
 </dl>
 
 ## Apps using BottomBar

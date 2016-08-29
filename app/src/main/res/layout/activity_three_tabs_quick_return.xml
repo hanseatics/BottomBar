@@ -8,7 +8,8 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <TextView
             android:layout_width="match_parent"
@@ -24,6 +25,6 @@
         android:layout_height="60dp"
         android:layout_gravity="bottom"
         app:bb_tabXmlResource="@xml/bottombar_tabs_three"
-        app:bb_behavior="shy"/>
+        app:bb_behavior="underNavbar|shy"/>
 
 </android.support.design.widget.CoordinatorLayout>

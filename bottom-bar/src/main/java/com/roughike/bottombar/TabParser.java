@@ -3,8 +3,6 @@ package com.roughike.bottombar;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
 import android.support.annotation.XmlRes;
 import android.support.v4.content.ContextCompat;
 
@@ -19,15 +17,15 @@ import java.util.List;
  */
 class TabParser {
     private final Context context;
-    private final Config config;
+    private final BottomBarTab.Config defaultTabConfig;
     private final XmlResourceParser parser;
 
     private ArrayList<BottomBarTab> tabs;
     private BottomBarTab workingTab;
 
-    TabParser(Context context, Config config, @XmlRes int tabsXmlResId) {
+    TabParser(Context context, BottomBarTab.Config defaultTabConfig, @XmlRes int tabsXmlResId) {
         this.context = context;
-        this.config = config;
+        this.defaultTabConfig = defaultTabConfig;
 
         parser = context.getResources().getXml(tabsXmlResId);
         tabs = new ArrayList<>();
@@ -56,6 +54,7 @@ class TabParser {
             }
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
+            throw new TabParserException();
         }
     }
 
@@ -113,14 +112,7 @@ class TabParser {
 
     private BottomBarTab tabWithDefaults() {
         BottomBarTab tab = new BottomBarTab(context);
-        tab.setInActiveAlpha(config.inActiveTabAlpha);
-        tab.setActiveAlpha(config.activeTabAlpha);
-        tab.setInActiveColor(config.inActiveTabColor);
-        tab.setActiveColor(config.activeTabColor);
-        tab.setBarColorWhenSelected(config.barColorWhenSelected);
-        tab.setBadgeBackgroundColor(config.badgeBackgroundColor);
-        tab.setTitleTextAppearance(config.titleTextAppearance);
-        tab.titleTypeFace(config.titleTypeFace);
+        tab.setConfig(defaultTabConfig);
 
         return tab;
     }
@@ -153,84 +145,6 @@ class TabParser {
         return tabs;
     }
 
-    static class Config {
-        private final float inActiveTabAlpha;
-        private final float activeTabAlpha;
-        private final int inActiveTabColor;
-        private final int activeTabColor;
-        private final int barColorWhenSelected;
-        private final int badgeBackgroundColor;
-        private final int titleTextAppearance;
-        private final Typeface titleTypeFace;
-
-        private Config(Builder builder) {
-            this.inActiveTabAlpha = builder.inActiveTabAlpha;
-            this.activeTabAlpha = builder.activeTabAlpha;
-            this.inActiveTabColor = builder.inActiveTabColor;
-            this.activeTabColor = builder.activeTabColor;
-            this.barColorWhenSelected = builder.barColorWhenSelected;
-            this.badgeBackgroundColor = builder.badgeBackgroundColor;
-            this.titleTextAppearance = builder.titleTextAppearance;
-            this.titleTypeFace = builder.titleTypeFace;
-        }
-
-        static class Builder {
-            private float inActiveTabAlpha;
-            private float activeTabAlpha;
-            private int inActiveTabColor;
-            private int activeTabColor;
-            private int barColorWhenSelected;
-            private int badgeBackgroundColor;
-            private int titleTextAppearance;
-            private Typeface titleTypeFace;
-
-            Builder inActiveTabAlpha(float alpha) {
-                this.inActiveTabAlpha = alpha;
-                return this;
-            }
-
-            Builder activeTabAlpha(float alpha) {
-                this.activeTabAlpha = alpha;
-                return this;
-            }
-
-            Builder inActiveTabColor(@ColorInt int color) {
-                this.inActiveTabColor = color;
-                return this;
-            }
-
-            Builder activeTabColor(@ColorInt int color) {
-                this.activeTabColor = color;
-                return this;
-            }
-
-            Builder barColorWhenSelected(@ColorInt int color) {
-                this.barColorWhenSelected = color;
-                return this;
-            }
-
-            Builder badgeBackgroundColor(@ColorInt int color) {
-                this.badgeBackgroundColor = color;
-                return this;
-            }
-
-            Builder titleTextAppearance(int titleTextAppearance) {
-                this.titleTextAppearance = titleTextAppearance;
-                return this;
-            }
-
-            Builder titleTypeFace(Context context, String titleTypeFace) {
-                if (titleTypeFace != null) {
-                    this.titleTypeFace = Typeface.createFromAsset(
-                            context.getAssets(), titleTypeFace);
-                }
-
-                return this;
-            }
-
-            Config build() {
-                return new Config(this);
-            }
-        }
+    private class TabParserException extends RuntimeException {
     }
 }
