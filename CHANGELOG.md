@@ -2,6 +2,11 @@
 
 (or: y u no add shiny new things?!)
 
+### 2.0.3
+
+* Fixed a bug in the Badge positioning, causing the Badges to clip when there was many tabs.
+* Fixed a bug where the lower portion of unselected titles were clipped off in fixed mode.
+
 ### 2.0.2
 
 * Now we're animating the color change on tab titles and icons.
