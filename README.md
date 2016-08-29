@@ -291,6 +291,8 @@ nearby.removeBadge/();
 
 ## All customization options
 
+**For the BottomBar:**
+
 ```xml
 <com.roughike.bottombar.BottomBar
     android:id="@+id/bottomBar"
@@ -324,12 +326,42 @@ nearby.removeBadge/();
     <dd>the color for inactive tabs, that's used in the tab icons and titles.</dd>
     <dt>bb_activeTabColor</dt>
     <dd>the color for active tabs, that's used in the tab icons and titles.</dd>
+    <dt>bb_badgeBackgroundColor</dt>
+    <dd>the background color for any Badges in this BottomBar.</dd>
     <dt>bb_titleTextAppearance</dt>
     <dd>custom textAppearance for the titles</dd>
     <dt>bb_titleTypeFace</dt>
     <dd>path for your custom font file, such as <code>fonts/MySuperDuperFont.ttf</code>. In that case your font path would look like <code>src/main/assets/fonts/MySuperDuperFont.ttf</code>, but you only need to provide <code>fonts/MySuperDuperFont.ttf</code>, as the asset folder will be auto-filled for you.</dd>
     <dt>bb_showShadow</dt>
     <dd>controls whether the shadow is shown or hidden, defaults to true.</dd>
+</dl>
+
+**For the tabs:**
+
+```xml
+<tab
+    id="@+id/tab_recents"
+    title="Recents"
+    icon="@drawable/empty_icon"
+    inActiveColor="#00FF00"
+    activeColor="#FF0000"
+    barColorWhenSelected="#FF0000"
+    badgeBackgroundColor="#FF0000" />
+```
+
+<dl>
+    <dt>inActiveColor</dt>
+    <dd>the color for inactive tabs, that's used in the tab icons and titles.</dd>
+    <dt>activeColor</dt>
+    <dd>the color for active tabs, that's used in the tab icons and titles.</dd>
+    <dt>barColorWhenSelected</dt>
+    <dd>the color that the whole BottomBar should be when selected this tab.</dd>
+    <dt>badgeBackgroundColor</dt>
+    <dd>the background color for any Badges in this tab.</dd>
+    <dt></dt>
+    <dd></dd>
+    <dt></dt>
+    <dd></dd>
 </dl>
 
 ## Apps using BottomBar
