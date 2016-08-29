@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /*
@@ -118,7 +117,7 @@ class BottomBarBadge extends TextView {
         ViewGroup tabContainer = (ViewGroup) tab.getParent();
         tabContainer.removeView(tab);
 
-        final FrameLayout badgeContainer = new FrameLayout(getContext());
+        final BadgeContainer badgeContainer = new BadgeContainer(getContext());
         badgeContainer.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -138,7 +137,7 @@ class BottomBarBadge extends TextView {
     }
 
     void removeFromTab(BottomBarTab tab) {
-        FrameLayout badgeAndTabContainer = (FrameLayout) getParent();
+        BadgeContainer badgeAndTabContainer = (BadgeContainer) getParent();
         ViewGroup originalTabContainer = (ViewGroup) badgeAndTabContainer.getParent();
 
         badgeAndTabContainer.removeView(tab);
