@@ -30,9 +30,6 @@ import android.widget.TextView;
  * limitations under the License.
  */
 class BottomBarBadge extends TextView {
-    @VisibleForTesting
-    static final String STATE_COUNT = "STATE_BADGE_COUNT_FOR_TAB_";
-
     private int count;
     private boolean isVisible = false;
 
@@ -169,15 +166,5 @@ class BottomBarBadge extends TextView {
         } else {
             setBackgroundDrawable(background);
         }
-    }
-
-    Bundle saveState(int tabIndex) {
-        Bundle state = new Bundle();
-        state.putInt(STATE_COUNT + tabIndex, count);
-        return state;
-    }
-
-    void restoreState(Bundle bundle, int tabIndex) {
-        setCount(bundle.getInt(STATE_COUNT + tabIndex, count));
     }
 }

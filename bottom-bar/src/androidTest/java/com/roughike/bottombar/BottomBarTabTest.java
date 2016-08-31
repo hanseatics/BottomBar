@@ -52,7 +52,7 @@ public class BottomBarTabTest {
         assertEquals(69, tab.getIndexInTabContainer());
 
         Bundle savedState = (Bundle) tab.onSaveInstanceState();
-        assertEquals(5, savedState.getInt(BottomBarBadge.STATE_COUNT + 69));
+        assertEquals(5, savedState.getInt(BottomBarTab.STATE_BADGE_COUNT + 69));
 
         tab.setBadgeCount(9);
         assertEquals(9, tab.badge.getCount());
