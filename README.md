@@ -366,6 +366,8 @@ nearby.removeBadge/();
 
 ## Apps using BottomBar
 
+
+  * [Nearby](https://play.google.com/store/apps/details?id=com.synergetechsolutions.nearbylive) : A location-based social networking app with over 5 million users.
   * [FragNav](https://github.com/ncapdevi/FragNav) : An Android Library for managing multiple stacks of Fragments. BottomBar is used in the sample app.
   * [BottomNavigationBar](https://github.com/pocheshire/BottomNavigationBar) : BottomBar ported to C# for Xamarin developers
   * [KyudoScoreBookTeam](https://play.google.com/store/apps/details?id=com.bowyer.app.android.kyudoscoreteam&hl=en) : BottomBar is used in the KyudoScoreBookTeam app.
