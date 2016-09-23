@@ -25,6 +25,7 @@ public class ThreeTabsActivity extends Activity {
         messageView = (TextView) findViewById(R.id.messageView);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setItems(R.xml.bottombar_tabs_three);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
