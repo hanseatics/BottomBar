@@ -337,9 +337,22 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param listener a listener for monitoring changes in tab selection.
      */
     public void setOnTabSelectListener(@Nullable OnTabSelectListener listener) {
+        setOnTabSelectListener(listener, true);
+    }
+
+    /**
+     * Set a listener that gets fired when the selected tab changes.
+     *
+     * Note: Will be immediately called for the currently selected tab
+     * once when set.
+     *
+     * @param listener a listener for monitoring changes in tab selection.
+     * @param shouldFireOnset wheter the listener should trigger a tab selection or not when set
+     */
+    public void setOnTabSelectListener(@Nullable OnTabSelectListener listener, boolean shouldFireOnset) {
         onTabSelectListener = listener;
 
-        if (onTabSelectListener != null && getTabCount() > 0) {
+        if (shouldFireOnset && onTabSelectListener != null && getTabCount() > 0) {
             listener.onTabSelected(getCurrentTabId());
         }
     }
