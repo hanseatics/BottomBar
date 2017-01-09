@@ -98,8 +98,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean shyHeightAlreadyCalculated;
     private boolean navBarAccountedHeightCalculated;
 
-    private List<BottomBarTab> mBottomBarItems;
-    private BottomBarTab[] tabViews;
+    private BottomBarTab[] currentTabs;
 
     public BottomBar(Context context) {
         super(context);
@@ -300,19 +299,14 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             index++;
         }
 
-        mBottomBarItems = bottomBarItems;
-        tabViews = viewsToAdd;
+        currentTabs = viewsToAdd;
 
         if (!isTabletMode) {
-            resizeTabsToCorrectSizes(bottomBarItems, viewsToAdd);
+            resizeTabsToCorrectSizes(viewsToAdd);
         }
     }
 
-    private void resizeTabsToCorrectSizes(List<BottomBarTab> bottomBarItems, BottomBarTab[] viewsToAdd) {
-        if (tabContainer.getChildCount() != 0) {
-            tabContainer.removeAllViews();
-        }
-
+    private void resizeTabsToCorrectSizes(BottomBarTab[] tabsToAdd) {
         int viewWidth = MiscUtils.pixelToDp(getContext(), getWidth());
 
         if (viewWidth <= 0) {
@@ -320,29 +314,33 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         int proposedItemWidth = Math.min(
-                MiscUtils.dpToPixel(getContext(), viewWidth / bottomBarItems.size()),
+                MiscUtils.dpToPixel(getContext(), viewWidth / tabsToAdd.length),
                 maxFixedItemWidth
         );
 
         inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
-        activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (bottomBarItems.size() * 0.1)));
+        activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * (tabsToAdd.length * 0.1)));
         int height = Math.round(getContext().getResources().getDimension(R.dimen.bb_height));
 
-        for (BottomBarTab bottomBarView : viewsToAdd) {
-            LayoutParams params;
+        for (BottomBarTab tabView : tabsToAdd) {
+            ViewGroup.LayoutParams params = tabView.getLayoutParams();
+            params.height = height;
 
             if (isShiftingMode()) {
-                if (bottomBarView.isActive()) {
-                    params = new LayoutParams(activeShiftingItemWidth, height);
+                if (tabView.isActive()) {
+                    params.width = activeShiftingItemWidth;
                 } else {
-                    params = new LayoutParams(inActiveShiftingItemWidth, height);
+                    params.width = inActiveShiftingItemWidth;
                 }
             } else {
-                params = new LayoutParams(proposedItemWidth, height);
+                params.width = proposedItemWidth;
             }
 
-            bottomBarView.setLayoutParams(params);
-            tabContainer.addView(bottomBarView);
+            if (tabView.getParent() == null) {
+                tabContainer.addView(tabView);
+            }
+
+            tabView.requestLayout();
         }
     }
 
@@ -549,7 +547,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (changed) {
             if (!isTabletMode) {
-                resizeTabsToCorrectSizes(mBottomBarItems, tabViews);
+                resizeTabsToCorrectSizes(currentTabs);
             }
 
             updateTitleBottomPadding();
