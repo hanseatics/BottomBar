@@ -2,6 +2,12 @@
 
 (or: y u no add shiny new things?!)
 
+### 2.0.3
+
+* Fixed a bug in the Badge positioning, causing the Badges to clip when there was many tabs.
+* Fixed a bug where the lower portion of unselected titles were clipped off in fixed mode.
+*  Made changes to Badge restoration logic to fix [445](https://github.com/roughike/BottomBar/issues/445). Credit goes to [@Kevinrob](https://github.com/Kevinrob) for reporting and helping to reproduce the issue.
+
 ### 2.0.2
 
 * Now we're animating the color change on tab titles and icons.

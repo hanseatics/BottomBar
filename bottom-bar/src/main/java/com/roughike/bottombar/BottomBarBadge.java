@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /*
@@ -31,9 +30,6 @@ import android.widget.TextView;
  * limitations under the License.
  */
 class BottomBarBadge extends TextView {
-    @VisibleForTesting
-    static final String STATE_COUNT = "STATE_BADGE_COUNT_FOR_TAB_";
-
     private int count;
     private boolean isVisible = false;
 
@@ -118,7 +114,7 @@ class BottomBarBadge extends TextView {
         ViewGroup tabContainer = (ViewGroup) tab.getParent();
         tabContainer.removeView(tab);
 
-        final FrameLayout badgeContainer = new FrameLayout(getContext());
+        final BadgeContainer badgeContainer = new BadgeContainer(getContext());
         badgeContainer.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -138,7 +134,7 @@ class BottomBarBadge extends TextView {
     }
 
     void removeFromTab(BottomBarTab tab) {
-        FrameLayout badgeAndTabContainer = (FrameLayout) getParent();
+        BadgeContainer badgeAndTabContainer = (BadgeContainer) getParent();
         ViewGroup originalTabContainer = (ViewGroup) badgeAndTabContainer.getParent();
 
         badgeAndTabContainer.removeView(tab);
@@ -151,11 +147,7 @@ class BottomBarBadge extends TextView {
         ViewGroup.LayoutParams params = getLayoutParams();
 
         int size = Math.max(getWidth(), getHeight());
-        float xOffset = iconView.getWidth();
-
-        if (tab.getType() == BottomBarTab.Type.TABLET) {
-            xOffset /= 1.25;
-        }
+        float xOffset = (float) (iconView.getWidth() / 1.25);
 
         setX(iconView.getX() + xOffset);
         setTranslationY(10);
@@ -174,15 +166,5 @@ class BottomBarBadge extends TextView {
         } else {
             setBackgroundDrawable(background);
         }
-    }
-
-    Bundle saveState(int tabIndex) {
-        Bundle state = new Bundle();
-        state.putInt(STATE_COUNT + tabIndex, count);
-        return state;
-    }
-
-    void restoreState(Bundle bundle, int tabIndex) {
-        setCount(bundle.getInt(STATE_COUNT + tabIndex, count));
     }
 }
