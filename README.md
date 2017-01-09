@@ -371,6 +371,8 @@ nearby.removeBadge/();
   * [KyudoScoreBookTeam](https://play.google.com/store/apps/details?id=com.bowyer.app.android.kyudoscoreteam&hl=en) : BottomBar is used in the KyudoScoreBookTeam app.
   * [memeham](https://play.google.com/store/apps/details?id=com.memeham.beyourself.memeham) : BottomBar is used in the memeham app.
   * [NewsCatchr](https://play.google.com/store/apps/details?id=jlelse.readit) : A newsreader app, which uses this BottomBar library.
+  * [GitSkarios](https://play.google.com/store/apps/details?id=com.alorma.github) : A Github android App, to visit your repositories, gists and  more!
+    * [Code](https://github.com/gitskarios/Gitskarios)
   
 Send me a pull request with modified README.md to get a shoutout!
 
