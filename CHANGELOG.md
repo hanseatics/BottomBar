@@ -8,7 +8,9 @@
 * Fixed a bug where the lower portion of unselected titles were clipped off in fixed mode.
 * Made changes to Badge restoration logic to fix [445](https://github.com/roughike/BottomBar/issues/445). Credit goes to [@Kevinrob](https://github.com/Kevinrob) for reporting and helping to reproduce the issue.
 * Fixed [#448](https://github.com/roughike/BottomBar/issues/448), [#471](https://github.com/roughike/BottomBar/issues/471) and [#436](https://github.com/roughike/BottomBar/issues/436) 
-* Merged #468.
+* Fixed a faulty behavior where the tabs' widths were calculated according to phone screen width, but should've been calculated according to the parent view's width by merging [#504](https://github.com/roughike/BottomBar/pull/504) 
+* Optimized the tab resizing calculations; now the tabs aren't needlessly removed and readded, only the layout params get changed.
+* Merged [#468](https://github.com/roughike/BottomBar/pull/468)
 
 ### 2.0.2
 
