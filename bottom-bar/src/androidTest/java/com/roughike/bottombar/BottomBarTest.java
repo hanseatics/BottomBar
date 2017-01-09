@@ -1,5 +1,6 @@
 package com.roughike.bottombar;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class BottomBarTest {
+    private Context context;
+
     private OnTabSelectListener selectListener;
     private OnTabReselectListener reselectListener;
 
@@ -37,18 +40,25 @@ public class BottomBarTest {
 
     @Before
     public void setUp() {
+        context = InstrumentationRegistry.getTargetContext();
+
         selectListener = Mockito.mock(OnTabSelectListener.class);
         reselectListener = Mockito.mock(OnTabReselectListener.class);
 
-        bottomBar = new BottomBar(InstrumentationRegistry.getContext());
+        bottomBar = new BottomBar(context);
         bottomBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three);
         bottomBar.setOnTabSelectListener(selectListener);
         bottomBar.setOnTabReselectListener(reselectListener);
     }
 
+    @Test
+    public void canCreateNewInstanceFromXml_WithoutXmlMenuResource() {
+        new BottomBar(context, null);
+    }
+
     @Test(expected = RuntimeException.class)
     public void setItems_ThrowsExceptionWithNoResource() {
-        BottomBar secondBar = new BottomBar(InstrumentationRegistry.getContext());
+        BottomBar secondBar = new BottomBar(context);
         secondBar.setItems(0);
     }
 
@@ -72,7 +82,7 @@ public class BottomBarTest {
                 .titleTextAppearance(titleTextAppearance)
                 .build();
 
-        BottomBar newBar = new BottomBar(InstrumentationRegistry.getContext());
+        BottomBar newBar = new BottomBar(context);
         newBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three, config);
 
         BottomBarTab first = newBar.getTabAtPosition(0);
