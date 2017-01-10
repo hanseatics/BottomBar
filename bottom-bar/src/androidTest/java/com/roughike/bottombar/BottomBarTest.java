@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -44,8 +46,8 @@ public class BottomBarTest {
     public void setUp() {
         context = InstrumentationRegistry.getTargetContext();
 
-        selectListener = Mockito.mock(OnTabSelectListener.class);
-        reselectListener = Mockito.mock(OnTabReselectListener.class);
+        selectListener = mock(OnTabSelectListener.class);
+        reselectListener = mock(OnTabReselectListener.class);
 
         bottomBar = new BottomBar(context);
         bottomBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_three);
@@ -105,6 +107,24 @@ public class BottomBarTest {
         assertEquals(defaultBackgroundColor, first.getBarColorWhenSelected());
         assertEquals(defaultBadgeBackgroundColor, first.getBadgeBackgroundColor());
         assertEquals(titleTextAppearance, first.getTitleTextAppearance());
+    }
+
+    @Test
+    public void setOnTabSelectListener_WhenShouldFireInitiallySetToTrue_FiresWhenSet() {
+        OnTabSelectListener listener = mock(OnTabSelectListener.class);
+
+        bottomBar.setOnTabSelectListener(listener);
+        bottomBar.setOnTabSelectListener(listener, true);
+
+        verify(listener, times(2)).onTabSelected(com.roughike.bottombar.test.R.id.tab_favorites);
+    }
+
+    @Test
+    public void setOnTabSelectListener_WhenShouldFireInitiallySetToFalse_DoesNotFireWhenSet() {
+        OnTabSelectListener listener = mock(OnTabSelectListener.class);
+
+        bottomBar.setOnTabSelectListener(listener, false);
+        verifyZeroInteractions(listener);
     }
 
     @Test

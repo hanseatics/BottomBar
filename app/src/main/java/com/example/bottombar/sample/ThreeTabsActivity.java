@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +30,9 @@ public class ThreeTabsActivity extends Activity {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 messageView.setText(TabMessage.get(tabId, false));
+                Log.d("DJSD", "ONTABSELECTED");
             }
-        });
+        }, false);
 
         bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
             @Override
