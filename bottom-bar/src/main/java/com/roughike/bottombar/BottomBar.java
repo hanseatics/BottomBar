@@ -108,16 +108,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public BottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
-
-        if (tabXmlResource != 0) {
-            setItems(tabXmlResource);
-        }
     }
 
     private void init(Context context, AttributeSet attrs) {
         populateAttributes(context, attrs);
         initializeViews();
         determineInitialBackgroundColor();
+
         if (tabXmlResource != 0) {
             setItems(tabXmlResource);
         }
