@@ -15,10 +15,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
@@ -60,6 +62,15 @@ public class BottomBarTest {
     public void setItems_ThrowsExceptionWithNoResource() {
         BottomBar secondBar = new BottomBar(context);
         secondBar.setItems(0);
+    }
+
+    @Test
+    public void setItems_AfterAlreadySet_ReplacesPreviousWithNewOnes() {
+        int previousItemCount = bottomBar.getTabCount();
+        assertThat(previousItemCount, is(3));
+
+        bottomBar.setItems(com.roughike.bottombar.test.R.xml.dummy_tabs_five);
+        assertThat(bottomBar.getTabCount(), is(5));
     }
 
     @Test
