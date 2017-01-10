@@ -118,6 +118,9 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         populateAttributes(context, attrs);
         initializeViews();
         determineInitialBackgroundColor();
+        if (tabXmlResource != 0) {
+            setItems(tabXmlResource);
+        }
     }
 
     private void populateAttributes(Context context, AttributeSet attrs) {
@@ -260,6 +263,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         int index = 0;
         int biggestWidth = 0;
 
+        tabContainer.removeAllViews();
         BottomBarTab[] viewsToAdd = new BottomBarTab[bottomBarItems.size()];
 
         for (BottomBarTab bottomBarTab : bottomBarItems) {
