@@ -409,6 +409,29 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         selectTabAtPosition(position, false);
     }
 
+    /**
+     * Select a tab at the specified position.
+     *
+     * @param position the position to select.
+     * @param animate should the tab change be animated or not.
+     */
+    public void selectTabAtPosition(int position, boolean animate) {
+        if (position > getTabCount() - 1 || position < 0) {
+            throw new IndexOutOfBoundsException("Can't select tab at position " +
+                    position + ". This BottomBar has no items at that position.");
+        }
+
+        BottomBarTab oldTab = getCurrentTab();
+        BottomBarTab newTab = getTabAtPosition(position);
+
+        oldTab.deselect(animate);
+        newTab.select(animate);
+
+        updateSelectedTab(position);
+        shiftingMagic(oldTab, newTab, animate);
+        handleBackgroundColorChange(newTab, animate);
+    }
+
     public int getTabCount() {
         return tabContainer.getChildCount();
     }
@@ -712,23 +735,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         }
 
         return true;
-    }
-
-    public void selectTabAtPosition(int position, boolean animate) {
-        if (position > getTabCount() - 1 || position < 0) {
-            throw new IndexOutOfBoundsException("Can't select tab at position " +
-                position + ". This BottomBar has no items at that position.");
-        }
-
-        BottomBarTab oldTab = getCurrentTab();
-        BottomBarTab newTab = getTabAtPosition(position);
-
-        oldTab.deselect(animate);
-        newTab.select(animate);
-
-        updateSelectedTab(position);
-        shiftingMagic(oldTab, newTab, animate);
-        handleBackgroundColorChange(newTab, false);
     }
 
     private void updateSelectedTab(int newPosition) {
