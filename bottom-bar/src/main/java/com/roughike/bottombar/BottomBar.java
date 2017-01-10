@@ -406,11 +406,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      * @param position the position to select.
      */
     public void selectTabAtPosition(int position) {
-        if (position > getTabCount() - 1 || position < 0) {
-            throw new IndexOutOfBoundsException("Can't select tab at position " +
-                    position + ". This BottomBar has no items at that position.");
-        }
-
         selectTabAtPosition(position, false);
     }
 
@@ -719,7 +714,12 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         return true;
     }
 
-    private void selectTabAtPosition(int position, boolean animate) {
+    public void selectTabAtPosition(int position, boolean animate) {
+        if (position > getTabCount() - 1 || position < 0) {
+            throw new IndexOutOfBoundsException("Can't select tab at position " +
+                position + ". This BottomBar has no items at that position.");
+        }
+
         BottomBarTab oldTab = getCurrentTab();
         BottomBarTab newTab = getTabAtPosition(position);
 
