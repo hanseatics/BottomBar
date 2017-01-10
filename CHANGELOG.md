@@ -10,7 +10,7 @@
 * Fixed [#448](https://github.com/roughike/BottomBar/issues/448), [#471](https://github.com/roughike/BottomBar/issues/471) and [#436](https://github.com/roughike/BottomBar/issues/436) 
 * Fixed a faulty behavior where the tabs' widths were calculated according to phone screen width, but should've been calculated according to the parent view's width by merging [#504](https://github.com/roughike/BottomBar/pull/504) 
 * Optimized the tab resizing calculations; now the tabs aren't needlessly removed and readded, only the layout params get changed.
-* Merged [#468](https://github.com/roughike/BottomBar/pull/468)
+* Merged [#468](https://github.com/roughike/BottomBar/pull/468) and [#457](https://github.com/roughike/BottomBar/pull/457)
 * Fixed [#554](https://github.com/roughike/BottomBar/issues/554) by merging [#512](https://github.com/roughike/BottomBar/pull/512).
 
 ### 2.0.2
