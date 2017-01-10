@@ -4,6 +4,8 @@
 
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/shy-demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/shifting-demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/screenshot_tablet.png" width="33%" />
 
+[Discussion about maintenance status](https://github.com/roughike/BottomBar/issues/606)
+
 ## Version 2.0 released!
 
 [The latest version before that can be found in the v1 branch](https://github.com/roughike/BottomBar/tree/v1)
