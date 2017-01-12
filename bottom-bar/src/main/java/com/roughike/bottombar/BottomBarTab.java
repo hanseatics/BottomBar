@@ -103,7 +103,7 @@ public class BottomBarTab extends LinearLayout {
 
         if (type != Type.TABLET) {
             titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
-            titleView.setText(title);
+            updateTitle();
         }
 
         updateCustomTextAppearance();
@@ -128,6 +128,12 @@ public class BottomBarTab extends LinearLayout {
                 throw new RuntimeException("Unknown BottomBarTab type.");
         }
         return layoutResource;
+    }
+
+    private void updateTitle() {
+        if (titleView != null) {
+            titleView.setText(title);
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -175,23 +181,24 @@ public class BottomBarTab extends LinearLayout {
         this.iconResId = iconResId;
     }
 
-    String getTitle() {
-        return title;
-    }
-
     TextView getTitleView() {
         return titleView;
     }
 
-    void setTitle(String title) {
-        this.title = title;
+    public String getTitle() {
+        return title;
     }
 
-    float getInActiveAlpha() {
+    public void setTitle(String title) {
+        this.title = title;
+        updateTitle();
+    }
+
+    public float getInActiveAlpha() {
         return inActiveAlpha;
     }
 
-    void setInActiveAlpha(float inActiveAlpha) {
+    public void setInActiveAlpha(float inActiveAlpha) {
         this.inActiveAlpha = inActiveAlpha;
 
         if (!isActive) {
@@ -199,11 +206,11 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    float getActiveAlpha() {
+    public float getActiveAlpha() {
         return activeAlpha;
     }
 
-    void setActiveAlpha(float activeAlpha) {
+    public void setActiveAlpha(float activeAlpha) {
         this.activeAlpha = activeAlpha;
 
         if (isActive) {
@@ -211,11 +218,11 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    int getInActiveColor() {
+    public int getInActiveColor() {
         return inActiveColor;
     }
 
-    void setInActiveColor(int inActiveColor) {
+    public void setInActiveColor(int inActiveColor) {
         this.inActiveColor = inActiveColor;
 
         if (!isActive) {
@@ -223,11 +230,11 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    int getActiveColor() {
+    public int getActiveColor() {
         return activeColor;
     }
 
-    void setActiveColor(int activeIconColor) {
+    public void setActiveColor(int activeIconColor) {
         this.activeColor = activeIconColor;
 
         if (isActive) {
@@ -235,19 +242,19 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    int getBarColorWhenSelected() {
+    public int getBarColorWhenSelected() {
         return barColorWhenSelected;
     }
 
-    void setBarColorWhenSelected(int barColorWhenSelected) {
+    public void setBarColorWhenSelected(int barColorWhenSelected) {
         this.barColorWhenSelected = barColorWhenSelected;
     }
 
-    int getBadgeBackgroundColor() {
+    public int getBadgeBackgroundColor() {
         return badgeBackgroundColor;
     }
 
-    void setBadgeBackgroundColor(int badgeBackgroundColor) {
+    public void setBadgeBackgroundColor(int badgeBackgroundColor) {
         this.badgeBackgroundColor = badgeBackgroundColor;
 
         if (badge != null) {
@@ -335,12 +342,12 @@ public class BottomBarTab extends LinearLayout {
         return titleTextAppearanceResId;
     }
 
-    void setTitleTypeface(Typeface typeface) {
+    public void setTitleTypeface(Typeface typeface) {
         this.titleTypeFace = typeface;
         updateCustomTypeface();
     }
 
-    Typeface getTitleTypeFace() {
+    public Typeface getTitleTypeFace() {
         return titleTypeFace;
     }
 

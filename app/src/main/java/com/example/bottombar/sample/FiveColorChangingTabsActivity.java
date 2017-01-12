@@ -25,7 +25,6 @@ public class FiveColorChangingTabsActivity extends AppCompatActivity {
         messageView = (TextView) findViewById(R.id.messageView);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setInActiveTabAlpha(0.2f);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
