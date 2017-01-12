@@ -12,6 +12,7 @@
 * Optimized the tab resizing calculations; now the tabs aren't needlessly removed and readded, only the layout params get changed.
 * Merged [#468](https://github.com/roughike/BottomBar/pull/468) and [#457](https://github.com/roughike/BottomBar/pull/457)
 * Fixed [#554](https://github.com/roughike/BottomBar/issues/554) by merging [#512](https://github.com/roughike/BottomBar/pull/512).
+* Made most of the BottomBarTab methods public.
 
 ### 2.0.2
 
