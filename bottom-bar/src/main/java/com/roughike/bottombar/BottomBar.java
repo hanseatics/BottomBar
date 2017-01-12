@@ -50,8 +50,9 @@ import java.util.List;
  */
 public class BottomBar extends LinearLayout implements View.OnClickListener, View.OnLongClickListener {
     private static final String STATE_CURRENT_SELECTED_TAB = "STATE_CURRENT_SELECTED_TAB";
-
     private static final float DEFAULT_INACTIVE_SHIFTING_TAB_ALPHA = 0.6f;
+
+    private BatchTabPropertyApplier batchPropertyApplier;
 
     // Behaviors
     private static final int BEHAVIOR_NONE = 0;
@@ -111,6 +112,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     private void init(Context context, AttributeSet attrs) {
+        batchPropertyApplier = new BatchTabPropertyApplier(this);
+
         populateAttributes(context, attrs);
         initializeViews();
         determineInitialBackgroundColor();
@@ -503,7 +506,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setInActiveTabAlpha(float alpha) {
         inActiveTabAlpha = alpha;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveAlpha(inActiveTabAlpha);
+            }
+        });
     }
 
     /**
@@ -511,12 +520,24 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setActiveTabAlpha(float alpha) {
         activeTabAlpha = alpha;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveAlpha(activeTabAlpha);
+            }
+        });
     }
 
     public void setInActiveTabColor(@ColorInt int color) {
         inActiveTabColor = color;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveColor(inActiveTabColor);
+            }
+        });
     }
 
     /**
@@ -524,12 +545,27 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setActiveTabColor(@ColorInt int color) {
         activeTabColor = color;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveColor(activeTabColor);
+            }
+        });
     }
 
+    /**
+     * Set background color for the badge.
+     */
     public void setBadgeBackgroundColor(@ColorInt int color) {
         badgeBackgroundColor = color;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setBadgeBackgroundColor(badgeBackgroundColor);
+            }
+        });
     }
 
     /**
@@ -537,7 +573,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setTabTitleTextAppearance(int textAppearance) {
         titleTextAppearance = textAppearance;
-        refreshTabs();
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTextAppearance(titleTextAppearance);
+            }
+        });
     }
 
     /**
@@ -558,20 +600,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
      */
     public void setTabTitleTypeface(Typeface typeface) {
         titleTypeFace = typeface;
-        refreshTabs();
-    }
 
-    private void refreshTabs() {
-        int tabCount = getTabCount();
-
-        if (tabCount > 0) {
-            BottomBarTab.Config newConfig = getTabConfig();
-
-            for (int i = 0; i < getTabCount(); i++) {
-                BottomBarTab tab = getTabAtPosition(i);
-                tab.setConfig(newConfig);
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTypeface(titleTypeFace);
             }
-        }
+        });
     }
 
     @Override
