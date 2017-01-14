@@ -30,7 +30,7 @@ public class ThreeTabsActivity extends Activity {
             public void onTabSelected(@IdRes int tabId) {
                 messageView.setText(TabMessage.get(tabId, false));
             }
-        }, false);
+        });
 
         bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
             @Override
