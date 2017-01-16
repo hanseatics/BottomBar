@@ -314,7 +314,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void resizeTabsToCorrectSizes(BottomBarTab[] tabsToAdd) {
         int viewWidth = MiscUtils.pixelToDp(getContext(), getWidth());
 
-        if (viewWidth <= 0) {
+        if (viewWidth <= 0 || viewWidth > screenWidth) {
             viewWidth = screenWidth;
         }
 
