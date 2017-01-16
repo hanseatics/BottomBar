@@ -2,6 +2,10 @@
 
 (or: y u no add shiny new things?!)
 
+### 2.1.1
+
+* A quick fix for a really critical bug that could affect some devices. More specifically, [this one.](https://github.com/roughike/BottomBar/issues/625)
+
 ### 2.1.0
 
 * Fixed a bug in the Badge positioning, causing the Badges to clip when there was many tabs.
