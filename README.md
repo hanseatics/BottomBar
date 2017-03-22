@@ -4,8 +4,6 @@
 
 <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/shy-demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/shifting-demo.gif" width="30%" /> <img src="https://raw.githubusercontent.com/roughike/BottomBar/master/graphics/screenshot_tablet.png" width="33%" />
 
-[Discussion about maintenance status](https://github.com/roughike/BottomBar/issues/606)
-
 ## Version 2.0 released!
 
 [The latest version before that can be found in the v1 branch](https://github.com/roughike/BottomBar/tree/v1)
@@ -330,6 +328,8 @@ nearby.removeBadge/();
     <dd>the color for active tabs, that's used in the tab icons and titles.</dd>
     <dt>bb_badgeBackgroundColor</dt>
     <dd>the background color for any Badges in this BottomBar.</dd>
+    <dt>bb_badgesHideWhenActive</dt>
+    <dd>whether badges should be hidden for active tabs, defaults to true.</dd>
     <dt>bb_titleTextAppearance</dt>
     <dd>custom textAppearance for the titles</dd>
     <dt>bb_titleTypeFace</dt>
@@ -360,8 +360,8 @@ nearby.removeBadge/();
     <dd>the color that the whole BottomBar should be when selected this tab.</dd>
     <dt>badgeBackgroundColor</dt>
     <dd>the background color for any Badges in this tab.</dd>
-    <dt></dt>
-    <dd></dd>
+    <dt>badgeHidesWhenActive</dt>
+    <dd>whether or not the badge should be hidden when this tab is selected, defaults to true.</dd>
     <dt></dt>
     <dd></dd>
 </dl>
