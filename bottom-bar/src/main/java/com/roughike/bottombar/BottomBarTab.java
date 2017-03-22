@@ -388,7 +388,7 @@ public class BottomBarTab extends LinearLayout {
             setAlphas(inActiveAlpha);
         }
 
-        if (!isShifting && badge != null && badgeHidesWhenSelected) {
+        if (!isShifting && badge != null && !badge.isVisible()) {
             badge.show();
         }
     }
