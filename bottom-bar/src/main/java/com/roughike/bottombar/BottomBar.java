@@ -149,7 +149,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             inActiveTabColor = ta.getColor(R.styleable.BottomBar_bb_inActiveTabColor, defaultInActiveColor);
             activeTabColor = ta.getColor(R.styleable.BottomBar_bb_activeTabColor, defaultActiveColor);
             badgeBackgroundColor = ta.getColor(R.styleable.BottomBar_bb_badgeBackgroundColor, Color.RED);
-            hideBadgeWhenActive = ta.getBoolean(R.styleable.BottomBar_bb_badgeHidesWhenActive, true);
+            hideBadgeWhenActive = ta.getBoolean(R.styleable.BottomBar_bb_badgesHideWhenActive, true);
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
@@ -572,9 +572,10 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     }
 
     /**
-     * Set background color for the badge.
+     * Controls whether the badge (if any) for active tabs
+     * should be hidden or not.
      */
-    public void setHideBadgeWhenActive(final boolean hideWhenSelected) {
+    public void setBadgesHideWhenActive(final boolean hideWhenSelected) {
         hideBadgeWhenActive = hideWhenSelected;
         batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
             @Override

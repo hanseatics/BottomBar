@@ -255,6 +255,10 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
+    public boolean getBadgeHidesWhenSelected() {
+        return badgeHidesWhenSelected;
+    }
+
     public void setBadgeHidesWhenSelected(boolean hideWhenSelected) {
         this.badgeHidesWhenSelected = hideWhenSelected;
     }
