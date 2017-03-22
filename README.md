@@ -306,6 +306,7 @@ nearby.removeBadge/();
     app:bb_activeTabAlpha="1"
     app:bb_inActiveTabColor="#222222"
     app:bb_activeTabColor="@color/colorPrimary"
+    app:bb_badgesHideWhenActive="true"
     app:bb_titleTextAppearance="@style/MyTextAppearance"
     app:bb_titleTypeFace="fonts/MySuperDuperFont.ttf"
     app:bb_showShadow="true" />
@@ -348,7 +349,8 @@ nearby.removeBadge/();
     inActiveColor="#00FF00"
     activeColor="#FF0000"
     barColorWhenSelected="#FF0000"
-    badgeBackgroundColor="#FF0000" />
+    badgeBackgroundColor="#FF0000"
+    badgeHidesWhenActive="true" />
 ```
 
 <dl>
