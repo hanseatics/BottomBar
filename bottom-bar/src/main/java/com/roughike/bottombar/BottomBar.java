@@ -580,7 +580,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
             @Override
             public void update(BottomBarTab tab) {
-                tab.setBadgeHidesWhenSelected(hideWhenSelected);
+                tab.setBadgeHidesWhenActive(hideWhenSelected);
             }
         });
     }

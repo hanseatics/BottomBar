@@ -57,7 +57,7 @@ public class BottomBarTab extends LinearLayout {
     private int activeColor;
     private int barColorWhenSelected;
     private int badgeBackgroundColor;
-    private boolean badgeHidesWhenSelected;
+    private boolean badgeHidesWhenActive;
     private AppCompatImageView iconView;
     private TextView titleView;
     private boolean isActive;
@@ -80,7 +80,7 @@ public class BottomBarTab extends LinearLayout {
         setActiveColor(config.activeTabColor);
         setBarColorWhenSelected(config.barColorWhenSelected);
         setBadgeBackgroundColor(config.badgeBackgroundColor);
-        setBadgeHidesWhenSelected(config.badgeHidesWhenSelected);
+        setBadgeHidesWhenActive(config.badgeHidesWhenSelected);
         setTitleTextAppearance(config.titleTextAppearance);
         setTitleTypeface(config.titleTypeFace);
     }
@@ -255,12 +255,12 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    public boolean getBadgeHidesWhenSelected() {
-        return badgeHidesWhenSelected;
+    public boolean getBadgeHidesWhenActive() {
+        return badgeHidesWhenActive;
     }
 
-    public void setBadgeHidesWhenSelected(boolean hideWhenSelected) {
-        this.badgeHidesWhenSelected = hideWhenSelected;
+    public void setBadgeHidesWhenActive(boolean hideWhenActive) {
+        this.badgeHidesWhenActive = hideWhenActive;
     }
 
     int getCurrentDisplayedIconColor() {
@@ -307,6 +307,10 @@ public class BottomBarTab extends LinearLayout {
         }
 
         badge.setCount(count);
+
+        if (isActive && badgeHidesWhenActive) {
+            badge.hide();
+        }
     }
 
     public void removeBadge() {
@@ -367,7 +371,7 @@ public class BottomBarTab extends LinearLayout {
             setAlphas(activeAlpha);
         }
 
-        if (badge != null && badgeHidesWhenSelected) {
+        if (badge != null && badgeHidesWhenActive) {
             badge.hide();
         }
     }
@@ -591,7 +595,7 @@ public class BottomBarTab extends LinearLayout {
         private final int badgeBackgroundColor;
         private final int titleTextAppearance;
         private final Typeface titleTypeFace;
-        private boolean badgeHidesWhenSelected;
+        private boolean badgeHidesWhenSelected = true;
 
         private Config(Builder builder) {
             this.inActiveTabAlpha = builder.inActiveTabAlpha;
@@ -612,7 +616,7 @@ public class BottomBarTab extends LinearLayout {
             private int activeTabColor;
             private int barColorWhenSelected;
             private int badgeBackgroundColor;
-            private boolean hidesBadgeWhenSelected;
+            private boolean hidesBadgeWhenSelected = true;
             private int titleTextAppearance;
             private Typeface titleTypeFace;
 

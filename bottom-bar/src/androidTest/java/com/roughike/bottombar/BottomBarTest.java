@@ -109,7 +109,7 @@ public class BottomBarTest {
         assertEquals(ACTIVE_TAB_COLOR, first.getActiveColor());
         assertEquals(BACKGROUND_COLOR, first.getBarColorWhenSelected());
         assertEquals(BADGE_BACKGROUND_COLOR, first.getBadgeBackgroundColor());
-        assertEquals(DEFAULT_BADGE_HIDES_WHEN_SELECTED_VALUE, first.getBadgeHidesWhenSelected());
+        assertEquals(DEFAULT_BADGE_HIDES_WHEN_SELECTED_VALUE, first.getBadgeHidesWhenActive());
         assertEquals(TITLE_TEXT_APPEARANCE, first.getTitleTextAppearance());
         assertEquals(TYPEFACE, first.getTitleTypeFace());
     }
@@ -472,11 +472,11 @@ public class BottomBarTest {
     public void setBadgeHidesWhenSelected_UpdatesBadgeHidesWhenSelected() {
         BottomBarTab tab = bottomBar.getCurrentTab();
 
-        boolean previousBadgeHidesValue = tab.getBadgeHidesWhenSelected();
+        boolean previousBadgeHidesValue = tab.getBadgeHidesWhenActive();
         assertTrue(previousBadgeHidesValue);
 
         bottomBar.setBadgesHideWhenActive(false);
-        assertFalse(tab.getBadgeHidesWhenSelected());
+        assertFalse(tab.getBadgeHidesWhenActive());
     }
 
     @Test
@@ -491,7 +491,7 @@ public class BottomBarTest {
         assertEquals(ACTIVE_TAB_COLOR, tab.getActiveColor());
         assertEquals(BACKGROUND_COLOR, tab.getBarColorWhenSelected());
         assertEquals(BADGE_BACKGROUND_COLOR, tab.getBadgeBackgroundColor());
-        assertTrue(tab.getBadgeHidesWhenSelected());
+        assertTrue(tab.getBadgeHidesWhenActive());
         assertEquals(TITLE_TEXT_APPEARANCE, tab.getTitleTextAppearance());
         assertEquals(TYPEFACE, tab.getTitleTypeFace());
     }
