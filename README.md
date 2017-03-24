@@ -24,9 +24,7 @@ A custom view component that mimics the new [Material Design Bottom Navigation p
 
 ## Does it work on my Grandpa Gary's HTC Dream?
 
-Nope. The current minSDK version is **API level 11 (Honeycomb).**
-
-Your uncle Bob's Galaxy S Mini will probably be supported in the future though. 
+Nope. The minSDK version is **API level 11 (Honeycomb).**
 
 ## Gimme that Gradle sweetness, pls?
 
