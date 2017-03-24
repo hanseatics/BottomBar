@@ -14,18 +14,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by iiro on 13.8.2016.
@@ -59,6 +63,7 @@ public class BottomBarTest {
 
     private Context context;
 
+    private TabSelectionInterceptor tabSelectionInterceptor;
     private OnTabSelectListener selectListener;
     private OnTabReselectListener reselectListener;
 
@@ -68,6 +73,7 @@ public class BottomBarTest {
     public void setUp() {
         context = InstrumentationRegistry.getTargetContext();
 
+        tabSelectionInterceptor = mock(TabSelectionInterceptor.class);
         selectListener = mock(OnTabSelectListener.class);
         reselectListener = mock(OnTabReselectListener.class);
 
@@ -112,6 +118,59 @@ public class BottomBarTest {
         assertEquals(DEFAULT_BADGE_HIDES_WHEN_SELECTED_VALUE, first.getBadgeHidesWhenActive());
         assertEquals(TITLE_TEXT_APPEARANCE, first.getTitleTextAppearance());
         assertEquals(TYPEFACE, first.getTitleTypeFace());
+    }
+
+    @Test
+    public void setOverrideTabSelectionListener_preventSelection() {
+        bottomBar.setTabSelectionInterceptor(tabSelectionInterceptor);
+
+        when(tabSelectionInterceptor.shouldInterceptTabSelection(anyInt(), anyInt())).thenReturn(true);
+
+        BottomBarTab oldTab = bottomBar.getCurrentTab();
+        BottomBarTab newTab = bottomBar.getTabAtPosition(2);
+        newTab.performClick();
+
+        verify(tabSelectionInterceptor, times(1)).shouldInterceptTabSelection(oldTab.getId(), newTab.getId());
+        assertNotSame(bottomBar.getCurrentTab(), newTab);
+    }
+
+    @Test
+    @UiThreadTest
+    public void setOverrideTabSelectionListener_allowingSelection() {
+        bottomBar.setTabSelectionInterceptor(tabSelectionInterceptor);
+
+        when(tabSelectionInterceptor.shouldInterceptTabSelection(anyInt(), anyInt())).thenReturn(false);
+
+        BottomBarTab oldTab = bottomBar.getCurrentTab();
+        final BottomBarTab newTab = bottomBar.getTabAtPosition(2);
+        getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                newTab.performClick();
+            }
+        });
+
+
+        verify(tabSelectionInterceptor, times(1)).shouldInterceptTabSelection(oldTab.getId(), newTab.getId());
+        assertSame(bottomBar.getCurrentTab(), newTab);
+    }
+
+    @Test
+    @UiThreadTest
+    public void setOverrideTabSelectionListener_whenNoListenerSet() {
+        bottomBar.removeOverrideTabSelectionListener();
+
+        BottomBarTab oldTab = bottomBar.getCurrentTab();
+        final BottomBarTab newTab = bottomBar.getTabAtPosition(2);
+        getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                newTab.performClick();
+            }
+        });
+
+        verify(tabSelectionInterceptor, times(0)).shouldInterceptTabSelection(oldTab.getId(), newTab.getId());
+        assertSame(bottomBar.getCurrentTab(), newTab);
     }
 
     @Test
@@ -253,8 +312,8 @@ public class BottomBarTest {
     @Test
     @UiThreadTest
     public void whenSelectionChanges_AndHasNoListeners_onlyOneTabIsSelectedAtATime() {
-        bottomBar.setOnTabSelectListener(null);
-        bottomBar.setOnTabReselectListener(null);
+        bottomBar.removeOnTabSelectListener();
+        bottomBar.removeOnTabReselectListener();
 
         int firstTabId = com.roughike.bottombar.test.R.id.tab_favorites;
         int secondTabId = com.roughike.bottombar.test.R.id.tab_nearby;
@@ -285,7 +344,7 @@ public class BottomBarTest {
     @Test
     @UiThreadTest
     public void whenTabIsSelectedOnce_AndNoSelectionListenerSet_ReselectionListenerIsNotFired() {
-        bottomBar.setOnTabSelectListener(null);
+        bottomBar.removeOnTabSelectListener();
         bottomBar.selectTabWithId(com.roughike.bottombar.test.R.id.tab_friends);
         bottomBar.selectTabWithId(com.roughike.bottombar.test.R.id.tab_nearby);
         bottomBar.selectTabWithId(com.roughike.bottombar.test.R.id.tab_favorites);
