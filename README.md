@@ -153,12 +153,37 @@ bottomBar.setTabSelectionInterceptor(new TabSelectionInterceptor() {
     public boolean shouldInterceptTabSelection(@IdRes int oldTabId, @IdRes int newTabId) {
         if (newTabId == R.id.tab_pro_feature && !userHasProVersion()) {
           startProVersionPurchaseFlow();
-          return true
+          return true;
         }
         
         return false;
     }
 });
+```
+
+### Changing icons based on selection state
+
+If you want to have different icon when a specific tab is selected, just use state list drawables.
+
+**res/drawable/my_tab_icon.xml**
+
+```xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_myicon_selected" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_myicon_default" android:state_selected="false" />
+</selector>
+```
+
+**res/xml/bottombar_tabs.xml**
+
+```xml
+...
+<tab
+    id="@+id/tab_favorites"
+    icon="@drawable/my_tab_icon"
+    title="Favorites" />
+<!-- You can use @color resources too! -->
+...
 ```
 
 ### Those color changing tabs look dope. Howdoidodat?
