@@ -143,6 +143,24 @@ bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
 });
 ```
 
+### Intercepting tab selections
+
+If you want to conditionally cancel selection of any tab, you absolutely can. Just assign a ```TabSelectionInterceptor``` to the BottomBar, and return true from the ```shouldInterceptTabSelection()``` method.
+
+```java
+bottomBar.setTabSelectionInterceptor(new TabSelectionInterceptor() {
+    @Override
+    public boolean shouldInterceptTabSelection(@IdRes int oldTabId, @IdRes int newTabId) {
+        if (newTabId == R.id.tab_pro_feature && !userHasProVersion()) {
+          startProVersionPurchaseFlow();
+          return true
+        }
+        
+        return false;
+    }
+});
+```
+
 ### Those color changing tabs look dope. Howdoidodat?
 
 Just add ```barColorWhenSelected``` to each tab. When that tab is selected, the whole BottomBar background color is changed with a nice animation.
