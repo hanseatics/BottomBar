@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.3.1
+
+* [#749](https://github.com/roughike/BottomBar/pull/749): Quick fix for the issue where *bb_showShadow* set to false didn't have any effect. Thanks @yombunker!
+
 ### 2.3.0
 
 * [#713](https://github.com/roughike/BottomBar/pull/713): Ripple touch feedback for tabs!
@@ -11,6 +15,12 @@
 * [#712](https://github.com/roughike/BottomBar/pull/712): Data binding fixes.
 
 Thanks for @yombunker, @MarcRubio and @tushar-acharya for their contributions!
+
+### 2.2.0
+
+* Ability to change icons when the tabs are selected, using drawable selectors
+* Overriding tab selections is now supported, by using [TabSelectionInterceptor](https://github.com/roughike/BottomBar/blob/master/bottom-bar/src/main/java/com/roughike/bottombar/TabSelectionInterceptor.java)
+* Internal code quality improvements and small changes
 
 ### 2.2.0
 
