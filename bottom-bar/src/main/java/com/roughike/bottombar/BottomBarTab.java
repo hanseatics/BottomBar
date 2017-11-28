@@ -40,7 +40,8 @@ public class BottomBarTab extends LinearLayout {
 
     private static final long ANIMATION_DURATION = 150;
     private static final float ACTIVE_TITLE_SCALE = 1;
-    private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
+    //private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
+    private static final float INACTIVE_FIXED_TITLE_SCALE = 1f;
     private static final float ACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1.24f;
     private static final float INACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1f;
 
