@@ -422,7 +422,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     /**
      * Returns the settings specific for a shy BottomBar.
      *
-     * @throws UnsupportedOperationException, if this BottomBar is not shy.
+     * 
      */
     public ShySettings getShySettings() {
         if (!isShy()) {
