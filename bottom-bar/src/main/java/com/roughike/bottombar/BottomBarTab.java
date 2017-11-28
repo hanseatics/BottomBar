@@ -40,10 +40,10 @@ public class BottomBarTab extends LinearLayout {
 
     private static final long ANIMATION_DURATION = 150;
     private static final float ACTIVE_TITLE_SCALE = 1;
-    //private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
-    private static final float INACTIVE_FIXED_TITLE_SCALE = 1f;
-   // private static final float ACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1.24f;
-    private static final float ACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1f;
+    private static final float INACTIVE_FIXED_TITLE_SCALE = 0.86f;
+    private static final float INACTIVE_FIXED_TITLE_NO_SCALE = 1f;
+    private static final float ACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1.24f;
+    private static final float ACTIVE_SHIFTING_TITLELESS_ICON_NO_SCALE = 1f;
     private static final float INACTIVE_SHIFTING_TITLELESS_ICON_SCALE = 1f;
 
     private final int sixDps;
@@ -94,7 +94,7 @@ public class BottomBarTab extends LinearLayout {
     void prepareLayout() {
         inflate(getContext(), getLayoutResource(), this);
         setOrientation(VERTICAL);
-        setGravity(isTitleless? Gravity.CENTER : Gravity.CENTER_HORIZONTAL);
+        setGravity(isTitleless ? Gravity.CENTER : Gravity.CENTER_HORIZONTAL);
         setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         setBackgroundResource(MiscUtils.getDrawableRes(getContext(), R.attr.selectableItemBackgroundBorderless));
 
@@ -121,6 +121,7 @@ public class BottomBarTab extends LinearLayout {
         int layoutResource;
         switch (type) {
             case FIXED:
+            case NO_SCALING:
                 layoutResource = R.layout.bb_bottom_bar_item_fixed;
                 break;
             case SHIFTING:
@@ -386,14 +387,23 @@ public class BottomBarTab extends LinearLayout {
     void select(boolean animate) {
         isActive = true;
 
+        boolean isNotScaling = type == Type.NO_SCALING;
+
+        float iconScaling;
+        if (isNotScaling) {
+            iconScaling = ACTIVE_SHIFTING_TITLELESS_ICON_NO_SCALE;
+        } else {
+            iconScaling = ACTIVE_SHIFTING_TITLELESS_ICON_SCALE;
+        }
+
         if (animate) {
-            animateIcon(activeAlpha, ACTIVE_SHIFTING_TITLELESS_ICON_SCALE);
+            animateIcon(activeAlpha, iconScaling);
             animateTitle(sixDps, ACTIVE_TITLE_SCALE, activeAlpha);
             animateColors(inActiveColor, activeColor);
         } else {
             setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
-            setIconScale(ACTIVE_SHIFTING_TITLELESS_ICON_SCALE);
+            setIconScale(iconScaling);
             setColors(activeColor);
             setAlphas(activeAlpha);
         }
@@ -409,9 +419,18 @@ public class BottomBarTab extends LinearLayout {
         isActive = false;
 
         boolean isShifting = type == Type.SHIFTING;
+        boolean isNotScaling = type == Type.NO_SCALING;
 
-        float titleScale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
-        int iconPaddingTop = isShifting ? sixteenDps : eightDps;
+        float titleScale;
+        int iconPaddingTop;
+
+        if (isNotScaling) {
+            iconPaddingTop = sixDps;
+            titleScale = INACTIVE_FIXED_TITLE_NO_SCALE;
+        } else {
+            iconPaddingTop = isShifting ? sixteenDps : eightDps;
+            titleScale = isShifting ? 0 : INACTIVE_FIXED_TITLE_SCALE;
+        }
 
         if (animate) {
             animateTitle(iconPaddingTop, titleScale, inActiveAlpha);
@@ -639,7 +658,7 @@ public class BottomBarTab extends LinearLayout {
     }
 
     enum Type {
-        FIXED, SHIFTING, TABLET
+        FIXED, SHIFTING, TABLET, NO_SCALING
     }
 
     public static class Config {

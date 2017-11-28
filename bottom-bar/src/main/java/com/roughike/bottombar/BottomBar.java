@@ -61,6 +61,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private static final int BEHAVIOR_SHY = 2;
     private static final int BEHAVIOR_DRAW_UNDER_NAV = 4;
     private static final int BEHAVIOR_ICONS_ONLY = 8;
+    private static final int BEHAVIOR_NO_SCALE = 16;
 
     private BatchTabPropertyApplier batchPropertyApplier;
     private int primaryColor;
@@ -189,7 +190,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         maxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
 
         TypedArray ta = context.getTheme()
-                               .obtainStyledAttributes(attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
+                .obtainStyledAttributes(attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
 
         try {
             tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
@@ -220,6 +221,11 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean isShiftingMode() {
         return !isTabletMode && hasBehavior(BEHAVIOR_SHIFTING);
     }
+
+    private boolean isNoScaleMode() {
+        return !isTabletMode && hasBehavior(BEHAVIOR_NO_SCALE);
+    }
+
 
     private boolean drawUnderNav() {
         return !isTabletMode
@@ -339,6 +345,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 type = BottomBarTab.Type.SHIFTING;
             } else if (isTabletMode) {
                 type = BottomBarTab.Type.TABLET;
+            } else if (isNoScaleMode()) {
+                type = BottomBarTab.Type.NO_SCALING;
             } else {
                 type = BottomBarTab.Type.FIXED;
             }
@@ -395,7 +403,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
         activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * ((tabsToAdd.length - 1) * 0.1)));
         int height = Math.round(getContext().getResources()
-                                            .getDimension(R.dimen.bb_height));
+                .getDimension(R.dimen.bb_height));
 
         for (BottomBarTab tabView : tabsToAdd) {
             ViewGroup.LayoutParams params = tabView.getLayoutParams();
@@ -421,8 +429,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
     /**
      * Returns the settings specific for a shy BottomBar.
-     *
-     * 
      */
     public ShySettings getShySettings() {
         if (!isShy()) {
@@ -935,7 +941,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (shouldShowHint) {
             Toast.makeText(getContext(), longClickedTab.getTitle(), Toast.LENGTH_SHORT)
-                 .show();
+                    .show();
         }
 
         return true;
@@ -1054,24 +1060,24 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void backgroundCrossfadeAnimation(final int newColor) {
         ViewCompat.setAlpha(backgroundOverlay, 0);
         ViewCompat.animate(backgroundOverlay)
-                  .alpha(1)
-                  .setListener(new ViewPropertyAnimatorListenerAdapter() {
-                      @Override
-                      public void onAnimationEnd(View view) {
-                          onEnd();
-                      }
+                .alpha(1)
+                .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(View view) {
+                        onEnd();
+                    }
 
-                      @Override
-                      public void onAnimationCancel(View view) {
-                          onEnd();
-                      }
+                    @Override
+                    public void onAnimationCancel(View view) {
+                        onEnd();
+                    }
 
-                      private void onEnd() {
-                          outerContainer.setBackgroundColor(newColor);
-                          backgroundOverlay.setVisibility(View.INVISIBLE);
-                          ViewCompat.setAlpha(backgroundOverlay, 1);
-                      }
-                  })
-                  .start();
+                    private void onEnd() {
+                        outerContainer.setBackgroundColor(newColor);
+                        backgroundOverlay.setVisibility(View.INVISIBLE);
+                        ViewCompat.setAlpha(backgroundOverlay, 1);
+                    }
+                })
+                .start();
     }
 }
