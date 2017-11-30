@@ -14,6 +14,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:textAppearance="@style/BB_BottomBarItem_Fixed.TitleAppearance"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/bb_tab_title_margin"
         style="@style/BB_BottomBarItem_TitleStyle"/>
 
 </merge>

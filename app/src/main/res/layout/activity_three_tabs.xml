@@ -18,7 +18,7 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs_three"
-        app:bb_behavior="noScale|iconsOnly"
+        app:bb_behavior="noScale"
         />
 
 </RelativeLayout>
