@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -67,6 +68,7 @@ public class BottomBarTab extends LinearLayout {
     private AppCompatImageView iconView;
     private TextView titleView;
     private boolean isActive;
+    private boolean hasStateList;
     private int indexInContainer;
     private int titleTextAppearanceResId;
     private Typeface titleTypeFace;
@@ -100,6 +102,7 @@ public class BottomBarTab extends LinearLayout {
 
         iconView = (AppCompatImageView) findViewById(R.id.bb_bottom_bar_icon);
         iconView.setImageResource(iconResId);
+        hasStateList = iconView.getDrawable() instanceof StateListDrawable;
 
         if (type != Type.TABLET && !isTitleless) {
             titleView = (TextView) findViewById(R.id.bb_bottom_bar_title);
@@ -468,8 +471,12 @@ public class BottomBarTab extends LinearLayout {
 
     private void setColors(int color) {
         if (iconView != null) {
-            iconView.setColorFilter(color);
-            iconView.setTag(R.id.bb_bottom_bar_color_id, color);
+            if (hasStateList) {
+                iconView.setSelected(isActive);
+            } else {
+                iconView.setColorFilter(color);
+                iconView.setTag(R.id.bb_bottom_bar_color_id, color);
+            }
         }
 
         if (titleView != null) {
