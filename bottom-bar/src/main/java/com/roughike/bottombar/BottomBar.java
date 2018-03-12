@@ -215,7 +215,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
-            animateBadgeCount = ta.getBoolean(R.styleable.BottomBar_bb_animateFirstBadgeCount, false);
+            animateBadgeCount = ta.getBoolean(R.styleable.BottomBar_bb_animateBadgeCount, false);
         } finally {
             ta.recycle();
         }
