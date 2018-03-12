@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
@@ -43,11 +45,15 @@ class BottomBarBadge extends AppCompatTextView {
      * @param animate should the badge animate
      */
     void setCount(int count, boolean animate) {
-        if (this.count == 0 && count > 0 && animate) {
-            show();
-        }
+        int oldCount = this.count;
         this.count = count;
         setText(String.valueOf(count));
+        if (animate && oldCount == 0 && count > 0) {
+            setAlpha(0);
+            setScaleX(0);
+            setScaleY(0);
+            show();
+        }
     }
 
     /**
@@ -75,14 +81,19 @@ class BottomBarBadge extends AppCompatTextView {
     /**
      * Hides the badge with a neat little scale animation.
      */
-    void hide() {
+    void hide(@Nullable ViewPropertyAnimatorListener listener) {
         isVisible = false;
         ViewCompat.animate(this)
                 .setDuration(150)
                 .alpha(0)
                 .scaleX(0)
                 .scaleY(0)
+                .setListener(listener)
                 .start();
+    }
+
+    void hide() {
+        hide(null);
     }
 
     /**

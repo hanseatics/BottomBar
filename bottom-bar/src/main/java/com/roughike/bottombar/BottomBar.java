@@ -86,7 +86,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean showShadow;
     private float shadowElevation;
     private View shadowView;
-    private boolean animateFirstBadgeCount;
+    private boolean animateBadgeCount;
 
     private View backgroundOverlay;
     private ViewGroup outerContainer;
@@ -215,7 +215,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
-            animateFirstBadgeCount = ta.getBoolean(R.styleable.BottomBar_bb_animateFirstBadgeCount, false);
+            animateBadgeCount = ta.getBoolean(R.styleable.BottomBar_bb_animateFirstBadgeCount, false);
         } finally {
             ta.recycle();
         }
@@ -330,7 +330,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .hideBadgeWhenSelected(hideBadgeWhenActive)
                 .titleTextAppearance(titleTextAppearance)
                 .titleTypeFace(titleTypeFace)
-                .animateFirstBadgeCount(animateFirstBadgeCount)
+                .animateBadgeCount(animateBadgeCount)
                 .build();
     }
 
@@ -696,13 +696,13 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     /**
      * Set animate first badge count for the badge
      */
-    public void setAnimateFirstBadgeCount(final boolean animate) {
-        animateFirstBadgeCount = animate;
+    public void setAnimateBadgeCount(final boolean animate) {
+        animateBadgeCount = animate;
 
         batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
             @Override
             public void update(BottomBarTab tab) {
-                tab.setAnimateFirstBadgeCount(animate);
+                tab.setAnimateBadgeCount(animate);
             }
         });
     }

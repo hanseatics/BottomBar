@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.roughike.bottombar.OnTabSelectListener;
  */
 public class BadgeActivity extends AppCompatActivity {
     private TextView messageView;
+    int count = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,5 +44,18 @@ public class BadgeActivity extends AppCompatActivity {
 
         BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
         nearby.setBadgeCount(5);
+
+        messageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomBarTab friends = bottomBar.getTabWithId(R.id.tab_friends);
+                if (count > 5) {
+                    count = 0;
+                    friends.setBadgeCount(count);
+                } else {
+                    friends.setBadgeCount(++count);
+                }
+            }
+        });
     }
 }

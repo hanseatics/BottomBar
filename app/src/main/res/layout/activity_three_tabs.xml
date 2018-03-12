@@ -19,6 +19,8 @@
         android:layout_alignParentBottom="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs_three"
         app:bb_behavior="noScale"
+        app:bb_animateBadgeCount="true"
+        app:bb_badgesHideWhenActive="false"
         />
 
 </RelativeLayout>
