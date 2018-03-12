@@ -22,6 +22,7 @@ import android.widget.TextView;
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
+ * Copyright (c) 2018 hanseatics (http://github.com/hanseatics).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +73,7 @@ public class BottomBarTab extends LinearLayout {
     private int indexInContainer;
     private int titleTextAppearanceResId;
     private Typeface titleTypeFace;
+    private boolean animateFirstBadgeCount;
 
     BottomBarTab(Context context) {
         super(context);
@@ -91,6 +93,7 @@ public class BottomBarTab extends LinearLayout {
         setBadgeHidesWhenActive(config.badgeHidesWhenSelected);
         setTitleTextAppearance(config.titleTextAppearance);
         setTitleTypeface(config.titleTypeFace);
+        setAnimateFirstBadgeCount(config.animateFirstBadgeCount);
     }
 
     void prepareLayout() {
@@ -266,6 +269,14 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
+    public boolean isAnimateFirstBadgeCount() {
+        return animateFirstBadgeCount;
+    }
+
+    public void setAnimateFirstBadgeCount(boolean animateFirstBadgeCount) {
+        this.animateFirstBadgeCount = animateFirstBadgeCount;
+    }
+
     public int getBarColorWhenSelected() {
         return barColorWhenSelected;
     }
@@ -337,7 +348,7 @@ public class BottomBarTab extends LinearLayout {
             badge.attachToTab(this, badgeBackgroundColor);
         }
 
-        badge.setCount(count);
+        badge.setCount(count, animateFirstBadgeCount);
 
         if (isActive && badgeHidesWhenActive) {
             badge.hide();
@@ -678,6 +689,7 @@ public class BottomBarTab extends LinearLayout {
         private final int titleTextAppearance;
         private final Typeface titleTypeFace;
         private boolean badgeHidesWhenSelected = true;
+        private final boolean animateFirstBadgeCount;
 
         private Config(Builder builder) {
             this.inActiveTabAlpha = builder.inActiveTabAlpha;
@@ -689,6 +701,7 @@ public class BottomBarTab extends LinearLayout {
             this.badgeHidesWhenSelected = builder.hidesBadgeWhenSelected;
             this.titleTextAppearance = builder.titleTextAppearance;
             this.titleTypeFace = builder.titleTypeFace;
+            this.animateFirstBadgeCount = builder.animateFirstBadgeCount;
         }
 
         public static class Builder {
@@ -701,6 +714,7 @@ public class BottomBarTab extends LinearLayout {
             private boolean hidesBadgeWhenSelected = true;
             private int titleTextAppearance;
             private Typeface titleTypeFace;
+            private boolean animateFirstBadgeCount = false;
 
             public Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
@@ -744,6 +758,11 @@ public class BottomBarTab extends LinearLayout {
 
             public Builder titleTypeFace(Typeface titleTypeFace) {
                 this.titleTypeFace = titleTypeFace;
+                return this;
+            }
+
+            public Builder animateFirstBadgeCount(boolean animateFirstBadgeCount) {
+                this.animateFirstBadgeCount = animateFirstBadgeCount;
                 return this;
             }
 

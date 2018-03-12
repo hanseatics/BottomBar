@@ -39,6 +39,7 @@ import java.util.List;
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
+ * Copyright (c) 2018 hanseatics (http://github.com/hanseatics).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +86,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private boolean showShadow;
     private float shadowElevation;
     private View shadowView;
+    private boolean animateFirstBadgeCount;
 
     private View backgroundOverlay;
     private ViewGroup outerContainer;
@@ -213,6 +215,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
+            animateFirstBadgeCount = ta.getBoolean(R.styleable.BottomBar_bb_animateFirstBadgeCount, false);
         } finally {
             ta.recycle();
         }
@@ -327,6 +330,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 .hideBadgeWhenSelected(hideBadgeWhenActive)
                 .titleTextAppearance(titleTextAppearance)
                 .titleTypeFace(titleTypeFace)
+                .animateFirstBadgeCount(animateFirstBadgeCount)
                 .build();
     }
 
@@ -685,6 +689,20 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             @Override
             public void update(BottomBarTab tab) {
                 tab.setActiveColor(activeTabColor);
+            }
+        });
+    }
+
+    /**
+     * Set animate first badge count for the badge
+     */
+    public void setAnimateFirstBadgeCount(final boolean animate) {
+        animateFirstBadgeCount = animate;
+
+        batchPropertyApplier.applyToAllTabs(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setAnimateFirstBadgeCount(animate);
             }
         });
     }
