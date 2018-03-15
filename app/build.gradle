@@ -23,16 +23,16 @@ configurations.all {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':bottom-bar')
-    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
-    compile "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
-    compile "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':bottom-bar')
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
+    implementation "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
+    implementation "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
 
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile "com.google.dexmaker:dexmaker:1.2"
-    androidTestCompile "com.google.dexmaker:dexmaker-mockito:1.2"
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'org.mockito:mockito-core:2.8.47'
+    androidTestImplementation "com.google.dexmaker:dexmaker:1.2"
+    androidTestImplementation "com.google.dexmaker:dexmaker-mockito:1.2"
 }
