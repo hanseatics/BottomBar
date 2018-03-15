@@ -379,8 +379,10 @@ public class BottomBarTab extends LinearLayout {
     }
 
     private void removeBadgeView() {
-        badge.removeFromTab(this);
-        badge = null;
+        if (badge != null) {
+            badge.removeFromTab(this);
+            badge = null;
+        }
     }
 
     public void removeBadge() {
