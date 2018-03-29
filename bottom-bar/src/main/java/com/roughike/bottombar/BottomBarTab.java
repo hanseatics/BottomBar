@@ -407,6 +407,8 @@ public class BottomBarTab extends LinearLayout {
     }
 
     void setIconTint(int tint) {
+
+        Log.d("BottomBar", "setIconTint: " + tint);
         iconView.setColorFilter(tint);
     }
 
@@ -514,10 +516,8 @@ public class BottomBarTab extends LinearLayout {
     private void setColors(int color) {
         if (iconView != null) {
             if (hasStateList) {
-                Log.d("BottomBar", "setColors hasStateList: " + hasStateList);
                 iconView.setSelected(isActive);
             } else {
-                Log.d("BottomBar", "setColors setColorFilter: " + color);
                 iconView.setColorFilter(color);
                 iconView.setTag(R.id.bb_bottom_bar_color_id, color);
             }
