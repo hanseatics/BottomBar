@@ -13,8 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
+ * Copyright (c) 2018 hanseatics (http://github.com/hanseatics).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +76,7 @@ public class BottomBarTab extends LinearLayout {
     private int indexInContainer;
     private int titleTextAppearanceResId;
     private Typeface titleTypeFace;
+    private boolean animateBadgeCount;
 
     BottomBarTab(Context context) {
         super(context);
@@ -91,6 +96,7 @@ public class BottomBarTab extends LinearLayout {
         setBadgeHidesWhenActive(config.badgeHidesWhenSelected);
         setTitleTextAppearance(config.titleTextAppearance);
         setTitleTypeface(config.titleTypeFace);
+        setAnimateBadgeCount(config.animateBadgeCount);
     }
 
     void prepareLayout() {
@@ -266,6 +272,14 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
+    public boolean isAnimateBadgeCount() {
+        return animateBadgeCount;
+    }
+
+    public void setAnimateBadgeCount(boolean animateFirstBadgeCount) {
+        this.animateBadgeCount = animateFirstBadgeCount;
+    }
+
     public int getBarColorWhenSelected() {
         return barColorWhenSelected;
     }
@@ -325,8 +339,29 @@ public class BottomBarTab extends LinearLayout {
     public void setBadgeCount(int count) {
         if (count <= 0) {
             if (badge != null) {
-                badge.removeFromTab(this);
-                badge = null;
+                if (animateBadgeCount) {
+                    badge.setAlpha(1);
+                    badge.setScaleX(1);
+                    badge.setScaleY(1);
+                    badge.hide(new ViewPropertyAnimatorListener() {
+                        @Override
+                        public void onAnimationStart(View view) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(View view) {
+                            removeBadgeView();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(View view) {
+                            removeBadgeView();
+                        }
+                    });
+                } else {
+                    removeBadgeView();
+                }
             }
 
             return;
@@ -337,10 +372,17 @@ public class BottomBarTab extends LinearLayout {
             badge.attachToTab(this, badgeBackgroundColor);
         }
 
-        badge.setCount(count);
+        badge.setCount(count, animateBadgeCount);
 
         if (isActive && badgeHidesWhenActive) {
             badge.hide();
+        }
+    }
+
+    private void removeBadgeView() {
+        if (badge != null) {
+            badge.removeFromTab(this);
+            badge = null;
         }
     }
 
@@ -472,8 +514,10 @@ public class BottomBarTab extends LinearLayout {
     private void setColors(int color) {
         if (iconView != null) {
             if (hasStateList) {
+                Log.d("BottomBar", "setColors hasStateList: " + hasStateList);
                 iconView.setSelected(isActive);
             } else {
+                Log.d("BottomBar", "setColors setColorFilter: " + color);
                 iconView.setColorFilter(color);
                 iconView.setTag(R.id.bb_bottom_bar_color_id, color);
             }
@@ -678,6 +722,7 @@ public class BottomBarTab extends LinearLayout {
         private final int titleTextAppearance;
         private final Typeface titleTypeFace;
         private boolean badgeHidesWhenSelected = true;
+        private final boolean animateBadgeCount;
 
         private Config(Builder builder) {
             this.inActiveTabAlpha = builder.inActiveTabAlpha;
@@ -689,6 +734,7 @@ public class BottomBarTab extends LinearLayout {
             this.badgeHidesWhenSelected = builder.hidesBadgeWhenSelected;
             this.titleTextAppearance = builder.titleTextAppearance;
             this.titleTypeFace = builder.titleTypeFace;
+            this.animateBadgeCount = builder.animateBadgeCount;
         }
 
         public static class Builder {
@@ -701,6 +747,7 @@ public class BottomBarTab extends LinearLayout {
             private boolean hidesBadgeWhenSelected = true;
             private int titleTextAppearance;
             private Typeface titleTypeFace;
+            private boolean animateBadgeCount = false;
 
             public Builder inActiveTabAlpha(float alpha) {
                 this.inActiveTabAlpha = alpha;
@@ -744,6 +791,11 @@ public class BottomBarTab extends LinearLayout {
 
             public Builder titleTypeFace(Typeface titleTypeFace) {
                 this.titleTypeFace = titleTypeFace;
+                return this;
+            }
+
+            public Builder animateBadgeCount(boolean animateBadgeCount) {
+                this.animateBadgeCount = animateBadgeCount;
                 return this;
             }
 

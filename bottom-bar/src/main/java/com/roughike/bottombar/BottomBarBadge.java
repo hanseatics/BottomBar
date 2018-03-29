@@ -4,18 +4,19 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.VisibleForTesting;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 
 /*
  * BottomBar library for Android
  * Copyright (c) 2016 Iiro Krankka (http://github.com/roughike).
+ * Copyright (c) 2018 hanseatics (http://github.com/hanseatics).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +30,7 @@ import android.widget.TextView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BottomBarBadge extends TextView {
+class BottomBarBadge extends AppCompatTextView {
     private int count;
     private boolean isVisible = false;
 
@@ -41,10 +42,18 @@ class BottomBarBadge extends TextView {
      * Set the unread / new item / whatever count for this Badge.
      *
      * @param count the value this Badge should show.
+     * @param animate should the badge animate
      */
-    void setCount(int count) {
+    void setCount(int count, boolean animate) {
+        int oldCount = this.count;
         this.count = count;
         setText(String.valueOf(count));
+        if (animate && oldCount == 0 && count > 0) {
+            setAlpha(0);
+            setScaleX(0);
+            setScaleY(0);
+            show();
+        }
     }
 
     /**
@@ -72,14 +81,19 @@ class BottomBarBadge extends TextView {
     /**
      * Hides the badge with a neat little scale animation.
      */
-    void hide() {
+    void hide(@Nullable ViewPropertyAnimatorListener listener) {
         isVisible = false;
         ViewCompat.animate(this)
                 .setDuration(150)
                 .alpha(0)
                 .scaleX(0)
                 .scaleY(0)
+                .setListener(listener)
                 .start();
+    }
+
+    void hide() {
+        hide(null);
     }
 
     /**
